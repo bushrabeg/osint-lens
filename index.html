@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OSINT Lens</title>
+  <meta name="description" content="OSINT Lens — Kamuya açık kaynaklardan sistematik istihbarat toplama ve analiz aracı. Şirket, kişi, domain veya olay hakkında hızlı keşif yapın." />
+  <meta name="keywords" content="OSINT, açık kaynak istihbarat, siber istihbarat, kişi araştırma, domain analizi, sosyal medya araştırma" />
+  <meta property="og:title" content="OSINT Lens — Açık Kaynak İstihbarat Aracı" />
+  <meta property="og:description" content="Kamuya açık kaynaklardan sistematik istihbarat toplama ve analiz aracı." />
+  <meta property="og:type" content="website" />
+  <title>OSINT Lens — Açık Kaynak İstihbarat Aracı</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%23080c10'/%3E%3Ccircle cx='12' cy='12' r='7' stroke='%2321ce70' stroke-width='1.5' fill='none'/%3E%3Ccircle cx='12' cy='12' r='2.5' fill='%2321ce70'/%3E%3Cline x1='17' y1='17' x2='21' y2='21' stroke='%2321ce70' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -21,9 +27,7 @@
       --mono: 'Share Tech Mono', monospace;
       --sans: 'Rajdhani', sans-serif;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       background: var(--bg);
       color: var(--text);
@@ -31,36 +35,25 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
-
     /* GRID BACKGROUND */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background-image:
-        linear-gradient(var(--border) 1px, transparent 1px),
-        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
       background-size: 40px 40px;
       pointer-events: none;
       z-index: 0;
     }
-
     /* SCANLINE */
     body::after {
       content: '';
       position: fixed;
       inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.08) 2px,
-        rgba(0,0,0,0.08) 4px
-      );
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
       pointer-events: none;
       z-index: 0;
     }
-
     .container {
       position: relative;
       z-index: 1;
@@ -68,653 +61,501 @@
       margin: 0 auto;
       padding: 0 20px;
     }
-
     /* HEADER */
     header {
       border-bottom: 1px solid var(--border);
       padding: 24px 0;
       margin-bottom: 48px;
     }
-
     .header-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
+    .logo { display: flex; align-items: center; gap: 14px; }
     .logo-icon {
-      width: 40px;
-      height: 40px;
+      width: 40px; height: 40px;
       border: 1px solid var(--green);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       position: relative;
       animation: pulse-border 3s ease-in-out infinite;
     }
-
     .logo-icon::before {
       content: '';
       position: absolute;
       inset: 4px;
       border: 1px solid var(--green-dim);
     }
-
-    .logo-icon svg {
-      width: 20px;
-      height: 20px;
-      fill: var(--green);
-    }
-
+    .logo-icon svg { width: 20px; height: 20px; fill: var(--green); }
     @keyframes pulse-border {
       0%, 100% { box-shadow: 0 0 0 0 var(--green-glow); }
       50% { box-shadow: 0 0 20px 4px var(--green-glow); }
     }
-
     .logo-text {
       font-family: var(--sans);
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: 3px;
-      color: var(--green);
-      text-transform: uppercase;
+      font-size: 22px; font-weight: 700;
+      letter-spacing: 3px; color: var(--green); text-transform: uppercase;
     }
-
-    .logo-sub {
-      font-size: 10px;
-      color: var(--text-dim);
-      letter-spacing: 2px;
-    }
-
-    .status-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      color: var(--text-dim);
-    }
-
+    .logo-sub { font-size: 10px; color: var(--text-dim); letter-spacing: 2px; }
+    .status-bar { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-dim); }
     .dot {
-      width: 7px;
-      height: 7px;
-      background: var(--green);
-      border-radius: 50%;
+      width: 7px; height: 7px;
+      background: var(--green); border-radius: 50%;
       animation: blink 1.5s ease-in-out infinite;
     }
-
     @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.2; }
+      0%, 100% { opacity: 1; } 50% { opacity: 0.2; }
     }
-
     /* HERO */
-    .hero {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-
-    .hero-label {
-      font-size: 11px;
-      letter-spacing: 4px;
-      color: var(--green);
-      margin-bottom: 16px;
-      display: block;
-    }
-
+    .hero { text-align: center; margin-bottom: 48px; }
+    .hero-label { font-size: 11px; letter-spacing: 4px; color: var(--green); margin-bottom: 16px; display: block; }
     .hero h1 {
       font-family: var(--sans);
-      font-size: clamp(28px, 5vw, 48px);
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: 2px;
-      line-height: 1.2;
-      margin-bottom: 16px;
+      font-size: clamp(28px, 5vw, 48px); font-weight: 700;
+      color: #fff; letter-spacing: 2px; line-height: 1.2; margin-bottom: 16px;
     }
-
-    .hero h1 span {
-      color: var(--green);
-    }
-
-    .hero p {
-      color: var(--text-dim);
-      font-size: 13px;
-      max-width: 500px;
-      margin: 0 auto;
-      line-height: 1.8;
-    }
-
+    .hero h1 span { color: var(--green); }
+    .hero p { color: var(--text-dim); font-size: 13px; max-width: 500px; margin: 0 auto; line-height: 1.8; }
     /* SEARCH BOX */
-    .search-section {
-      margin-bottom: 40px;
-    }
-
+    .search-section { margin-bottom: 40px; }
     .search-box {
       background: var(--surface);
       border: 1px solid var(--green-dim);
       padding: 28px;
       position: relative;
     }
-
     .search-box::before {
       content: 'HEDEF GİR';
-      position: absolute;
-      top: -10px;
-      left: 20px;
-      background: var(--surface);
-      padding: 0 8px;
-      font-size: 10px;
-      letter-spacing: 3px;
-      color: var(--green);
+      position: absolute; top: -10px; left: 20px;
+      background: var(--surface); padding: 0 8px;
+      font-size: 10px; letter-spacing: 3px; color: var(--green);
     }
-
-    .input-row {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
+    .input-row { display: flex; gap: 12px; margin-bottom: 16px; }
     .search-input {
       flex: 1;
-      background: var(--bg);
-      border: 1px solid #21ce7044;
-      color: var(--green);
-      font-family: var(--mono);
-      font-size: 15px;
-      padding: 14px 18px;
-      outline: none;
-      transition: border-color 0.2s;
+      background: var(--bg); border: 1px solid #21ce7044;
+      color: var(--green); font-family: var(--mono); font-size: 15px;
+      padding: 14px 18px; outline: none; transition: border-color 0.2s;
     }
-
     .search-input::placeholder { color: #21ce7044; }
     .search-input:focus { border-color: var(--green); box-shadow: 0 0 20px var(--green-glow); }
-
     .search-btn {
-      background: var(--green);
-      color: var(--bg);
-      border: none;
-      font-family: var(--sans);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      padding: 14px 28px;
-      cursor: pointer;
-      transition: all 0.2s;
-      white-space: nowrap;
-      text-transform: uppercase;
+      background: var(--green); color: var(--bg); border: none;
+      font-family: var(--sans); font-size: 14px; font-weight: 700;
+      letter-spacing: 2px; padding: 14px 28px; cursor: pointer;
+      transition: all 0.2s; white-space: nowrap; text-transform: uppercase;
     }
-
-    .search-btn:hover {
-      background: #fff;
-      box-shadow: 0 0 30px var(--green-glow);
-    }
-
+    .search-btn:hover { background: #fff; box-shadow: 0 0 30px var(--green-glow); }
     .search-btn:active { transform: scale(0.98); }
     .search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
     /* CATEGORY TAGS */
-    .tags {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
+    .tags { display: flex; gap: 8px; flex-wrap: wrap; }
     .tag {
-      background: transparent;
-      border: 1px solid #21ce7033;
-      color: var(--text-dim);
-      font-family: var(--mono);
-      font-size: 11px;
-      padding: 5px 12px;
-      cursor: pointer;
-      letter-spacing: 1px;
-      transition: all 0.2s;
+      background: transparent; border: 1px solid #21ce7033;
+      color: var(--text-dim); font-family: var(--mono);
+      font-size: 11px; padding: 5px 12px; cursor: pointer;
+      letter-spacing: 1px; transition: all 0.2s;
     }
-
-    .tag:hover, .tag.active {
-      border-color: var(--green);
-      color: var(--green);
-      background: var(--green-glow);
-    }
-
+    .tag:hover, .tag.active { border-color: var(--green); color: var(--green); background: var(--green-glow); }
     /* RESULTS */
-    #results {
-      display: none;
-    }
-
+    #results { display: none; }
     .results-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
     }
-
-    .results-title {
-      font-family: var(--sans);
-      font-size: 13px;
-      letter-spacing: 3px;
-      color: var(--green);
-      text-transform: uppercase;
-    }
-
-    .results-count {
-      font-size: 11px;
-      color: var(--text-dim);
-    }
-
+    .results-title { font-family: var(--sans); font-size: 13px; letter-spacing: 3px; color: var(--green); text-transform: uppercase; }
+    .results-count { font-size: 11px; color: var(--text-dim); }
     /* TOOLS GRID */
-    .tools-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 16px;
-      margin-bottom: 40px;
-    }
-
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 40px; }
     .tool-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 20px;
-      cursor: pointer;
-      transition: all 0.25s;
-      text-decoration: none;
-      display: block;
-      position: relative;
-      overflow: hidden;
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 20px; cursor: pointer; transition: all 0.25s;
+      text-decoration: none; display: block; position: relative; overflow: hidden;
     }
-
     .tool-card::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--green);
-      transition: width 0.3s;
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 2px; background: var(--green); transition: width 0.3s;
     }
-
-    .tool-card:hover {
-      border-color: var(--green-dim);
-      box-shadow: 0 0 30px #21ce7011;
-      transform: translateY(-2px);
-    }
-
+    .tool-card:hover { border-color: var(--green-dim); box-shadow: 0 0 30px #21ce7011; transform: translateY(-2px); }
     .tool-card:hover::after { width: 100%; }
-
-    .tool-cat {
-      font-size: 9px;
-      letter-spacing: 3px;
-      color: var(--green);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-    }
-
-    .tool-name {
-      font-family: var(--sans);
-      font-size: 16px;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 6px;
-    }
-
-    .tool-desc {
-      font-size: 11px;
-      color: var(--text-dim);
-      line-height: 1.7;
-    }
-
-    .tool-arrow {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      color: var(--green-dim);
-      font-size: 16px;
-      transition: transform 0.2s;
-    }
-
+    .tool-cat { font-size: 9px; letter-spacing: 3px; color: var(--green); margin-bottom: 8px; text-transform: uppercase; }
+    .tool-name { font-family: var(--sans); font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .tool-desc { font-size: 11px; color: var(--text-dim); line-height: 1.7; }
+    .tool-arrow { position: absolute; top: 20px; right: 20px; color: var(--green-dim); font-size: 16px; transition: transform 0.2s; }
     .tool-card:hover .tool-arrow { transform: translate(3px, -3px); }
-
     /* ANALYSIS OUTPUT */
     .analysis-box {
-      background: var(--surface);
-      border: 1px solid var(--green-dim);
-      padding: 28px;
-      margin-bottom: 40px;
-      position: relative;
-      display: none;
+      background: var(--surface); border: 1px solid var(--green-dim);
+      padding: 28px; margin-bottom: 40px; position: relative; display: none;
     }
-
     .analysis-box::before {
       content: 'ANALİZ ÇIKTISI';
-      position: absolute;
-      top: -10px;
-      left: 20px;
-      background: var(--surface);
-      padding: 0 8px;
-      font-size: 10px;
-      letter-spacing: 3px;
-      color: var(--green);
+      position: absolute; top: -10px; left: 20px;
+      background: var(--surface); padding: 0 8px;
+      font-size: 10px; letter-spacing: 3px; color: var(--green);
     }
-
-    .analysis-line {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 10px;
-      font-size: 13px;
-    }
-
-    .analysis-key {
-      color: var(--green);
-      min-width: 160px;
-      flex-shrink: 0;
-    }
-
-    .analysis-val {
-      color: var(--text);
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 2px 10px;
-      font-size: 10px;
-      letter-spacing: 2px;
-      border: 1px solid;
-      text-transform: uppercase;
-    }
-
+    .analysis-line { display: flex; gap: 12px; margin-bottom: 10px; font-size: 13px; }
+    .analysis-key { color: var(--green); min-width: 160px; flex-shrink: 0; }
+    .analysis-val { color: var(--text); }
+    .badge { display: inline-block; padding: 2px 10px; font-size: 10px; letter-spacing: 2px; border: 1px solid; text-transform: uppercase; }
     .badge-green { border-color: var(--green); color: var(--green); }
     .badge-red { border-color: var(--red); color: var(--red); }
     .badge-yellow { border-color: var(--yellow); color: var(--yellow); }
-
     /* LOADING */
-    .loading {
-      display: none;
-      text-align: center;
-      padding: 40px;
+    .loading { display: none; text-align: center; padding: 40px; }
+    .loading-bar { width: 200px; height: 2px; background: #21ce7022; margin: 16px auto; overflow: hidden; position: relative; }
+    .loading-bar::after {
+      content: ''; position: absolute; left: -60%; top: 0;
+      width: 60%; height: 100%; background: var(--green); animation: load 1s linear infinite;
     }
-
-    .loading-bar {
-      width: 200px;
-      height: 2px;
-      background: #21ce7022;
-      margin: 16px auto;
-      overflow: hidden;
+    @keyframes load { to { left: 100%; } }
+    .loading-text { font-size: 11px; letter-spacing: 3px; color: var(--green); }
+    /* HOW TO USE */
+    .howto-section {
+      background: var(--surface);
+      border: 1px solid var(--green-dim);
+      padding: 28px;
+      margin-bottom: 48px;
       position: relative;
     }
-
-    .loading-bar::after {
-      content: '';
-      position: absolute;
-      left: -60%;
-      top: 0;
-      width: 60%;
-      height: 100%;
-      background: var(--green);
-      animation: load 1s linear infinite;
+    .howto-section::before {
+      content: 'NASIL KULLANILIR?';
+      position: absolute; top: -10px; left: 20px;
+      background: var(--surface); padding: 0 8px;
+      font-size: 10px; letter-spacing: 3px; color: var(--green);
     }
-
-    @keyframes load {
-      to { left: 100%; }
+    .howto-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 8px; }
+    .howto-step { display: flex; flex-direction: column; gap: 8px; }
+    .howto-num { font-size: 28px; color: var(--green); font-family: var(--sans); font-weight: 700; line-height: 1; }
+    .howto-title { font-size: 13px; color: #fff; font-family: var(--sans); font-weight: 600; letter-spacing: 1px; }
+    .howto-desc { font-size: 11px; color: var(--text-dim); line-height: 1.7; }
+    /* SEARCH HISTORY */
+    .history-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 20px 28px;
+      margin-bottom: 32px;
+      position: relative;
+      display: none;
     }
-
-    .loading-text {
-      font-size: 11px;
-      letter-spacing: 3px;
-      color: var(--green);
+    .history-section::before {
+      content: 'ARAMA GEÇMİŞİ';
+      position: absolute; top: -10px; left: 20px;
+      background: var(--surface); padding: 0 8px;
+      font-size: 10px; letter-spacing: 3px; color: var(--text-dim);
     }
-
+    .history-list { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .history-tag {
+      background: transparent; border: 1px solid #21ce7022;
+      color: var(--text-dim); font-family: var(--mono);
+      font-size: 11px; padding: 4px 10px; cursor: pointer;
+      letter-spacing: 1px; transition: all 0.2s;
+    }
+    .history-tag:hover { border-color: var(--green-dim); color: var(--green); }
+    .history-clear {
+      background: transparent; border: 1px solid #ff4c6a33;
+      color: var(--red); font-family: var(--mono);
+      font-size: 10px; padding: 4px 10px; cursor: pointer;
+      letter-spacing: 1px; transition: all 0.2s; margin-left: auto;
+    }
+    .history-clear:hover { background: #ff4c6a11; }
     /* FOOTER */
     footer {
       border-top: 1px solid var(--border);
-      padding: 24px 0;
-      margin-top: 60px;
-      text-align: center;
-      font-size: 11px;
-      color: var(--text-dim);
-      letter-spacing: 2px;
+      padding: 24px 0; margin-top: 60px;
+      text-align: center; font-size: 11px; color: var(--text-dim); letter-spacing: 2px;
     }
-
     /* TYPEWRITER */
-    .typewriter::after {
-      content: '█';
-      animation: blink 1s step-end infinite;
+    .typewriter::after { content: '█'; animation: blink 1s step-end infinite; }
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .input-row { flex-direction: column; }
+      .search-btn { width: 100%; }
+      .howto-grid { grid-template-columns: 1fr; }
+      .tools-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-
-<div class="container">
-
-  <header>
-    <div class="header-inner">
-      <div class="logo">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
-          </svg>
+  <div class="container">
+    <header>
+      <div class="header-inner">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="logo-text">OSINT Lens</div>
+            <div class="logo-sub">AÇIK KAYNAK İSTİHBARAT ARACI</div>
+          </div>
         </div>
-        <div>
-          <div class="logo-text">OSINT Lens</div>
-          <div class="logo-sub">AÇIK KAYNAK İSTİHBARAT ARACI</div>
+        <div class="status-bar">
+          <div class="dot"></div>
+          <span>SİSTEM AKTİF</span>
         </div>
       </div>
-      <div class="status-bar">
-        <div class="dot"></div>
-        <span>SİSTEM AKTİF</span>
-      </div>
+    </header>
+
+    <div class="hero">
+      <span class="hero-label">// v1.1.0 — OSINT PLATFORMU</span>
+      <h1>Hedefi Ara.<br><span>Veriyi Analiz Et.</span></h1>
+      <p>Kamuya açık kaynaklardan sistematik istihbarat toplama ve analiz aracı. Şirket, kişi, domain veya olay hakkında hızlı keşif yapın.</p>
     </div>
-  </header>
 
-  <div class="hero">
-    <span class="hero-label">// v1.0.0 — OSINT PLATFORMU</span>
-    <h1>Hedefi Ara.<br><span>Veriyi Analiz Et.</span></h1>
-    <p>Kamuya açık kaynaklardan sistematik istihbarat toplama ve analiz aracı. Şirket, kişi, domain veya olay hakkında hızlı keşif yapın.</p>
-  </div>
-
-  <!-- SEARCH -->
-  <div class="search-section">
-    <div class="search-box">
-      <div class="input-row">
-        <input
-          type="text"
-          class="search-input typewriter"
-          id="queryInput"
-          placeholder="hedef girin: şirket, kişi, domain, olay..."
-          autocomplete="off"
-        />
-        <button class="search-btn" id="searchBtn" onclick="startSearch()">
-          &#9654; TARA
-        </button>
-      </div>
-      <div class="tags">
-        <button class="tag active" onclick="setTag(this,'')">TÜM KAYNAKLAR</button>
-        <button class="tag" onclick="setTag(this,'şirket')">ŞİRKET</button>
-        <button class="tag" onclick="setTag(this,'kişi')">KİŞİ</button>
-        <button class="tag" onclick="setTag(this,'domain')">DOMAIN</button>
-        <button class="tag" onclick="setTag(this,'olay')">OLAY/HABER</button>
-        <button class="tag" onclick="setTag(this,'sosyal medya')">SOSYAL MEDYA</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- LOADING -->
-  <div class="loading" id="loading">
-    <div class="loading-text" id="loadingText">KAYNAKLAR TARANYOR...</div>
-    <div class="loading-bar"></div>
-  </div>
-
-  <!-- RESULTS SECTION -->
-  <div id="results">
-
-    <!-- QUICK ANALYSIS -->
-    <div class="analysis-box" id="analysisBox">
-      <div class="analysis-line">
-        <span class="analysis-key">[ HEDEF ]</span>
-        <span class="analysis-val" id="aTarget">—</span>
-      </div>
-      <div class="analysis-line">
-        <span class="analysis-key">[ KATEGORİ ]</span>
-        <span class="analysis-val" id="aCategory">—</span>
-      </div>
-      <div class="analysis-line">
-        <span class="analysis-key">[ BULUNAN ARAÇLAR ]</span>
-        <span class="analysis-val" id="aToolCount">—</span>
-      </div>
-      <div class="analysis-line">
-        <span class="analysis-key">[ ÖNERİLEN YAKLAŞIM ]</span>
-        <span class="analysis-val" id="aApproach">—</span>
-      </div>
-      <div class="analysis-line">
-        <span class="analysis-key">[ DURUM ]</span>
-        <span class="analysis-val"><span class="badge badge-green">HAZIR</span></span>
+    <!-- HOW TO USE -->
+    <div class="howto-section">
+      <div class="howto-grid">
+        <div class="howto-step">
+          <div class="howto-num">01</div>
+          <div class="howto-title">HEDEF GİR</div>
+          <div class="howto-desc">Araştırmak istediğin kişi, şirket, domain veya konuyu arama kutusuna yaz.</div>
+        </div>
+        <div class="howto-step">
+          <div class="howto-num">02</div>
+          <div class="howto-title">KATEGORİ SEÇ</div>
+          <div class="howto-desc">İsteğe bağlı olarak ŞİRKET, KİŞİ, DOMAIN, OLAY veya SOSYAL MEDYA kategorisini filtrele.</div>
+        </div>
+        <div class="howto-step">
+          <div class="howto-num">03</div>
+          <div class="howto-title">TARA</div>
+          <div class="howto-desc">TARA butonuna bas veya Enter'a bas. Sistem uygun OSINT araçlarını listeler.</div>
+        </div>
+        <div class="howto-step">
+          <div class="howto-num">04</div>
+          <div class="howto-title">ANALİZ ET</div>
+          <div class="howto-desc">Listelenen araç kartlarına tıklayarak doğrudan ilgili platforma yönlen ve araştırmanı derinleştir.</div>
+        </div>
       </div>
     </div>
 
-    <!-- TOOLS -->
-    <div class="results-header">
-      <span class="results-title">// OSINT ARAÇLARI</span>
-      <span class="results-count" id="toolCount"></span>
+    <!-- SEARCH -->
+    <div class="search-section">
+      <div class="search-box">
+        <div class="input-row">
+          <input type="text" class="search-input typewriter" id="queryInput"
+            placeholder="hedef girin: şirket, kişi, domain, olay..."
+            autocomplete="off" />
+          <button class="search-btn" id="searchBtn" onclick="startSearch()">
+            &#9654; TARA
+          </button>
+        </div>
+        <div class="tags">
+          <button class="tag active" onclick="setTag(this,'')">TÜM KAYNAKLAR</button>
+          <button class="tag" onclick="setTag(this,'şirket')">ŞİRKET</button>
+          <button class="tag" onclick="setTag(this,'kişi')">KİŞİ</button>
+          <button class="tag" onclick="setTag(this,'domain')">DOMAIN</button>
+          <button class="tag" onclick="setTag(this,'olay')">OLAY/HABER</button>
+          <button class="tag" onclick="setTag(this,'sosyal medya')">SOSYAL MEDYA</button>
+        </div>
+      </div>
     </div>
-    <div class="tools-grid" id="toolsGrid"></div>
 
+    <!-- SEARCH HISTORY -->
+    <div class="history-section" id="historySection">
+      <div class="history-list" id="historyList"></div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="loading" id="loading">
+      <div class="loading-text" id="loadingText">KAYNAKLAR TARANYOR...</div>
+      <div class="loading-bar"></div>
+    </div>
+
+    <!-- RESULTS SECTION -->
+    <div id="results">
+      <!-- QUICK ANALYSIS -->
+      <div class="analysis-box" id="analysisBox">
+        <div class="analysis-line">
+          <span class="analysis-key">[ HEDEF ]</span>
+          <span class="analysis-val" id="aTarget">—</span>
+        </div>
+        <div class="analysis-line">
+          <span class="analysis-key">[ KATEGORİ ]</span>
+          <span class="analysis-val" id="aCategory">—</span>
+        </div>
+        <div class="analysis-line">
+          <span class="analysis-key">[ BULUNAN ARAÇLAR ]</span>
+          <span class="analysis-val" id="aToolCount">—</span>
+        </div>
+        <div class="analysis-line">
+          <span class="analysis-key">[ ÖNERİLEN YAKLAŞIM ]</span>
+          <span class="analysis-val" id="aApproach">—</span>
+        </div>
+        <div class="analysis-line">
+          <span class="analysis-key">[ DURUM ]</span>
+          <span class="analysis-val"><span class="badge badge-green">HAZIR</span></span>
+        </div>
+      </div>
+
+      <!-- TOOLS -->
+      <div class="results-header">
+        <span class="results-title">// OSINT ARAÇLARI</span>
+        <span class="results-count" id="toolCount"></span>
+      </div>
+      <div class="tools-grid" id="toolsGrid"></div>
+    </div>
+
+    <footer>
+      OSINT LENS — SADECE KAMUYA AÇIK BİLGİLER — ETİK KULLANIM ZORUNLUDUR
+    </footer>
   </div>
 
-  <footer>
-    OSINT LENS — SADECE KAMUYA AÇIK BİLGİLER — ETİK KULLANIM ZORUNLUDUR
-  </footer>
+  <script>
+    let activeTag = '';
 
-</div>
+    const TOOLS = [
+      // ŞİRKET
+      { name: 'LinkedIn', cat: 'şirket', desc: 'Şirket profili, çalışanlar, iş ilanları ve kurumsal ağ keşfi.', url: 'https://linkedin.com/search/results/companies/?keywords=', query: true },
+      { name: 'Crunchbase', cat: 'şirket', desc: 'Finansman, yatırımcılar, yöneticiler ve kurumsal geçmiş.', url: 'https://crunchbase.com/textsearch?q=', query: true },
+      { name: 'OpenCorporates', cat: 'şirket', desc: 'Küresel şirket kayıtları ve yasal tescil bilgileri.', url: 'https://opencorporates.com/companies?q=', query: true },
+      { name: 'Google News', cat: 'şirket', desc: 'Şirkete dair güncel haber ve medya takibi.', url: 'https://news.google.com/search?q=', query: true },
+      // KİŞİ
+      { name: 'LinkedIn (Kişi)', cat: 'kişi', desc: 'Profesyonel profil, iş geçmişi ve bağlantı ağı.', url: 'https://linkedin.com/search/results/people/?keywords=', query: true },
+      { name: 'Twitter/X Search', cat: 'kişi', desc: 'Sosyal medya paylaşımları ve etkileşim analizi.', url: 'https://twitter.com/search?q=', query: true },
+      { name: 'Wayback Machine', cat: 'kişi', desc: 'Eski web sayfaları ve dijital ayak izi arşivi.', url: 'https://web.archive.org/web/*/', query: true },
+      // DOMAIN
+      { name: 'Whois Lookup', cat: 'domain', desc: 'Domain kayıt bilgisi, sahibi ve tarihi.', url: 'https://whois.domaintools.com/', query: true },
+      { name: 'Shodan', cat: 'domain', desc: 'Sunucu, IP, açık portlar ve servis keşfi.', url: 'https://shodan.io/search?query=', query: true },
+      { name: 'BuiltWith', cat: 'domain', desc: 'Web sitesinin kullandığı teknoloji ve altyapı tespiti.', url: 'https://builtwith.com/', query: true },
+      { name: 'Censys', cat: 'domain', desc: 'İnternet genelinde sertifika ve sunucu taraması.', url: 'https://search.censys.io/search?resource=hosts&q=', query: true },
+      { name: 'VirusTotal', cat: 'domain', desc: 'URL ve domain güvenlik ve kötü amaçlı yazılım taraması.', url: 'https://virustotal.com/gui/domain/', query: true },
+      // OLAY/HABER
+      { name: 'GDELT Project', cat: 'olay', desc: 'Küresel olay veritabanı ve medya izleme sistemi.', url: 'https://gdeltproject.org/data.html#rawdatafiles', query: false },
+      { name: 'Google News', cat: 'olay', desc: 'Haber arşivi ve gerçek zamanlı medya takibi.', url: 'https://news.google.com/search?q=', query: true },
+      { name: 'Archive.org', cat: 'olay', desc: 'Silinen haberlerin ve web içeriğinin arşivi.', url: 'https://web.archive.org/web/*/', query: true },
+      // SOSYAL MEDYA
+      { name: 'Instagram (Picuki)', cat: 'sosyal medya', desc: 'Gizlilik olmadan Instagram profil analizi.', url: 'https://www.picuki.com/profile/', query: true },
+      { name: 'Reddit Search', cat: 'sosyal medya', desc: 'Reddit paylaşımları ve forum tartışmaları.', url: 'https://reddit.com/search/?q=', query: true },
+      { name: 'YouTube Search', cat: 'sosyal medya', desc: 'Video içerik ve kanal araştırması.', url: 'https://youtube.com/results?search_query=', query: true },
+      { name: 'TikTok Search', cat: 'sosyal medya', desc: 'TikTok profil ve içerik keşfi.', url: 'https://tiktok.com/search?q=', query: true },
+    ];
 
-<script>
-  let activeTag = '';
+    const LOADING_STEPS = [
+      'KAYNAKLAR TARANYOR...',
+      'VERİTABANLARI SORGULANYOR...',
+      'ARAÇLAR FİLTRELENİYOR...',
+      'ANALİZ HAZIRLANIYOR...',
+      'TAMAMLANDI ✓',
+    ];
 
-  const TOOLS = [
-    // ŞİRKET
-    { name: 'LinkedIn', cat: 'şirket', desc: 'Şirket profili, çalışanlar, iş ilanları ve kurumsal ağ keşfi.', url: 'https://linkedin.com/search/results/companies/?keywords=', query: true },
-    { name: 'Crunchbase', cat: 'şirket', desc: 'Finansman, yatırımcılar, yöneticiler ve kurumsal geçmiş.', url: 'https://crunchbase.com/textsearch?q=', query: true },
-    { name: 'OpenCorporates', cat: 'şirket', desc: 'Küresel şirket kayıtları ve yasal tescil bilgileri.', url: 'https://opencorporates.com/companies?q=', query: true },
-    { name: 'Google News', cat: 'şirket', desc: 'Şirkete dair güncel haber ve medya takibi.', url: 'https://news.google.com/search?q=', query: true },
-    // KİŞİ
-    { name: 'LinkedIn (Kişi)', cat: 'kişi', desc: 'Profesyonel profil, iş geçmişi ve bağlantı ağı.', url: 'https://linkedin.com/search/results/people/?keywords=', query: true },
-    { name: 'Twitter/X Search', cat: 'kişi', desc: 'Sosyal medya paylaşımları ve etkileşim analizi.', url: 'https://twitter.com/search?q=', query: true },
-    { name: 'Wayback Machine', cat: 'kişi', desc: 'Eski web sayfaları ve dijital ayak izi arşivi.', url: 'https://web.archive.org/web/*/', query: true },
-    // DOMAIN
-    { name: 'Whois Lookup', cat: 'domain', desc: 'Domain kayıt bilgisi, sahibi ve tarihi.', url: 'https://whois.domaintools.com/', query: true },
-    { name: 'Shodan', cat: 'domain', desc: 'Sunucu, IP, açık portlar ve servis keşfi.', url: 'https://shodan.io/search?query=', query: true },
-    { name: 'BuiltWith', cat: 'domain', desc: 'Web sitesinin kullandığı teknoloji ve altyapı tespiti.', url: 'https://builtwith.com/', query: true },
-    { name: 'Censys', cat: 'domain', desc: 'İnternet genelinde sertifika ve sunucu taraması.', url: 'https://search.censys.io/search?resource=hosts&q=', query: true },
-    { name: 'VirusTotal', cat: 'domain', desc: 'URL ve domain güvenlik ve kötü amaçlı yazılım taraması.', url: 'https://virustotal.com/gui/domain/', query: true },
-    // OLAY/HABER
-    { name: 'GDELT Project', cat: 'olay', desc: 'Küresel olay veritabanı ve medya izleme sistemi.', url: 'https://gdeltproject.org/data.html#rawdatafiles', query: false },
-    { name: 'Google News', cat: 'olay', desc: 'Haber arşivi ve gerçek zamanlı medya takibi.', url: 'https://news.google.com/search?q=', query: true },
-    { name: 'Archive.org', cat: 'olay', desc: 'Silinen haberlerin ve web içeriğinin arşivi.', url: 'https://web.archive.org/web/*/', query: true },
-    // SOSYAL MEDYA
-    { name: 'Instagram (Picdeer)', cat: 'sosyal medya', desc: 'Gizlilik olmadan Instagram profil analizi.', url: 'https://www.picuki.com/profile/', query: true },
-    { name: 'Reddit Search', cat: 'sosyal medya', desc: 'Reddit paylaşımları ve forum tartışmaları.', url: 'https://reddit.com/search/?q=', query: true },
-    { name: 'YouTube Search', cat: 'sosyal medya', desc: 'Video içerik ve kanal araştırması.', url: 'https://youtube.com/results?search_query=', query: true },
-    { name: 'TikTok Search', cat: 'sosyal medya', desc: 'TikTok profil ve içerik keşfi.', url: 'https://tiktok.com/search?q=', query: true },
-  ];
+    const APPROACH_MAP = {
+      'şirket': 'Kurumsal kayıt → Haber taraması → Sosyal ağ analizi',
+      'kişi': 'Sosyal medya → Profesyonel profil → Dijital ayak izi',
+      'domain': 'Whois → Sunucu keşfi → Teknoloji tespiti',
+      'olay': 'Haber arşivi → Zaman çizelgesi → Kaynak doğrulama',
+      'sosyal medya': 'Platform taraması → İçerik analizi → Bağlantı haritası',
+      '': 'Genel keşif → Çapraz kaynak doğrulama → Bağlantı analizi',
+    };
 
-  const LOADING_STEPS = [
-    'KAYNAKLAR TARANYOR...',
-    'VERİTABANLARI SORGULANYOR...',
-    'ARAÇLAR FİLTRELENİYOR...',
-    'ANALİZ HAZIRLANIYOR...',
-    'TAMAMLANDI ✓',
-  ];
-
-  const APPROACH_MAP = {
-    'şirket': 'Kurumsal kayıt → Haber taraması → Sosyal ağ analizi',
-    'kişi': 'Sosyal medya → Profesyonel profil → Dijital ayak izi',
-    'domain': 'Whois → Sunucu keşfi → Teknoloji tespiti',
-    'olay': 'Haber arşivi → Zaman çizelgesi → Kaynak doğrulama',
-    'sosyal medya': 'Platform taraması → İçerik analizi → Bağlantı haritası',
-    '': 'Genel keşif → Çapraz kaynak doğrulama → Bağlantı analizi',
-  };
-
-  function setTag(el, tag) {
-    document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-    activeTag = tag;
-  }
-
-  function startSearch() {
-    const q = document.getElementById('queryInput').value.trim();
-    if (!q) {
-      document.getElementById('queryInput').style.borderColor = '#ff4c6a';
-      setTimeout(() => document.getElementById('queryInput').style.borderColor = '', 1000);
-      return;
+    // --- SEARCH HISTORY ---
+    function getHistory() {
+      try { return JSON.parse(localStorage.getItem('osint_history') || '[]'); }
+      catch { return []; }
+    }
+    function saveToHistory(q) {
+      let history = getHistory();
+      history = [q, ...history.filter(h => h !== q)].slice(0, 8);
+      localStorage.setItem('osint_history', JSON.stringify(history));
+      renderHistory();
+    }
+    function renderHistory() {
+      const history = getHistory();
+      const section = document.getElementById('historySection');
+      const list = document.getElementById('historyList');
+      if (!history.length) { section.style.display = 'none'; return; }
+      section.style.display = 'block';
+      list.innerHTML = '';
+      history.forEach(h => {
+        const btn = document.createElement('button');
+        btn.className = 'history-tag';
+        btn.textContent = h;
+        btn.onclick = () => {
+          document.getElementById('queryInput').value = h;
+          startSearch();
+        };
+        list.appendChild(btn);
+      });
+      const clearBtn = document.createElement('button');
+      clearBtn.className = 'history-clear';
+      clearBtn.textContent = '[ GEÇMİŞİ TEMİZLE ]';
+      clearBtn.onclick = () => {
+        localStorage.removeItem('osint_history');
+        renderHistory();
+      };
+      list.appendChild(clearBtn);
     }
 
-    document.getElementById('results').style.display = 'none';
-    document.getElementById('loading').style.display = 'block';
-    document.getElementById('searchBtn').disabled = true;
+    function setTag(el, tag) {
+      document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      activeTag = tag;
+    }
 
-    let step = 0;
-    const interval = setInterval(() => {
-      if (step < LOADING_STEPS.length) {
-        document.getElementById('loadingText').textContent = LOADING_STEPS[step++];
-      } else {
-        clearInterval(interval);
-        showResults(q);
+    function startSearch() {
+      const q = document.getElementById('queryInput').value.trim();
+      if (!q) {
+        document.getElementById('queryInput').style.borderColor = '#ff4c6a';
+        setTimeout(() => document.getElementById('queryInput').style.borderColor = '', 1000);
+        return;
       }
-    }, 400);
-  }
+      saveToHistory(q);
+      document.getElementById('results').style.display = 'none';
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('searchBtn').disabled = true;
+      let step = 0;
+      const interval = setInterval(() => {
+        if (step < LOADING_STEPS.length) {
+          document.getElementById('loadingText').textContent = LOADING_STEPS[step++];
+        } else {
+          clearInterval(interval);
+          showResults(q);
+        }
+      }, 400);
+    }
 
-  function showResults(q) {
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('searchBtn').disabled = false;
+    function showResults(q) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('searchBtn').disabled = false;
+      const filtered = activeTag ? TOOLS.filter(t => t.cat === activeTag) : TOOLS;
+      // Analysis box
+      document.getElementById('analysisBox').style.display = 'block';
+      document.getElementById('aTarget').textContent = q.toUpperCase();
+      document.getElementById('aCategory').textContent = activeTag ? activeTag.toUpperCase() : 'GENEL / TÜM KATEGORİLER';
+      document.getElementById('aToolCount').textContent = filtered.length + ' araç bulundu';
+      document.getElementById('aApproach').textContent = APPROACH_MAP[activeTag] || APPROACH_MAP[''];
+      // Tools grid
+      document.getElementById('toolCount').textContent = filtered.length + ' araç listelendi';
+      const grid = document.getElementById('toolsGrid');
+      grid.innerHTML = '';
+      filtered.forEach((tool, i) => {
+        const url = tool.query ? tool.url + encodeURIComponent(q) : tool.url;
+        const card = document.createElement('a');
+        card.className = 'tool-card';
+        card.href = url;
+        card.target = '_blank';
+        card.rel = 'noopener noreferrer';
+        card.style.animationDelay = (i * 0.05) + 's';
+        card.innerHTML = `
+          <div class="tool-cat">${tool.cat}</div>
+          <div class="tool-name">${tool.name}</div>
+          <div class="tool-desc">${tool.desc}</div>
+          <span class="tool-arrow">↗</span>
+        `;
+        grid.appendChild(card);
+      });
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 
-    const filtered = activeTag
-      ? TOOLS.filter(t => t.cat === activeTag)
-      : TOOLS;
-
-    // Analysis box
-    document.getElementById('analysisBox').style.display = 'block';
-    document.getElementById('aTarget').textContent = q.toUpperCase();
-    document.getElementById('aCategory').textContent = activeTag ? activeTag.toUpperCase() : 'GENEL / TÜM KATEGORİLER';
-    document.getElementById('aToolCount').textContent = filtered.length + ' araç bulundu';
-    document.getElementById('aApproach').textContent = APPROACH_MAP[activeTag] || APPROACH_MAP[''];
-
-    // Tools grid
-    document.getElementById('toolCount').textContent = filtered.length + ' araç listelendi';
-    const grid = document.getElementById('toolsGrid');
-    grid.innerHTML = '';
-
-    filtered.forEach((tool, i) => {
-      const url = tool.query ? tool.url + encodeURIComponent(q) : tool.url + encodeURIComponent(q);
-      const card = document.createElement('a');
-      card.className = 'tool-card';
-      card.href = url;
-      card.target = '_blank';
-      card.rel = 'noopener noreferrer';
-      card.style.animationDelay = (i * 0.05) + 's';
-      card.innerHTML = `
-        <div class="tool-cat">${tool.cat}</div>
-        <div class="tool-name">${tool.name}</div>
-        <div class="tool-desc">${tool.desc}</div>
-        <span class="tool-arrow">↗</span>
-      `;
-      grid.appendChild(card);
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('queryInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') startSearch();
+      });
+      renderHistory();
     });
-
-    document.getElementById('results').style.display = 'block';
-    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  // Enter key
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('queryInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter') startSearch();
-    });
-  });
-</script>
+  </script>
 </body>
 </html>
