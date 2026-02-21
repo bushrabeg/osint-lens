@@ -274,6 +274,55 @@
       .howto-grid { grid-template-columns: 1fr; }
       .tools-grid { grid-template-columns: 1fr; }
     }
+
+    /* GEMINI ANALİZ PANELİ */
+    .gemini-btn {
+      background: transparent;
+      border: 1px solid var(--green);
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 2px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      margin-top: 16px;
+      width: 100%;
+    }
+    .gemini-btn:hover { background: var(--green-glow); box-shadow: 0 0 20px var(--green-glow); }
+    .gemini-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .gemini-output {
+      background: var(--surface);
+      border: 1px solid var(--green-dim);
+      padding: 28px;
+      margin-bottom: 40px;
+      position: relative;
+      display: none;
+    }
+    .gemini-output::before {
+      content: 'GEMİNİ İSTİHBARAT ANALİZİ';
+      position: absolute; top: -10px; left: 20px;
+      background: var(--surface); padding: 0 8px;
+      font-size: 10px; letter-spacing: 3px; color: var(--green);
+    }
+    .gemini-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.9;
+      white-space: pre-wrap;
+    }
+    .gemini-loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+    .gemini-loading-text {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--green);
+      animation: blink 1s step-end infinite;
+    }
   </style>
 </head>
 <body>
@@ -389,7 +438,21 @@
         </div>
       </div>
 
-      <!-- TOOLS -->
+  
+      <!-- GEMINI ANALİZ BUTONU -->
+      <button class="gemini-btn" id="geminiBtn" onclick="runGeminiAnalysis()">
+        &#9670; GEMİNİ İLE İSTİHBARAT ANALİZİ YAP
+      </button>
+
+      <!-- GEMINI ÇIKTISI -->
+      <div class="gemini-output" id="geminiOutput">
+        <div class="gemini-loading" id="geminiLoading">
+          <div class="gemini-loading-text">ANALİZ YAPILIYOR...</div>
+        </div>
+        <div class="gemini-text" id="geminiText"></div>
+      </div>
+
+    <!-- TOOLS -->
       <div class="results-header">
         <span class="results-title">// OSINT ARAÇLARI</span>
         <span class="results-count" id="toolCount"></span>
@@ -403,6 +466,51 @@
   </div>
 
   <script>
+
+    // --- GEMİNİ API ---
+    const GEMINI_API_KEY = 'AIzaSyCm4WvRAfqGcGXvc6tUBG08EJ69TS2ZgG8';
+    let currentTarget = '';
+
+    async function runGeminiAnalysis() {
+      if (!currentTarget) return;
+      const btn = document.getElementById('geminiBtn');
+      const output = document.getElementById('geminiOutput');
+      const loading = document.getElementById('geminiLoading');
+      const textEl = document.getElementById('geminiText');
+
+      btn.disabled = true;
+      output.style.display = 'block';
+      loading.style.display = 'block';
+      textEl.textContent = '';
+
+      const prompt = 'Sen bir OSINT uzmanisın. "' + currentTarget + '" hedefi hakkında kapsamlı bir açık kaynak istihbarat analizi yap. Şunları içer: 1) Hedef tipi ve genel tanım, 2) Önemli dijital ayak izleri ve kamuya açık bilgiler, 3) Sosyal medya ve çevrimiçi varlık durumu, 4) Potansiyel riskler ve tehditler, 5) Önerilen OSINT araçları ve araştırma yöntemleri, 6) Genel değerlendirme ve istihbarat özeti. Yanıtını Türkçe ver ve profesyonel bir istihbarat raporu formatında yaz.';
+
+      try {
+        const response = await fetch(
+          'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0.7, maxOutputTokens: 1500 }
+            })
+          }
+        );
+        const data = await response.json();
+        loading.style.display = 'none';
+        if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+          textEl.textContent = data.candidates[0].content.parts[0].text;
+        } else {
+          textEl.textContent = 'Analiz alınamadı. Lütfen tekrar deneyin.';
+        }
+      } catch(e) {
+        loading.style.display = 'none';
+        textEl.textContent = 'Bağlantı hatası: ' + e.message;
+      }
+      btn.disabled = false;
+    }
+
     let activeTag = '';
 
     const TOOLS = [
@@ -516,6 +624,9 @@
     }
 
     function showResults(q) {
+      currentTarget = q;
+      document.getElementById('geminiOutput').style.display = 'none';
+      document.getElementById('geminiText').textContent = '';
       document.getElementById('loading').style.display = 'none';
       document.getElementById('searchBtn').disabled = false;
       const filtered = activeTag ? TOOLS.filter(t => t.cat === activeTag) : TOOLS;
