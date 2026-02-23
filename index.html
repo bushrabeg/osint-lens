@@ -158,6 +158,51 @@
     .export-btn:hover { border-color: var(--green-dim); color: var(--green); background: var(--green-glow); }
     .groq-loading { display: none; text-align: center; padding: 20px; }
     .groq-loading-text { font-size: 11px; letter-spacing: 3px; color: var(--green); animation: blink 1s step-end infinite; }
+    /* CHAT ARAYÜZÜ */
+    .chat-section { background: var(--surface); border: 1px solid var(--green-dim); margin-bottom: 32px; position: relative; display: none; }
+    .chat-section::before { content: 'GROQ İLE SOHBET'; position: absolute; top: -10px; left: 20px; background: var(--surface); padding: 0 8px; font-size: 10px; letter-spacing: 3px; color: var(--green); }
+    .chat-context-bar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 10px 20px; font-size: 10px; color: var(--text-dim); letter-spacing: 1px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .chat-context-bar span { color: var(--green); }
+    .chat-clear-btn { background: transparent; border: 1px solid #ff4c6a33; color: var(--red); font-family: var(--mono); font-size: 10px; padding: 3px 8px; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; }
+    .chat-clear-btn:hover { background: #ff4c6a11; }
+    .chat-messages { padding: 20px; max-height: 480px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: var(--bg); }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--green-dim); }
+    .chat-msg { display: flex; flex-direction: column; gap: 6px; max-width: 88%; }
+    .chat-msg.user { align-self: flex-end; align-items: flex-end; }
+    .chat-msg.assistant { align-self: flex-start; align-items: flex-start; }
+    .chat-msg-label { font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; }
+    .chat-msg.user .chat-msg-label { color: var(--yellow); }
+    .chat-msg.assistant .chat-msg-label { color: var(--green); }
+    .chat-msg-bubble { padding: 12px 16px; font-size: 13px; line-height: 1.8; border: 1px solid; }
+    .chat-msg.user .chat-msg-bubble { background: var(--green-glow); border-color: var(--green-dim); color: var(--text); text-align: right; }
+    .chat-msg.assistant .chat-msg-bubble { background: var(--bg); border-color: var(--border); color: var(--text); }
+    .chat-msg.assistant .chat-msg-bubble h1,.chat-msg.assistant .chat-msg-bubble h2,.chat-msg.assistant .chat-msg-bubble h3 { font-family: var(--sans); color: var(--green); margin: 12px 0 6px; }
+    .chat-msg.assistant .chat-msg-bubble h2 { font-size: 14px; }
+    .chat-msg.assistant .chat-msg-bubble h3 { font-size: 13px; color: #fff; }
+    .chat-msg.assistant .chat-msg-bubble p { margin-bottom: 8px; }
+    .chat-msg.assistant .chat-msg-bubble ul { margin: 6px 0 10px 18px; }
+    .chat-msg.assistant .chat-msg-bubble li { margin-bottom: 3px; }
+    .chat-msg.assistant .chat-msg-bubble strong { color: #fff; }
+    .chat-msg.assistant .chat-msg-bubble code { background: var(--surface); color: var(--green); padding: 1px 5px; font-family: var(--mono); font-size: 11px; }
+    .chat-typing { display: none; align-self: flex-start; }
+    .chat-typing-dots { display: flex; gap: 5px; padding: 12px 16px; border: 1px solid var(--border); background: var(--bg); }
+    .chat-typing-dots span { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: typing-dot 1.2s ease-in-out infinite; }
+    .chat-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .chat-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing-dot { 0%,60%,100% { opacity: 0.2; transform: scale(0.8); } 30% { opacity: 1; transform: scale(1); } }
+    .chat-input-row { display: flex; gap: 0; border-top: 1px solid var(--border); }
+    .chat-input { flex: 1; background: var(--bg); border: none; border-right: 1px solid var(--border); color: var(--green); font-family: var(--mono); font-size: 13px; padding: 14px 18px; outline: none; resize: none; min-height: 50px; max-height: 120px; line-height: 1.5; }
+    .chat-input::placeholder { color: #21ce7033; }
+    .chat-input:focus { background: var(--surface); }
+    .chat-send-btn { background: var(--green); color: var(--bg); border: none; font-family: var(--sans); font-size: 13px; font-weight: 700; letter-spacing: 2px; padding: 14px 22px; cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; }
+    .chat-send-btn:hover { background: #fff; }
+    .chat-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .chat-suggestions { display: flex; gap: 6px; flex-wrap: wrap; padding: 12px 20px 0; border-top: 1px solid var(--border); background: var(--bg); }
+    .chat-suggestion { background: transparent; border: 1px solid #21ce7022; color: var(--text-dim); font-family: var(--mono); font-size: 10px; padding: 5px 10px; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; }
+    .chat-suggestion:hover { border-color: var(--green-dim); color: var(--green); background: var(--green-glow); }
+    @media (max-width: 640px) { .chat-msg { max-width: 95%; } .chat-send-btn { padding: 14px 14px; font-size: 12px; } .chat-suggestions { gap: 4px; } .chat-suggestion { font-size: 9px; } }
     /* FOOTER */
     footer { border-top: 1px solid var(--border); padding: 20px 0; margin-top: 60px; text-align: center; font-size: 11px; color: var(--text-dim); letter-spacing: 2px; }
     .typewriter::after { content: '█'; animation: blink 1s step-end infinite; }
@@ -292,6 +337,30 @@
         <button class="export-btn" onclick="exportTXT()">&#8659; TXT OLARAK İNDİR</button>
         <button class="export-btn" onclick="exportPDF()">&#8659; PDF OLARAK İNDİR</button>
         <button class="export-btn" onclick="copyReport()">&#9632; KOPYALA</button>
+      </div>
+    </div>
+
+    <!-- CHAT BÖLÜMÜ -->
+    <div class="chat-section" id="chatSection">
+      <div class="chat-context-bar">
+        <div>HEDEF: <span id="chatTarget">—</span> &nbsp;|&nbsp; MESAJ: <span id="chatMsgCount">0</span></div>
+        <button class="chat-clear-btn" onclick="clearChat()">[ SOHBETI TEMİZLE ]</button>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-typing" id="chatTyping">
+          <div class="chat-typing-dots"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+      <div class="chat-suggestions" id="chatSuggestions">
+        <button class="chat-suggestion" onclick="useSuggestion(this)">Bu konuyu daha detaylı anlat</button>
+        <button class="chat-suggestion" onclick="useSuggestion(this)">Hangi araçları önerirsin?</button>
+        <button class="chat-suggestion" onclick="useSuggestion(this)">Risk analizi yap</button>
+        <button class="chat-suggestion" onclick="useSuggestion(this)">Sosyal medya varlığını araştır</button>
+        <button class="chat-suggestion" onclick="useSuggestion(this)">Özet rapor oluştur</button>
+      </div>
+      <div class="chat-input-row">
+        <textarea class="chat-input" id="chatInput" placeholder="OSINT uzmanına sor: 'Bu domainin alt domainlerini araştır', 'Risk skoru nedir?'..." rows="1"></textarea>
+        <button class="chat-send-btn" id="chatSendBtn" onclick="sendChatMessage()">&#9654; GÖNDER</button>
       </div>
     </div>
 
@@ -584,6 +653,94 @@ function renderResults(q, data, scroll) {
   if(scroll) document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
+// ===================== CHAT =====================
+let chatHistory = [];
+let chatSystemPrompt = '';
+
+function initChat(target) {
+  chatHistory = [];
+  chatSystemPrompt = 'Sen deneyimli bir OSINT uzmanısın. Kullanıcı "' + target + '" hedefi üzerine araştırma yapıyor. Kısa, net ve aksiyon odaklı yanıtlar ver. Markdown kullan (## başlık, **kalın**, - madde). Türkçe yanıt ver.';
+  document.getElementById('chatTarget').textContent = target.toUpperCase();
+  document.getElementById('chatMsgCount').textContent = '0';
+  document.getElementById('chatMessages').innerHTML = '<div class="chat-typing" id="chatTyping"><div class="chat-typing-dots"><span></span><span></span><span></span></div></div>';
+  document.getElementById('chatSection').style.display = 'block';
+  // İlk karşılama mesajı
+  appendChatMsg('assistant', '**Hedef:** ' + target + '\n\nHazırım. Hedef hakkında ne öğrenmek istiyorsun? Yukarıdaki raporu referans alarak detaylı sorular sorabilirsin.');
+  document.getElementById('chatSection').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function appendChatMsg(role, md) {
+  const messages = document.getElementById('chatMessages');
+  const typing = document.getElementById('chatTyping');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + role;
+  const label = role === 'user' ? '[ SEN ]' : '[ GROQ OSINT ]';
+  div.innerHTML = '<div class="chat-msg-label">' + label + '</div><div class="chat-msg-bubble groq-text">' + renderMarkdown(md) + '</div>';
+  messages.insertBefore(div, typing);
+  messages.scrollTop = messages.scrollHeight;
+  // mesaj sayısını güncelle
+  const count = messages.querySelectorAll('.chat-msg').length;
+  document.getElementById('chatMsgCount').textContent = count;
+}
+
+function useSuggestion(btn) {
+  document.getElementById('chatInput').value = btn.textContent;
+  document.getElementById('chatInput').focus();
+}
+
+function clearChat() {
+  chatHistory = [];
+  document.getElementById('chatMessages').innerHTML = '<div class="chat-typing" id="chatTyping"><div class="chat-typing-dots"><span></span><span></span><span></span></div></div>';
+  document.getElementById('chatMsgCount').textContent = '0';
+  appendChatMsg('assistant', 'Sohbet temizlendi. **' + currentTarget + '** hakkında yeni sorular sorabilirsin.');
+}
+
+async function sendChatMessage() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  const key = getApiKey();
+  if (!key) { openApiModal(); return; }
+
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('chatSendBtn').disabled = true;
+
+  appendChatMsg('user', msg);
+  chatHistory.push({ role: 'user', content: msg });
+
+  // typing göster
+  const typing = document.getElementById('chatTyping');
+  typing.style.display = 'flex';
+  document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+
+  try {
+    const messages = [
+      { role: 'system', content: chatSystemPrompt },
+      ...chatHistory.slice(-10) // son 10 mesajı gönder (token tasarrufu)
+    ];
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages, temperature: 0.7, max_tokens: 1200 })
+    });
+    const data = await res.json();
+    typing.style.display = 'none';
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      const reply = data.choices[0].message.content;
+      chatHistory.push({ role: 'assistant', content: reply });
+      appendChatMsg('assistant', reply);
+    } else if (data.error) {
+      appendChatMsg('assistant', '**Hata:** ' + data.error.message);
+    }
+  } catch(e) {
+    typing.style.display = 'none';
+    appendChatMsg('assistant', '**Bağlantı hatası:** ' + e.message);
+  }
+  document.getElementById('chatSendBtn').disabled = false;
+  input.focus();
+}
+
 // ===================== GROQ ANALİZİ =====================
 async function runGroqAnalysis() {
   if (!currentTarget) return;
@@ -618,6 +775,8 @@ async function runGroqAnalysis() {
     textEl.innerHTML='<p style="color:var(--red)">Bağlantı hatası: '+e.message+'</p>';
   }
   btn.disabled=false;
+  // Analiz bitti, chat'i başlat
+  if(currentRawText) initChat(currentTarget);
 }
 
 // ===================== MARKDOWN RENDER =====================
@@ -674,6 +833,15 @@ document.addEventListener('DOMContentLoaded',()=>{
     else badge.style.display='none';
   });
   document.getElementById('apiModal').addEventListener('click',e=>{ if(e.target===document.getElementById('apiModal')) closeApiModal(); });
+  // Chat input: Enter gönder, Shift+Enter yeni satır
+  const chatInp = document.getElementById('chatInput');
+  chatInp.addEventListener('keydown', e => {
+    if(e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
+  });
+  chatInp.addEventListener('input', () => {
+    chatInp.style.height = 'auto';
+    chatInp.style.height = Math.min(chatInp.scrollHeight, 120) + 'px';
+  });
 });
 </script>
 </body>
