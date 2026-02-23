@@ -9,7 +9,7 @@
   <meta property="og:type" content="website" />
   <title>OSINT Lens — Açık Kaynak İstihbarat Aracı</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%23080c10'/%3E%3Ccircle cx='12' cy='12' r='7' stroke='%2321ce70' stroke-width='1.5' fill='none'/%3E%3Ccircle cx='12' cy='12' r='2.5' fill='%2321ce70'/%3E%3Cline x1='17' y1='17' x2='21' y2='21' stroke='%2321ce70' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com"
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -422,7 +422,7 @@ const DETECT_LABELS = {
   'ip': '[ OTOMATİK TESPİT: IP ADRESİ ]',
   'email': '[ OTOMATİK TESPİT: E-POSTA ADRESİ ]',
   'domain': '[ OTOMATİK TESPİT: DOMAIN / WEB SİTESİ ]',
-  'şirket': '[ OTOMATİK TESPİT: ŞİRKET ]'
+  'şirket': '[ OTOMATİK TESPİT: ŞİRKET ]
 };
 
 // ===================== ARAÇLAR (35+) =====================
@@ -659,7 +659,7 @@ let chatSystemPrompt = '';
 
 function initChat(target) {
   chatHistory = [];
-  chatSystemPrompt = 'Sen deneyimli bir OSINT uzmanısın. Kullanıcı "' + target + '" hedefi üzerine araştırma yapıyor. Kısa, net ve aksiyon odaklı yanıtlar ver. Markdown kullan (## başlık, **kalın**, - madde). Türkçe yanıt ver.';
+  chatSystemPrompt = 'Sen çok deneyimli bir istihbarat analistisin. Hem tümevarımsal (veriden örüntüe) hem de tümdengelimsel (hipotezden doğrulamaya) analiz yaparsın. Hedef: "' + target + '"\n\nMetodolojin:\n1) Tümevarım: Ham OSINT verisinden (IP, domain, sosyal medya, leak verileri) örüntü ve anomali tespiti yap.\n2) Tümdengelim: Bilinen profil ve tehdit modelinden hareketle eksik varlıkları doğrula.\n3) ACH (Analysis of Competing Hypotheses): Olası senaryoları karşılaştır, en güvenilirini seç.\n4) BLUF formatında (özet en başta) yaz.\n5) Her bulgu için güven seviyesi belirt: [GÜVEN: YÜKSEK/ORTA/DÜŞÜK].\n6) Kaynak güvenilirliğini değerlendir (birincil/ikincil/üçüncül).\n\nKısa, net, aksiyon odaklı yanıtlar ver. Markdown kullan. Türkçe yaz.'
   document.getElementById('chatTarget').textContent = target.toUpperCase();
   document.getElementById('chatMsgCount').textContent = '0';
   document.getElementById('chatMessages').innerHTML = '<div class="chat-typing" id="chatTyping"><div class="chat-typing-dots"><span></span><span></span><span></span></div></div>';
@@ -751,7 +751,7 @@ async function runGroqAnalysis() {
   const loading=document.getElementById('groqLoading');
   const textEl=document.getElementById('groqText');
   btn.disabled=true; output.style.display='block'; loading.style.display='block'; textEl.innerHTML='';
-  const prompt='Sen bir OSINT uzmanısın. "'+currentTarget+'" hedefi hakkında kapsamlı bir açık kaynak istihbarat analizi yap. Şunları içer: 1) Hedef tipi ve genel tanım, 2) Önemli dijital ayak izleri ve kamuya açık bilgiler, 3) Sosyal medya ve çevrimiçi varlık durumu, 4) Potansiyel riskler ve tehditler, 5) Önerilen OSINT araçları ve araştırma yöntemleri, 6) Genel değerlendirme ve istihbarat özeti. Yanıtını Türkçe ver ve markdown formatında (## başlıklar, **kalın**, - maddeler) profesyonel bir istihbarat raporu olarak yaz.';
+  const prompt='Sen çok deneyimli bir istihbarat analistisin. Hem tümevarımsal hem de tümdengelimsel analiz yaparsın.\n\nHedef: "'+currentTarget+'"\n\nAşağıdaki yapıya göre kapsamlı bir OSINT istihbarat raporu yaz:\n\n## BLUF (Bottom Line Up Front)\nEn kritik bulguyu tek paragrafta özetle.\n\n## Hedef Profili\nHedef tipi, genel tanım ve dijital kimlik.\n\n## Tümevarımsal Analiz\nHam veriden (IP, domain, sosyal medya, leak) örüntü ve anomali tespiti. Her bulgu için [GÜVEN: YÜKSEK/ORTA/DÜŞÜK] etiketi ekle.\n\n## Tümdengelimsel Analiz\nBilinen profil üzerinden hipotez kur, destekleyen ve çürüten kanıtları listele.\n\n## ACH (Rekabet Eden Hipotezler)\nEn az 2 olası senaryo karşılaştır, en güvenilirini seç ve gerekçe göster.\n\n## Risk Değerlendirmesi\nTehditler ve riskler. [YÜKSEK/ORTA/DÜŞÜK] etiketi ile.\n\n## Önerilen OSINT Araçları\nHedef tipine göre en etkili araçlar.\n\n## İstihbarat Özeti\nAksiyon önerileri ve sonraki adımlar.\n\nMarkdown formatlı, profesyonel, Türkçe yaz.'
   try {
     const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
       method:'POST',
