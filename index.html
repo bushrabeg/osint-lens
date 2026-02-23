@@ -634,6 +634,7 @@ function showResults(q) {
 
 function renderResults(q, data, scroll) {
   currentTarget = q;
+  document.getElementById('results').style.display='block';
   document.getElementById('groqOutput').style.display='none';
   document.getElementById('groqText').innerHTML='';
   document.getElementById('exportRow').style.display='none';
@@ -876,7 +877,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
   document.getElementById('apiModal').addEventListener('click',e=>{ if(e.target===document.getElementById('apiModal')) closeApiModal(); });
   // Chat input: Enter gönder, Shift+Enter yeni satır
-  const chatInp = document.getElementById('chatInput');
+  const chatInp = document.getElementById('chatInput')
   chatInp.addEventListener('keydown', e => {
     if(e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
   });
