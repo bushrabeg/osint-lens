@@ -2,11 +2,10 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="OSINT Lens — Kamuya açık kaynaklardan sistematik istihbarat toplama ve analiz aracı. Şirket, kişi, domain veya olay hakkında hızlı keşif yapın." />
-  <meta name="keywords" content="OSINT, açık kaynak istihbarat, siber istihbarat, kişi araştırma, domain analizi, sosyal medya araştırma" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <meta name="description" content="OSINT Lens — Kamuya açık kaynaklardan sistematik istihbarat toplama ve analiz aracı." />
+  <meta name="keywords" content="OSINT, açık kaynak istihbarat, siber istihbarat, kişi araştırma, domain analizi" />
   <meta property="og:title" content="OSINT Lens — Açık Kaynak İstihbarat Aracı" />
-  <meta property="og:description" content="Kamuya açık kaynaklardan sistematik istihbarat toplama ve analiz aracı." />
   <meta property="og:type" content="website" />
   <title>OSINT Lens — Açık Kaynak İstihbarat Aracı</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%23080c10'/%3E%3Ccircle cx='12' cy='12' r='7' stroke='%2321ce70' stroke-width='1.5' fill='none'/%3E%3Ccircle cx='12' cy='12' r='2.5' fill='%2321ce70'/%3E%3Cline x1='17' y1='17' x2='21' y2='21' stroke='%2321ce70' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E" />
@@ -14,663 +13,668 @@
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #080c10;
-      --surface: #0d1117;
-      --border: #21ce7022;
-      --green: #21ce70;
-      --green-dim: #21ce7066;
-      --green-glow: #21ce7033;
-      --red: #ff4c6a;
-      --yellow: #f0c040;
-      --text: #c9d1d9;
-      --text-dim: #8b949e;
-      --mono: 'Share Tech Mono', monospace;
-      --sans: 'Rajdhani', sans-serif;
+      --bg: #080c10; --surface: #0d1117; --border: #21ce7022;
+      --green: #21ce70; --green-dim: #21ce7066; --green-glow: #21ce7033;
+      --red: #ff4c6a; --yellow: #f0c040; --text: #c9d1d9; --text-dim: #8b949e;
+      --mono: 'Share Tech Mono', monospace; --sans: 'Rajdhani', sans-serif;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--mono);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    /* GRID BACKGROUND */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
-    }
-    /* SCANLINE */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
-      pointer-events: none;
-      z-index: 0;
-    }
-    .container {
-      position: relative;
-      z-index: 1;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-    /* HEADER */
-    header {
-      border-bottom: 1px solid var(--border);
-      padding: 24px 0;
-      margin-bottom: 48px;
-    }
-    .header-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+    body { background: var(--bg); color: var(--text); font-family: var(--mono); min-height: 100vh; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
+    body::after { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px); pointer-events: none; z-index: 0; }
+    .container { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 20px; }
+    header { border-bottom: 1px solid var(--border); padding: 20px 0; margin-bottom: 40px; }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
     .logo { display: flex; align-items: center; gap: 14px; }
-    .logo-icon {
-      width: 40px; height: 40px;
-      border: 1px solid var(--green);
-      display: flex; align-items: center; justify-content: center;
-      position: relative;
-      animation: pulse-border 3s ease-in-out infinite;
-    }
-    .logo-icon::before {
-      content: '';
-      position: absolute;
-      inset: 4px;
-      border: 1px solid var(--green-dim);
-    }
+    .logo-icon { width: 40px; height: 40px; border: 1px solid var(--green); display: flex; align-items: center; justify-content: center; position: relative; animation: pulse-border 3s ease-in-out infinite; flex-shrink: 0; }
+    .logo-icon::before { content: ''; position: absolute; inset: 4px; border: 1px solid var(--green-dim); }
     .logo-icon svg { width: 20px; height: 20px; fill: var(--green); }
-    @keyframes pulse-border {
-      0%, 100% { box-shadow: 0 0 0 0 var(--green-glow); }
-      50% { box-shadow: 0 0 20px 4px var(--green-glow); }
-    }
-    .logo-text {
-      font-family: var(--sans);
-      font-size: 22px; font-weight: 700;
-      letter-spacing: 3px; color: var(--green); text-transform: uppercase;
-    }
-    .logo-sub { font-size: 10px; color: var(--text-dim); letter-spacing: 2px; }
+    @keyframes pulse-border { 0%,100% { box-shadow: 0 0 0 0 var(--green-glow); } 50% { box-shadow: 0 0 20px 4px var(--green-glow); } }
+    .logo-text { font-family: var(--sans); font-size: 20px; font-weight: 700; letter-spacing: 3px; color: var(--green); text-transform: uppercase; }
+    .logo-sub { font-size: 9px; color: var(--text-dim); letter-spacing: 2px; }
+    .header-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
     .status-bar { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-dim); }
-    .dot {
-      width: 7px; height: 7px;
-      background: var(--green); border-radius: 50%;
-      animation: blink 1.5s ease-in-out infinite;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; } 50% { opacity: 0.2; }
-    }
+    .dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: blink 1.5s ease-in-out infinite; flex-shrink: 0; }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+    /* API KEY PANEL */
+    .api-key-panel { background: var(--surface); border: 1px solid #21ce7033; padding: 10px 16px; display: flex; align-items: center; gap: 10px; font-size: 11px; cursor: pointer; transition: border-color 0.2s; }
+    .api-key-panel:hover { border-color: var(--green-dim); }
+    .api-key-panel span { color: var(--text-dim); letter-spacing: 1px; }
+    .api-key-panel .api-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
+    .api-key-panel .api-dot.active { background: var(--green); }
+    .api-modal { display: none; position: fixed; inset: 0; background: rgba(8,12,16,0.92); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+    .api-modal.open { display: flex; }
+    .api-modal-box { background: var(--surface); border: 1px solid var(--green-dim); padding: 32px; max-width: 480px; width: 100%; position: relative; }
+    .api-modal-box::before { content: 'GROQ API AYARI'; position: absolute; top: -10px; left: 20px; background: var(--surface); padding: 0 8px; font-size: 10px; letter-spacing: 3px; color: var(--green); }
+    .api-modal-box p { font-size: 12px; color: var(--text-dim); margin-bottom: 16px; line-height: 1.7; }
+    .api-modal-box a { color: var(--green); }
+    .api-input { width: 100%; background: var(--bg); border: 1px solid #21ce7044; color: var(--green); font-family: var(--mono); font-size: 13px; padding: 12px 14px; outline: none; margin-bottom: 12px; }
+    .api-input:focus { border-color: var(--green); }
+    .api-save-btn { background: var(--green); color: var(--bg); border: none; font-family: var(--sans); font-size: 13px; font-weight: 700; letter-spacing: 2px; padding: 10px 24px; cursor: pointer; width: 100%; text-transform: uppercase; }
+    .api-save-btn:hover { background: #fff; }
+    .api-close-btn { position: absolute; top: 12px; right: 12px; background: transparent; border: 1px solid #21ce7033; color: var(--text-dim); font-family: var(--mono); font-size: 11px; padding: 4px 8px; cursor: pointer; }
+    .api-close-btn:hover { border-color: var(--red); color: var(--red); }
     /* HERO */
-    .hero { text-align: center; margin-bottom: 48px; }
+    .hero { text-align: center; margin-bottom: 40px; }
     .hero-label { font-size: 11px; letter-spacing: 4px; color: var(--green); margin-bottom: 16px; display: block; }
-    .hero h1 {
-      font-family: var(--sans);
-      font-size: clamp(28px, 5vw, 48px); font-weight: 700;
-      color: #fff; letter-spacing: 2px; line-height: 1.2; margin-bottom: 16px;
-    }
+    .hero h1 { font-family: var(--sans); font-size: clamp(26px, 5vw, 46px); font-weight: 700; color: #fff; letter-spacing: 2px; line-height: 1.2; margin-bottom: 16px; }
     .hero h1 span { color: var(--green); }
     .hero p { color: var(--text-dim); font-size: 13px; max-width: 500px; margin: 0 auto; line-height: 1.8; }
-    /* SEARCH BOX */
-    .search-section { margin-bottom: 40px; }
-    .search-box {
-      background: var(--surface);
-      border: 1px solid var(--green-dim);
-      padding: 28px;
-      position: relative;
-    }
-    .search-box::before {
-      content: 'HEDEF GİR';
-      position: absolute; top: -10px; left: 20px;
-      background: var(--surface); padding: 0 8px;
-      font-size: 10px; letter-spacing: 3px; color: var(--green);
-    }
-    .input-row { display: flex; gap: 12px; margin-bottom: 16px; }
-    .search-input {
-      flex: 1;
-      background: var(--bg); border: 1px solid #21ce7044;
-      color: var(--green); font-family: var(--mono); font-size: 15px;
-      padding: 14px 18px; outline: none; transition: border-color 0.2s;
-    }
+    /* HOW TO */
+    .howto-section { background: var(--surface); border: 1px solid var(--green-dim); padding: 24px 28px; margin-bottom: 40px; position: relative; }
+    .howto-section::before { content: 'NASIL KULLANILIR?'; position: absolute; top: -10px; left: 20px; background: var(--surface); padding: 0 8px; font-size: 10px; letter-spacing: 3px; color: var(--green); }
+    .howto-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; margin-top: 8px; }
+    .howto-step { display: flex; flex-direction: column; gap: 6px; }
+    .howto-num { font-size: 26px; color: var(--green); font-family: var(--sans); font-weight: 700; line-height: 1; }
+    .howto-title { font-size: 12px; color: #fff; font-family: var(--sans); font-weight: 600; letter-spacing: 1px; }
+    .howto-desc { font-size: 11px; color: var(--text-dim); line-height: 1.7; }
+    /* SEARCH */
+    .search-section { margin-bottom: 32px; }
+    .search-box { background: var(--surface); border: 1px solid var(--green-dim); padding: 24px; position: relative; }
+    .search-box::before { content: 'HEDEF GİR'; position: absolute; top: -10px; left: 20px; background: var(--surface); padding: 0 8px; font-size: 10px; letter-spacing: 3px; color: var(--green); }
+    .input-row { display: flex; gap: 10px; margin-bottom: 14px; }
+    .search-input { flex: 1; background: var(--bg); border: 1px solid #21ce7044; color: var(--green); font-family: var(--mono); font-size: 15px; padding: 14px 18px; outline: none; transition: border-color 0.2s; min-width: 0; }
     .search-input::placeholder { color: #21ce7044; }
     .search-input:focus { border-color: var(--green); box-shadow: 0 0 20px var(--green-glow); }
-    .search-btn {
-      background: var(--green); color: var(--bg); border: none;
-      font-family: var(--sans); font-size: 14px; font-weight: 700;
-      letter-spacing: 2px; padding: 14px 28px; cursor: pointer;
-      transition: all 0.2s; white-space: nowrap; text-transform: uppercase;
-    }
+    /* DETECT BADGE */
+    .detect-badge { display: none; font-size: 10px; letter-spacing: 2px; color: var(--green); border: 1px solid var(--green-dim); padding: 3px 10px; margin-bottom: 10px; background: var(--green-glow); }
+    .search-btn { background: var(--green); color: var(--bg); border: none; font-family: var(--sans); font-size: 13px; font-weight: 700; letter-spacing: 2px; padding: 14px 24px; cursor: pointer; transition: all 0.2s; white-space: nowrap; text-transform: uppercase; flex-shrink: 0; }
     .search-btn:hover { background: #fff; box-shadow: 0 0 30px var(--green-glow); }
     .search-btn:active { transform: scale(0.98); }
     .search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    /* CATEGORY TAGS */
     .tags { display: flex; gap: 8px; flex-wrap: wrap; }
-    .tag {
-      background: transparent; border: 1px solid #21ce7033;
-      color: var(--text-dim); font-family: var(--mono);
-      font-size: 11px; padding: 5px 12px; cursor: pointer;
-      letter-spacing: 1px; transition: all 0.2s;
-    }
+    .tag { background: transparent; border: 1px solid #21ce7033; color: var(--text-dim); font-family: var(--mono); font-size: 11px; padding: 6px 12px; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; }
     .tag:hover, .tag.active { border-color: var(--green); color: var(--green); background: var(--green-glow); }
+    /* TABS */
+    .tabs-section { margin-bottom: 8px; display: none; }
+    .tabs-bar { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 20px; }
+    .tab-btn { background: transparent; border: 1px solid var(--border); color: var(--text-dim); font-family: var(--mono); font-size: 11px; padding: 6px 14px; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+    .tab-btn.active { border-color: var(--green); color: var(--green); background: var(--green-glow); }
+    .tab-btn .tab-close { color: var(--red); font-size: 13px; line-height: 1; opacity: 0.6; }
+    .tab-btn .tab-close:hover { opacity: 1; }
+    .tab-add-btn { background: transparent; border: 1px dashed #21ce7033; color: var(--text-dim); font-family: var(--mono); font-size: 11px; padding: 6px 12px; cursor: pointer; transition: all 0.2s; }
+    .tab-add-btn:hover { border-color: var(--green-dim); color: var(--green); }
+    /* HISTORY */
+    .history-section { background: var(--surface); border: 1px solid var(--border); padding: 16px 24px; margin-bottom: 24px; position: relative; display: none; }
+    .history-section::before { content: 'ARAMA GEÇMİŞİ'; position: absolute; top: -10px; left: 20px; background: var(--surface); padding: 0 8px; font-size: 10px; letter-spacing: 3px; color: var(--text-dim); }
+    .history-list { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .history-tag { background: transparent; border: 1px solid #21ce7022; color: var(--text-dim); font-family: var(--mono); font-size: 11px; padding: 4px 10px; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; }
+    .history-tag:hover { border-color: var(--green-dim); color: var(--green); }
+    .history-clear { background: transparent; border: 1px solid #ff4c6a33; color: var(--red); font-family: var(--mono); font-size: 10px; padding: 4px 10px; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; margin-left: auto; }
+    .history-clear:hover { background: #ff4c6a11; }
+    /* LOADING */
+    .loading { display: none; text-align: center; padding: 40px; }
+    .loading-bar { width: 200px; height: 2px; background: #21ce7022; margin: 16px auto; overflow: hidden; position: relative; }
+    .loading-bar::after { content: ''; position: absolute; left: -60%; top: 0; width: 60%; height: 100%; background: var(--green); animation: load 1s linear infinite; }
+    @keyframes load { to { left: 100%; } }
+    .loading-text { font-size: 11px; letter-spacing: 3px; color: var(--green); }
     /* RESULTS */
     #results { display: none; }
-    .results-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
-    }
+    .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
     .results-title { font-family: var(--sans); font-size: 13px; letter-spacing: 3px; color: var(--green); text-transform: uppercase; }
     .results-count { font-size: 11px; color: var(--text-dim); }
     /* TOOLS GRID */
-    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 40px; }
-    .tool-card {
-      background: var(--surface); border: 1px solid var(--border);
-      padding: 20px; cursor: pointer; transition: all 0.25s;
-      text-decoration: none; display: block; position: relative; overflow: hidden;
-    }
-    .tool-card::after {
-      content: ''; position: absolute; bottom: 0; left: 0;
-      width: 0; height: 2px; background: var(--green); transition: width 0.3s;
-    }
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin-bottom: 40px; }
+    .tool-card { background: var(--surface); border: 1px solid var(--border); padding: 18px; cursor: pointer; transition: all 0.25s; text-decoration: none; display: block; position: relative; overflow: hidden; }
+    .tool-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--green); transition: width 0.3s; }
     .tool-card:hover { border-color: var(--green-dim); box-shadow: 0 0 30px #21ce7011; transform: translateY(-2px); }
     .tool-card:hover::after { width: 100%; }
-    .tool-cat { font-size: 9px; letter-spacing: 3px; color: var(--green); margin-bottom: 8px; text-transform: uppercase; }
-    .tool-name { font-family: var(--sans); font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-    .tool-desc { font-size: 11px; color: var(--text-dim); line-height: 1.7; }
-    .tool-arrow { position: absolute; top: 20px; right: 20px; color: var(--green-dim); font-size: 16px; transition: transform 0.2s; }
+    .tool-cat { font-size: 9px; letter-spacing: 3px; color: var(--green); margin-bottom: 6px; text-transform: uppercase; }
+    .tool-name { font-family: var(--sans); font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 5px; }
+    .tool-desc { font-size: 11px; color: var(--text-dim); line-height: 1.6; }
+    .tool-arrow { position: absolute; top: 18px; right: 18px; color: var(--green-dim); font-size: 15px; transition: transform 0.2s; }
     .tool-card:hover .tool-arrow { transform: translate(3px, -3px); }
-    /* ANALYSIS OUTPUT */
-    .analysis-box {
-      background: var(--surface); border: 1px solid var(--green-dim);
-      padding: 28px; margin-bottom: 40px; position: relative; display: none;
-    }
-    .analysis-box::before {
-      content: 'ANALİZ ÇIKTISI';
-      position: absolute; top: -10px; left: 20px;
-      background: var(--surface); padding: 0 8px;
-      font-size: 10px; letter-spacing: 3px; color: var(--green);
-    }
-    .analysis-line { display: flex; gap: 12px; margin-bottom: 10px; font-size: 13px; }
-    .analysis-key { color: var(--green); min-width: 160px; flex-shrink: 0; }
+    /* ANALYSIS BOX */
+    .analysis-box { background: var(--surface); border: 1px solid var(--green-dim); padding: 24px; margin-bottom: 24px; position: relative; display: none; }
+    .analysis-box::before { content: 'ANALİZ ÇIKTISI'; position: absolute; top: -10px; left: 20px; background: var(--surface); padding: 0 8px; font-size: 10px; letter-spacing: 3px; color: var(--green); }
+    .analysis-line { display: flex; gap: 12px; margin-bottom: 8px; font-size: 12px; flex-wrap: wrap; }
+    .analysis-key { color: var(--green); min-width: 150px; flex-shrink: 0; }
     .analysis-val { color: var(--text); }
     .badge { display: inline-block; padding: 2px 10px; font-size: 10px; letter-spacing: 2px; border: 1px solid; text-transform: uppercase; }
     .badge-green { border-color: var(--green); color: var(--green); }
     .badge-red { border-color: var(--red); color: var(--red); }
     .badge-yellow { border-color: var(--yellow); color: var(--yellow); }
-    /* LOADING */
-    .loading { display: none; text-align: center; padding: 40px; }
-    .loading-bar { width: 200px; height: 2px; background: #21ce7022; margin: 16px auto; overflow: hidden; position: relative; }
-    .loading-bar::after {
-      content: ''; position: absolute; left: -60%; top: 0;
-      width: 60%; height: 100%; background: var(--green); animation: load 1s linear infinite;
-    }
-    @keyframes load { to { left: 100%; } }
-    .loading-text { font-size: 11px; letter-spacing: 3px; color: var(--green); }
-    /* HOW TO USE */
-    .howto-section {
-      background: var(--surface);
-      border: 1px solid var(--green-dim);
-      padding: 28px;
-      margin-bottom: 48px;
-      position: relative;
-    }
-    .howto-section::before {
-      content: 'NASIL KULLANILIR?';
-      position: absolute; top: -10px; left: 20px;
-      background: var(--surface); padding: 0 8px;
-      font-size: 10px; letter-spacing: 3px; color: var(--green);
-    }
-    .howto-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 8px; }
-    .howto-step { display: flex; flex-direction: column; gap: 8px; }
-    .howto-num { font-size: 28px; color: var(--green); font-family: var(--sans); font-weight: 700; line-height: 1; }
-    .howto-title { font-size: 13px; color: #fff; font-family: var(--sans); font-weight: 600; letter-spacing: 1px; }
-    .howto-desc { font-size: 11px; color: var(--text-dim); line-height: 1.7; }
-    /* SEARCH HISTORY */
-    .history-section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 20px 28px;
-      margin-bottom: 32px;
-      position: relative;
-      display: none;
-    }
-    .history-section::before {
-      content: 'ARAMA GEÇMİŞİ';
-      position: absolute; top: -10px; left: 20px;
-      background: var(--surface); padding: 0 8px;
-      font-size: 10px; letter-spacing: 3px; color: var(--text-dim);
-    }
-    .history-list { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-    .history-tag {
-      background: transparent; border: 1px solid #21ce7022;
-      color: var(--text-dim); font-family: var(--mono);
-      font-size: 11px; padding: 4px 10px; cursor: pointer;
-      letter-spacing: 1px; transition: all 0.2s;
-    }
-    .history-tag:hover { border-color: var(--green-dim); color: var(--green); }
-    .history-clear {
-      background: transparent; border: 1px solid #ff4c6a33;
-      color: var(--red); font-family: var(--mono);
-      font-size: 10px; padding: 4px 10px; cursor: pointer;
-      letter-spacing: 1px; transition: all 0.2s; margin-left: auto;
-    }
-    .history-clear:hover { background: #ff4c6a11; }
-    /* FOOTER */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 24px 0; margin-top: 60px;
-      text-align: center; font-size: 11px; color: var(--text-dim); letter-spacing: 2px;
-    }
-    /* TYPEWRITER */
-    .typewriter::after { content: '█'; animation: blink 1s step-end infinite; }
-    /* RESPONSIVE */
-    @media (max-width: 600px) {
-      .input-row { flex-direction: column; }
-      .search-btn { width: 100%; }
-      .howto-grid { grid-template-columns: 1fr; }
-      .tools-grid { grid-template-columns: 1fr; }
-    }
-
-    /* GROQ ANALİZ PANELİ */
-    .groq-btn {
-      background: transparent;
-      border: 1px solid var(--green);
-      color: var(--green);
-      font-family: var(--mono);
-      font-size: 12px;
-      letter-spacing: 2px;
-      padding: 10px 20px;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-transform: uppercase;
-      margin-top: 16px;
-      width: 100%;
-    }
+    /* GROQ PANEL */
+    .groq-btn { background: transparent; border: 1px solid var(--green); color: var(--green); font-family: var(--mono); font-size: 12px; letter-spacing: 2px; padding: 10px 20px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; margin-top: 16px; width: 100%; }
     .groq-btn:hover { background: var(--green-glow); box-shadow: 0 0 20px var(--green-glow); }
     .groq-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .groq-output {
-      background: var(--surface);
-      border: 1px solid var(--green-dim);
-      padding: 28px;
-      margin-bottom: 40px;
-      position: relative;
-      display: none;
+    .groq-output { background: var(--surface); border: 1px solid var(--green-dim); padding: 28px; margin-bottom: 32px; position: relative; display: none; }
+    .groq-output::before { content: 'GROQ İSTİHBARAT ANALİZİ'; position: absolute; top: -10px; left: 20px; background: var(--surface); padding: 0 8px; font-size: 10px; letter-spacing: 3px; color: var(--green); }
+    /* MARKDOWN STYLES */
+    .groq-text h1,.groq-text h2,.groq-text h3 { font-family: var(--sans); color: var(--green); margin: 16px 0 8px; letter-spacing: 1px; }
+    .groq-text h1 { font-size: 17px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+    .groq-text h2 { font-size: 15px; }
+    .groq-text h3 { font-size: 13px; color: #fff; }
+    .groq-text p { font-size: 13px; color: var(--text); line-height: 1.9; margin-bottom: 10px; }
+    .groq-text ul,.groq-text ol { margin: 8px 0 12px 20px; }
+    .groq-text li { font-size: 13px; color: var(--text); line-height: 1.8; margin-bottom: 4px; }
+    .groq-text strong { color: #fff; }
+    .groq-text em { color: var(--yellow); font-style: normal; }
+    .groq-text hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+    .groq-text code { background: var(--bg); color: var(--green); padding: 1px 6px; font-family: var(--mono); font-size: 12px; }
+    /* EXPORT BUTTON */
+    .export-row { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+    .export-btn { background: transparent; border: 1px solid #21ce7033; color: var(--text-dim); font-family: var(--mono); font-size: 11px; letter-spacing: 1px; padding: 8px 16px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
+    .export-btn:hover { border-color: var(--green-dim); color: var(--green); background: var(--green-glow); }
+    .groq-loading { display: none; text-align: center; padding: 20px; }
+    .groq-loading-text { font-size: 11px; letter-spacing: 3px; color: var(--green); animation: blink 1s step-end infinite; }
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 20px 0; margin-top: 60px; text-align: center; font-size: 11px; color: var(--text-dim); letter-spacing: 2px; }
+    .typewriter::after { content: '█'; animation: blink 1s step-end infinite; }
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .input-row { flex-direction: column; }
+      .search-btn { width: 100%; padding: 16px; font-size: 15px; }
+      .howto-grid { grid-template-columns: 1fr 1fr; }
+      .tools-grid { grid-template-columns: 1fr; }
+      .analysis-key { min-width: 120px; font-size: 11px; }
+      .logo-text { font-size: 16px; letter-spacing: 2px; }
+      .logo-sub { display: none; }
+      .hero h1 { font-size: clamp(22px, 7vw, 36px); }
+      .search-input { font-size: 16px; }
+      .tags { gap: 6px; }
+      .tag { padding: 8px 12px; font-size: 11px; }
+      .groq-btn { padding: 14px; font-size: 13px; }
+      .export-row { flex-direction: column; }
+      .export-btn { width: 100%; text-align: center; }
+      .api-key-panel { font-size: 10px; padding: 8px 12px; }
     }
-    .groq-output::before {
-      content: 'GROQ İSTİHBARAT ANALİZİ';
-      position: absolute; top: -10px; left: 20px;
-      background: var(--surface); padding: 0 8px;
-      font-size: 10px; letter-spacing: 3px; color: var(--green);
-    }
-    .groq-text {
-      font-size: 13px;
-      color: var(--text);
-      line-height: 1.9;
-      white-space: pre-wrap;
-    }
-    .groq-loading {
-      display: none;
-      text-align: center;
-      padding: 20px;
-    }
-    .groq-loading-text {
-      font-size: 11px;
-      letter-spacing: 3px;
-      color: var(--green);
-      animation: blink 1s step-end infinite;
+    @media (max-width: 400px) {
+      .howto-grid { grid-template-columns: 1fr; }
+      .tabs-bar { gap: 3px; }
+      .tab-btn { font-size: 10px; padding: 5px 10px; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="header-inner">
-        <div class="logo">
-          <div class="logo-icon">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
-            </svg>
-          </div>
-          <div>
-            <div class="logo-text">OSINT Lens</div>
-            <div class="logo-sub">AÇIK KAYNAK İSTİHBARAT ARACI</div>
-          </div>
+<div id="apiModal" class="api-modal">
+  <div class="api-modal-box">
+    <button class="api-close-btn" onclick="closeApiModal()">[ X ]</button>
+    <p>Groq API key'ini girerek yapay zeka analizini aktifleştir.<br>Ücretsiz key almak için: <a href="https://console.groq.com" target="_blank">console.groq.com</a></p>
+    <input type="text" class="api-input" id="apiKeyInput" placeholder="gsk_..." autocomplete="off" />
+    <button class="api-save-btn" onclick="saveApiKey()">&#9654; KAYDET VE AKTİFLEŞTİR</button>
+  </div>
+</div>
+
+<div class="container">
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="logo-text">OSINT Lens</div>
+          <div class="logo-sub">AÇIK KAYNAK İSTİHBARAT ARACI</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="api-key-panel" onclick="openApiModal()" id="apiKeyPanel">
+          <div class="api-dot" id="apiDot"></div>
+          <span id="apiStatus">API KEY GİR</span>
         </div>
         <div class="status-bar">
           <div class="dot"></div>
           <span>SİSTEM AKTİF</span>
         </div>
       </div>
-    </header>
-
-    <div class="hero">
-      <span class="hero-label">// v1.1.0 — OSINT PLATFORMU</span>
-      <h1>Hedefi Ara.<br><span>Veriyi Analiz Et.</span></h1>
-      <p>Kamuya açık kaynaklardan sistematik istihbarat toplama ve analiz aracı. Şirket, kişi, domain veya olay hakkında hızlı keşif yapın.</p>
     </div>
+  </header>
 
-    <!-- HOW TO USE -->
-    <div class="howto-section">
-      <div class="howto-grid">
-        <div class="howto-step">
-          <div class="howto-num">01</div>
-          <div class="howto-title">HEDEF GİR</div>
-          <div class="howto-desc">Araştırmak istediğin kişi, şirket, domain veya konuyu arama kutusuna yaz.</div>
-        </div>
-        <div class="howto-step">
-          <div class="howto-num">02</div>
-          <div class="howto-title">KATEGORİ SEÇ</div>
-          <div class="howto-desc">İsteğe bağlı olarak ŞİRKET, KİŞİ, DOMAIN, OLAY veya SOSYAL MEDYA kategorisini filtrele.</div>
-        </div>
-        <div class="howto-step">
-          <div class="howto-num">03</div>
-          <div class="howto-title">TARA</div>
-          <div class="howto-desc">TARA butonuna bas veya Enter'a bas. Sistem uygun OSINT araçlarını listeler.</div>
-        </div>
-        <div class="howto-step">
-          <div class="howto-num">04</div>
-          <div class="howto-title">ANALİZ ET</div>
-          <div class="howto-desc">Listelenen araç kartlarına tıklayarak doğrudan ilgili platforma yönlen ve araştırmanı derinleştir.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SEARCH -->
-    <div class="search-section">
-      <div class="search-box">
-        <div class="input-row">
-          <input type="text" class="search-input typewriter" id="queryInput"
-            placeholder="hedef girin: şirket, kişi, domain, olay..."
-            autocomplete="off" />
-          <button class="search-btn" id="searchBtn" onclick="startSearch()">
-            &#9654; TARA
-          </button>
-        </div>
-        <div class="tags">
-          <button class="tag active" onclick="setTag(this,'')">TÜM KAYNAKLAR</button>
-          <button class="tag" onclick="setTag(this,'şirket')">ŞİRKET</button>
-          <button class="tag" onclick="setTag(this,'kişi')">KİŞİ</button>
-          <button class="tag" onclick="setTag(this,'domain')">DOMAIN</button>
-          <button class="tag" onclick="setTag(this,'olay')">OLAY/HABER</button>
-          <button class="tag" onclick="setTag(this,'sosyal medya')">SOSYAL MEDYA</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- SEARCH HISTORY -->
-    <div class="history-section" id="historySection">
-      <div class="history-list" id="historyList"></div>
-    </div>
-
-    <!-- LOADING -->
-    <div class="loading" id="loading">
-      <div class="loading-text" id="loadingText">KAYNAKLAR TARANYOR...</div>
-      <div class="loading-bar"></div>
-    </div>
-
-    <!-- RESULTS SECTION -->
-    <div id="results">
-      <!-- QUICK ANALYSIS -->
-      <div class="analysis-box" id="analysisBox">
-        <div class="analysis-line">
-          <span class="analysis-key">[ HEDEF ]</span>
-          <span class="analysis-val" id="aTarget">—</span>
-        </div>
-        <div class="analysis-line">
-          <span class="analysis-key">[ KATEGORİ ]</span>
-          <span class="analysis-val" id="aCategory">—</span>
-        </div>
-        <div class="analysis-line">
-          <span class="analysis-key">[ BULUNAN ARAÇLAR ]</span>
-          <span class="analysis-val" id="aToolCount">—</span>
-        </div>
-        <div class="analysis-line">
-          <span class="analysis-key">[ ÖNERİLEN YAKLAŞIM ]</span>
-          <span class="analysis-val" id="aApproach">—</span>
-        </div>
-        <div class="analysis-line">
-          <span class="analysis-key">[ DURUM ]</span>
-          <span class="analysis-val"><span class="badge badge-green">HAZIR</span></span>
-        </div>
-      </div>
-
-  
-      <!-- GROQ ANALİZ BUTONU -->
-      <button class="groq-btn" id="groqBtn" onclick="runGroqAnalysis()">
-        &#9670; GROQ İLE İSTİHBARAT ANALİZİ YAP
-      </button>
-
-      <!-- GROQ ÇIKTISI -->
-      <div class="groq-output" id="groqOutput">
-        <div class="groq-loading" id="groqLoading">
-          <div class="groq-loading-text">ANALİZ YAPILIYOR...</div>
-        </div>
-        <div class="groq-text" id="groqText"></div>
-      </div>
-
-    <!-- TOOLS -->
-      <div class="results-header">
-        <span class="results-title">// OSINT ARAÇLARI</span>
-        <span class="results-count" id="toolCount"></span>
-      </div>
-      <div class="tools-grid" id="toolsGrid"></div>
-    </div>
-
-    <footer>
-      OSINT LENS — SADECE KAMUYA AÇIK BİLGİLER — ETİK KULLANIM ZORUNLUDUR
-    </footer>
+  <div class="hero">
+    <span class="hero-label">// v2.0.0 — OSINT PLATFORMU</span>
+    <h1>Hedefi Ara.<br><span>Veriyi Analiz Et.</span></h1>
+    <p>Kamuya açık kaynaklardan sistematik istihbarat toplama ve analiz aracı. Şirket, kişi, domain veya olay hakkında hızlı keşif yapın.</p>
   </div>
 
-  <script>
-  // --- GROQ API ---
-  const GROQ_API_KEY = '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';
-  let currentTarget = '';
+  <div class="howto-section">
+    <div class="howto-grid">
+      <div class="howto-step"><div class="howto-num">01</div><div class="howto-title">HEDEF GİR</div><div class="howto-desc">Kişi, şirket, domain, IP veya e-posta gir. Sistem otomatik algılar.</div></div>
+      <div class="howto-step"><div class="howto-num">02</div><div class="howto-title">KATEGORİ SEÇ</div><div class="howto-desc">Otomatik algı çalışır veya ŞİRKET, KİŞİ, DOMAIN kategorisi seç.</div></div>
+      <div class="howto-step"><div class="howto-num">03</div><div class="howto-title">TARA</div><div class="howto-desc">TARA butonuna bas. Sistem 35+ OSINT aracını filtreler.</div></div>
+      <div class="howto-step"><div class="howto-num">04</div><div class="howto-title">ANALİZ ET</div><div class="howto-desc">Groq AI ile derin istihbarat raporu al, PDF/TXT olarak indir.</div></div>
+    </div>
+  </div>
 
-  async function runGroqAnalysis() {
-    if (!currentTarget) return;
-    const btn = document.getElementById('groqBtn');
-    const output = document.getElementById('groqOutput');
-    const loading = document.getElementById('groqLoading');
-    const textEl = document.getElementById('groqText');
+  <div class="search-section">
+    <div class="search-box">
+      <div id="detectBadge" class="detect-badge"></div>
+      <div class="input-row">
+        <input type="text" class="search-input typewriter" id="queryInput"
+          placeholder="hedef girin: şirket, kişi, domain, IP, e-posta..."
+          autocomplete="off" inputmode="search" />
+        <button class="search-btn" id="searchBtn" onclick="startSearch()">&#9654; TARA</button>
+      </div>
+      <div class="tags">
+        <button class="tag active" onclick="setTag(this,'')">TÜM KAYNAKLAR</button>
+        <button class="tag" onclick="setTag(this,'şirket')">ŞİRKET</button>
+        <button class="tag" onclick="setTag(this,'kişi')">KİŞİ</button>
+        <button class="tag" onclick="setTag(this,'domain')">DOMAIN</button>
+        <button class="tag" onclick="setTag(this,'ip')">IP ADRESİ</button>
+        <button class="tag" onclick="setTag(this,'email')">E-POSTA</button>
+        <button class="tag" onclick="setTag(this,'olay')">OLAY/HABER</button>
+        <button class="tag" onclick="setTag(this,'sosyal medya')">SOSYAL MEDYA</button>
+      </div>
+    </div>
+  </div>
 
-    btn.disabled = true;
-    output.style.display = 'block';
-    loading.style.display = 'block';
-    textEl.textContent = '';
+  <div class="history-section" id="historySection">
+    <div class="history-list" id="historyList"></div>
+  </div>
 
-    const prompt = 'Sen bir OSINT uzmanisın. "' + currentTarget + '" hedefi hakkında kapsamlı bir açık kaynak istihbarat analizi yap. Şunları içer: 1) Hedef tipi ve genel tanım, 2) Önemli dijital ayak izleri ve kamuya açık bilgiler, 3) Sosyal medya ve çevrimiçi varlık durumu, 4) Potansiyel riskler ve tehditler, 5) Önerilen OSINT araçları ve araştırma yöntemleri, 6) Genel değerlendirme ve istihbarat özeti. Yanıtını Türkçe ver ve profesyonel bir istihbarat raporu formatında yaz.';
+  <div class="loading" id="loading">
+    <div class="loading-text" id="loadingText">KAYNAKLAR TARANYOR...</div>
+    <div class="loading-bar"></div>
+  </div>
 
-    try {
-      const response = await fetch(
-        'https://api.groq.com/openai/v1/chat/completions',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + GROQ_API_KEY
-          },
-          body: JSON.stringify({
-            model: 'llama-3.3-70b-versatile',
-            messages: [{ role: 'user', content: prompt }],
-            temperature: 0.7,
-            max_tokens: 1500
-          })
-        }
-      );
-      const data = await response.json();
-      loading.style.display = 'none';
-      if (data.choices && data.choices[0] && data.choices[0].message) {
-        textEl.textContent = data.choices[0].message.content;
-      } else {
-        textEl.textContent = 'Analiz alınamadı. Lütfen tekrar deneyin.';
-      }
-    } catch(e) {
-      loading.style.display = 'none';
-      textEl.textContent = 'Bağlantı hatası: ' + e.message;
-    }
-    btn.disabled = false;
+  <div class="tabs-section" id="tabsSection">
+    <div class="tabs-bar" id="tabsBar"></div>
+  </div>
+
+  <div id="results">
+    <div class="analysis-box" id="analysisBox">
+      <div class="analysis-line"><span class="analysis-key">[ HEDEF ]</span><span class="analysis-val" id="aTarget">—</span></div>
+      <div class="analysis-line"><span class="analysis-key">[ TESPİT ]</span><span class="analysis-val" id="aDetect">—</span></div>
+      <div class="analysis-line"><span class="analysis-key">[ KATEGORİ ]</span><span class="analysis-val" id="aCategory">—</span></div>
+      <div class="analysis-line"><span class="analysis-key">[ BULUNAN ARAÇLAR ]</span><span class="analysis-val" id="aToolCount">—</span></div>
+      <div class="analysis-line"><span class="analysis-key">[ ÖNERİLEN YAKLAŞIM ]</span><span class="analysis-val" id="aApproach">—</span></div>
+      <div class="analysis-line"><span class="analysis-key">[ DURUM ]</span><span class="analysis-val"><span class="badge badge-green">HAZIR</span></span></div>
+    </div>
+
+    <button class="groq-btn" id="groqBtn" onclick="runGroqAnalysis()">&#9670; GROQ İLE İSTİHBARAT ANALİZİ YAP</button>
+
+    <div class="groq-output" id="groqOutput">
+      <div class="groq-loading" id="groqLoading"><div class="groq-loading-text">ANALİZ YAPILIYOR...</div></div>
+      <div class="groq-text" id="groqText"></div>
+      <div class="export-row" id="exportRow" style="display:none">
+        <button class="export-btn" onclick="exportTXT()">&#8659; TXT OLARAK İNDİR</button>
+        <button class="export-btn" onclick="exportPDF()">&#8659; PDF OLARAK İNDİR</button>
+        <button class="export-btn" onclick="copyReport()">&#9632; KOPYALA</button>
+      </div>
+    </div>
+
+    <div class="results-header">
+      <span class="results-title">// OSINT ARAÇLARI</span>
+      <span class="results-count" id="toolCount"></span>
+    </div>
+    <div class="tools-grid" id="toolsGrid"></div>
+  </div>
+
+  <footer>OSINT LENS v2.0 — SADECE KAMUYA AÇIK BİLGİLER — ETİK KULLANIM ZORUNLUDUR</footer>
+</div>
+<script>
+// ===================== API KEY YÖNETİMİ =====================
+function getApiKey() {
+  return localStorage.getItem('groq_api_key') || '';
+}
+function saveApiKey() {
+  const val = document.getElementById('apiKeyInput').value.trim();
+  if (!val.startsWith('gsk_')) {
+    document.getElementById('apiKeyInput').style.borderColor = '#ff4c6a';
+    return;
   }
+  localStorage.setItem('groq_api_key', val);
+  updateApiStatus();
+  closeApiModal();
+}
+function openApiModal() {
+  document.getElementById('apiKeyInput').value = getApiKey();
+  document.getElementById('apiModal').classList.add('open');
+}
+function closeApiModal() {
+  document.getElementById('apiModal').classList.remove('open');
+}
+function updateApiStatus() {
+  const key = getApiKey();
+  const dot = document.getElementById('apiDot');
+  const status = document.getElementById('apiStatus');
+  if (key) {
+    dot.classList.add('active');
+    status.textContent = 'API: ...'+key.slice(-6);
+  } else {
+    dot.classList.remove('active');
+    status.textContent = 'API KEY GİR';
+  }
+}
 
-    let activeTag = '';
+// ===================== HEDEF ALGILAMA =====================
+function detectTargetType(q) {
+  const s = q.trim().toLowerCase();
+  if (/^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)$/.test(s)) return 'ip';
+  if (/^[\w.-]+@[\w.-]+\.[a-z]{2,}$/.test(s)) return 'email';
+  if (/^(https?:\/\/)?([\w-]+\.)+[a-z]{2,}([\/\?#].*)?$/.test(s) && !s.includes(' ') && s.includes('.')) return 'domain';
+  if (/(inc|ltd|llc|corp|co\.|a\.ş|a\.s|holding|group|şirketi|şirket|teknoloji|yazılım|software|tech|systems|solutions)/.test(s)) return 'şirket';
+  return null;
+}
 
-    const TOOLS = [
-      // ŞİRKET
-      { name: 'LinkedIn', cat: 'şirket', desc: 'Şirket profili, çalışanlar, iş ilanları ve kurumsal ağ keşfi.', url: 'https://linkedin.com/search/results/companies/?keywords=', query: true },
-      { name: 'Crunchbase', cat: 'şirket', desc: 'Finansman, yatırımcılar, yöneticiler ve kurumsal geçmiş.', url: 'https://crunchbase.com/textsearch?q=', query: true },
-      { name: 'OpenCorporates', cat: 'şirket', desc: 'Küresel şirket kayıtları ve yasal tescil bilgileri.', url: 'https://opencorporates.com/companies?q=', query: true },
-      { name: 'Google News', cat: 'şirket', desc: 'Şirkete dair güncel haber ve medya takibi.', url: 'https://news.google.com/search?q=', query: true },
-      // KİŞİ
-      { name: 'LinkedIn (Kişi)', cat: 'kişi', desc: 'Profesyonel profil, iş geçmişi ve bağlantı ağı.', url: 'https://linkedin.com/search/results/people/?keywords=', query: true },
-      { name: 'Twitter/X Search', cat: 'kişi', desc: 'Sosyal medya paylaşımları ve etkileşim analizi.', url: 'https://twitter.com/search?q=', query: true },
-      { name: 'Wayback Machine', cat: 'kişi', desc: 'Eski web sayfaları ve dijital ayak izi arşivi.', url: 'https://web.archive.org/web/*/', query: true },
-      // DOMAIN
-      { name: 'Whois Lookup', cat: 'domain', desc: 'Domain kayıt bilgisi, sahibi ve tarihi.', url: 'https://whois.domaintools.com/', query: true },
-      { name: 'Shodan', cat: 'domain', desc: 'Sunucu, IP, açık portlar ve servis keşfi.', url: 'https://shodan.io/search?query=', query: true },
-      { name: 'BuiltWith', cat: 'domain', desc: 'Web sitesinin kullandığı teknoloji ve altyapı tespiti.', url: 'https://builtwith.com/', query: true },
-      { name: 'Censys', cat: 'domain', desc: 'İnternet genelinde sertifika ve sunucu taraması.', url: 'https://search.censys.io/search?resource=hosts&q=', query: true },
-      { name: 'VirusTotal', cat: 'domain', desc: 'URL ve domain güvenlik ve kötü amaçlı yazılım taraması.', url: 'https://virustotal.com/gui/domain/', query: true },
-      // OLAY/HABER
-      { name: 'GDELT Project', cat: 'olay', desc: 'Küresel olay veritabanı ve medya izleme sistemi.', url: 'https://gdeltproject.org/data.html#rawdatafiles', query: false },
-      { name: 'Google News', cat: 'olay', desc: 'Haber arşivi ve gerçek zamanlı medya takibi.', url: 'https://news.google.com/search?q=', query: true },
-      { name: 'Archive.org', cat: 'olay', desc: 'Silinen haberlerin ve web içeriğinin arşivi.', url: 'https://web.archive.org/web/*/', query: true },
-      // SOSYAL MEDYA
-      { name: 'Instagram (Picuki)', cat: 'sosyal medya', desc: 'Gizlilik olmadan Instagram profil analizi.', url: 'https://www.picuki.com/profile/', query: true },
-      { name: 'Reddit Search', cat: 'sosyal medya', desc: 'Reddit paylaşımları ve forum tartışmaları.', url: 'https://reddit.com/search/?q=', query: true },
-      { name: 'YouTube Search', cat: 'sosyal medya', desc: 'Video içerik ve kanal araştırması.', url: 'https://youtube.com/results?search_query=', query: true },
-      { name: 'TikTok Search', cat: 'sosyal medya', desc: 'TikTok profil ve içerik keşfi.', url: 'https://tiktok.com/search?q=', query: true },
-    ];
+const DETECT_LABELS = {
+  'ip': '[ OTOMATİK TESPİT: IP ADRESİ ]',
+  'email': '[ OTOMATİK TESPİT: E-POSTA ADRESİ ]',
+  'domain': '[ OTOMATİK TESPİT: DOMAIN / WEB SİTESİ ]',
+  'şirket': '[ OTOMATİK TESPİT: ŞİRKET ]'
+};
 
-    const LOADING_STEPS = [
-      'KAYNAKLAR TARANYOR...',
-      'VERİTABANLARI SORGULANYOR...',
-      'ARAÇLAR FİLTRELENİYOR...',
-      'ANALİZ HAZIRLANIYOR...',
-      'TAMAMLANDI ✓',
-    ];
+// ===================== ARAÇLAR (35+) =====================
+const TOOLS = [
+  // ŞİRKET
+  { name: 'LinkedIn', cat: 'şirket', desc: 'Şirket profili, çalışanlar, iş ilanları ve kurumsal ağ keşfi.', url: 'https://linkedin.com/search/results/companies/?keywords=', query: true },
+  { name: 'Crunchbase', cat: 'şirket', desc: 'Finansman, yatırımcılar, yöneticiler ve kurumsal geçmiş.', url: 'https://crunchbase.com/textsearch?q=', query: true },
+  { name: 'OpenCorporates', cat: 'şirket', desc: 'Küresel şirket kayıtları ve yasal tescil bilgileri.', url: 'https://opencorporates.com/companies?q=', query: true },
+  { name: 'Google News', cat: 'şirket', desc: 'Şirkete dair güncel haber ve medya takibi.', url: 'https://news.google.com/search?q=', query: true },
+  { name: 'Glassdoor', cat: 'şirket', desc: 'Çalışan yorumları, maaş bilgileri ve şirket kültürü.', url: 'https://www.glassdoor.com/Search/results.htm?keyword=', query: true },
+  { name: 'Indeed', cat: 'şirket', desc: 'İş ilanları ve şirket büyüme analizi.', url: 'https://tr.indeed.com/jobs?q=', query: true },
+  { name: 'Bloomberg', cat: 'şirket', desc: 'Finansal veriler, haberler ve piyasa bilgileri.', url: 'https://www.bloomberg.com/search?query=', query: true },
+  // KİŞİ
+  { name: 'LinkedIn (Kişi)', cat: 'kişi', desc: 'Profesyonel profil, iş geçmişi ve bağlantı ağı.', url: 'https://linkedin.com/search/results/people/?keywords=', query: true },
+  { name: 'Twitter/X Search', cat: 'kişi', desc: 'Sosyal medya paylaşımları ve etkileşim analizi.', url: 'https://twitter.com/search?q=', query: true },
+  { name: 'Wayback Machine', cat: 'kişi', desc: 'Eski web sayfaları ve dijital ayak izi arşivi.', url: 'https://web.archive.org/web/*/', query: true },
+  { name: 'Spokeo', cat: 'kişi', desc: 'Kişi arama, adres, telefon ve sosyal medya bağlantıları.', url: 'https://www.spokeo.com/search?q=', query: true },
+  { name: 'Pipl', cat: 'kişi', desc: 'Derin web kişi arama ve profil birleştirme.', url: 'https://pipl.com/search/?q=', query: true },
+  { name: 'Google Dorks', cat: 'kişi', desc: 'Gelişmiş Google arama operatörleriyle derin keşif.', url: 'https://www.google.com/search?q=', query: true },
+  // DOMAIN
+  { name: 'Whois Lookup', cat: 'domain', desc: 'Domain kayıt bilgisi, sahibi ve tarihi.', url: 'https://whois.domaintools.com/', query: true },
+  { name: 'Shodan', cat: 'domain', desc: 'Sunucu, IP, açık portlar ve servis keşfi.', url: 'https://shodan.io/search?query=', query: true },
+  { name: 'BuiltWith', cat: 'domain', desc: 'Web sitesinin kullandığı teknoloji ve altyapı tespiti.', url: 'https://builtwith.com/', query: true },
+  { name: 'Censys', cat: 'domain', desc: 'İnternet genelinde sertifika ve sunucu taraması.', url: 'https://search.censys.io/search?resource=hosts&q=', query: true },
+  { name: 'VirusTotal', cat: 'domain', desc: 'URL ve domain güvenlik taraması.', url: 'https://virustotal.com/gui/domain/', query: true },
+  { name: 'URLScan.io', cat: 'domain', desc: 'Web sitesi taraması ve ekran görüntüsü analizi.', url: 'https://urlscan.io/search/#domain%3A', query: true },
+  { name: 'DNSdumpster', cat: 'domain', desc: 'DNS kayıtları, subdomain ve altyapı haritası.', url: 'https://dnsdumpster.com/?q=', query: true },
+  { name: 'SecurityTrails', cat: 'domain', desc: 'Tarihsel DNS ve IP değişiklik takibi.', url: 'https://securitytrails.com/domain/', query: true },
+  // IP
+  { name: 'Shodan IP', cat: 'ip', desc: 'IP adresine bağlı servisler, portlar ve cihaz bilgisi.', url: 'https://www.shodan.io/host/', query: true },
+  { name: 'AbuseIPDB', cat: 'ip', desc: 'IP kötüye kullanım geçmişi ve blacklist kontrolü.', url: 'https://www.abuseipdb.com/check/', query: true },
+  { name: 'IPinfo.io', cat: 'ip', desc: 'IP konum, ISP, ASN ve organizasyon bilgisi.', url: 'https://ipinfo.io/', query: true },
+  { name: 'GreyNoise', cat: 'ip', desc: 'İnternet gürültüsü ve IP davranış analizi.', url: 'https://viz.greynoise.io/ip/', query: true },
+  { name: 'VirusTotal IP', cat: 'ip', desc: 'IP adresi güvenlik ve kötü amaçlı yazılım taraması.', url: 'https://virustotal.com/gui/ip-address/', query: true },
+  // E-POSTA
+  { name: 'Hunter.io', cat: 'email', desc: 'E-posta doğrulama ve domain e-posta keşfi.', url: 'https://hunter.io/verify/', query: true },
+  { name: 'HaveIBeenPwned', cat: 'email', desc: 'E-postanın veri ihlallerinde görünüp görünmediği.', url: 'https://haveibeenpwned.com/account/', query: true },
+  { name: 'EmailRep', cat: 'email', desc: 'E-posta itibar skoru ve risk analizi.', url: 'https://emailrep.io/', query: true },
+  { name: 'Epieos', cat: 'email', desc: 'E-postaya bağlı Google, sosyal medya hesapları.', url: 'https://epieos.com/?q=', query: true },
+  // OLAY/HABER
+  { name: 'GDELT Project', cat: 'olay', desc: 'Küresel olay veritabanı ve medya izleme sistemi.', url: 'https://gdeltproject.org/', query: false },
+  { name: 'Google News', cat: 'olay', desc: 'Haber arşivi ve gerçek zamanlı medya takibi.', url: 'https://news.google.com/search?q=', query: true },
+  { name: 'Archive.org', cat: 'olay', desc: 'Silinen haberlerin ve web içeriğinin arşivi.', url: 'https://web.archive.org/web/*/', query: true },
+  { name: 'Bellingcat', cat: 'olay', desc: 'Açık kaynak soruşturma ve doğrulama platformu.', url: 'https://www.bellingcat.com/?s=', query: true },
+  { name: 'Pastebin Search', cat: 'olay', desc: 'Pastebin ve paste sitelerinde içerik tarama.', url: 'https://psbdmp.ws/search?q=', query: true },
+  // SOSYAL MEDYA
+  { name: 'Instagram (Picuki)', cat: 'sosyal medya', desc: 'Gizlilik olmadan Instagram profil analizi.', url: 'https://www.picuki.com/profile/', query: true },
+  { name: 'Reddit Search', cat: 'sosyal medya', desc: 'Reddit paylaşımları ve forum tartışmaları.', url: 'https://reddit.com/search/?q=', query: true },
+  { name: 'YouTube Search', cat: 'sosyal medya', desc: 'Video içerik ve kanal araştırması.', url: 'https://youtube.com/results?search_query=', query: true },
+  { name: 'TikTok Search', cat: 'sosyal medya', desc: 'TikTok profil ve içerik keşfi.', url: 'https://tiktok.com/search?q=', query: true },
+  { name: 'Telegram Search', cat: 'sosyal medya', desc: 'Telegram kanal ve grup arama.', url: 'https://tgstat.com/search?q=', query: true },
+  { name: 'GitHub Search', cat: 'sosyal medya', desc: 'GitHub profil, repo ve kod arama.', url: 'https://github.com/search?q=', query: true },
+];
 
-    const APPROACH_MAP = {
-      'şirket': 'Kurumsal kayıt → Haber taraması → Sosyal ağ analizi',
-      'kişi': 'Sosyal medya → Profesyonel profil → Dijital ayak izi',
-      'domain': 'Whois → Sunucu keşfi → Teknoloji tespiti',
-      'olay': 'Haber arşivi → Zaman çizelgesi → Kaynak doğrulama',
-      'sosyal medya': 'Platform taraması → İçerik analizi → Bağlantı haritası',
-      '': 'Genel keşif → Çapraz kaynak doğrulama → Bağlantı analizi',
-    };
+const LOADING_STEPS = ['KAYNAKLAR TARANYOR...','VERİTABANLARI SORGULANYOR...','ARAÇLAR FİLTRELENİYOR...','ANALİZ HAZIRLANIYOR...','TAMAMLANDI ✓'];
+const APPROACH_MAP = {
+  'şirket':'Kurumsal kayıt → Haber taraması → Sosyal ağ analizi',
+  'kişi':'Sosyal medya → Profesyonel profil → Dijital ayak izi',
+  'domain':'Whois → DNS analizi → Teknoloji tespiti → Güvenlik taraması',
+  'ip':'AbuseIPDB → Shodan → Konum & ASN analizi',
+  'email':'HaveIBeenPwned → Hunter.io → Sosyal hesap keşfi',
+  'olay':'Haber arşivi → Zaman çizelgesi → Kaynak doğrulama',
+  'sosyal medya':'Platform taraması → İçerik analizi → Bağlantı haritası',
+  '':'Genel keşif → Çapraz kaynak doğrulama → Bağlantı analizi',
+};
 
-    // --- SEARCH HISTORY ---
-    function getHistory() {
-      try { return JSON.parse(localStorage.getItem('osint_history') || '[]'); }
-      catch { return []; }
-    }
-    function saveToHistory(q) {
-      let history = getHistory();
-      history = [q, ...history.filter(h => h !== q)].slice(0, 8);
-      localStorage.setItem('osint_history', JSON.stringify(history));
-      renderHistory();
-    }
-    function renderHistory() {
-      const history = getHistory();
-      const section = document.getElementById('historySection');
-      const list = document.getElementById('historyList');
-      if (!history.length) { section.style.display = 'none'; return; }
-      section.style.display = 'block';
-      list.innerHTML = '';
-      history.forEach(h => {
-        const btn = document.createElement('button');
-        btn.className = 'history-tag';
-        btn.textContent = h;
-        btn.onclick = () => {
-          document.getElementById('queryInput').value = h;
-          startSearch();
-        };
-        list.appendChild(btn);
-      });
-      const clearBtn = document.createElement('button');
-      clearBtn.className = 'history-clear';
-      clearBtn.textContent = '[ GEÇMİŞİ TEMİZLE ]';
-      clearBtn.onclick = () => {
-        localStorage.removeItem('osint_history');
-        renderHistory();
-      };
-      list.appendChild(clearBtn);
-    }
+// ===================== SEKME SİSTEMİ =====================
+let tabs = [];
+let activeTabId = null;
 
-    function setTag(el, tag) {
-      document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
-      el.classList.add('active');
-      activeTag = tag;
-    }
+function createTab(query, results) {
+  const id = Date.now();
+  tabs.push({ id, query, results });
+  activeTabId = id;
+  renderTabs();
+  return id;
+}
 
-    function startSearch() {
-      const q = document.getElementById('queryInput').value.trim();
-      if (!q) {
-        document.getElementById('queryInput').style.borderColor = '#ff4c6a';
-        setTimeout(() => document.getElementById('queryInput').style.borderColor = '', 1000);
-        return;
-      }
-      saveToHistory(q);
+function switchTab(id) {
+  activeTabId = id;
+  const t = tabs.find(t => t.id === id);
+  if (t) renderResults(t.query, t.results, false);
+  renderTabs();
+}
+
+function closeTab(id, e) {
+  e.stopPropagation();
+  tabs = tabs.filter(t => t.id !== id);
+  if (activeTabId === id) {
+    if (tabs.length > 0) {
+      activeTabId = tabs[tabs.length-1].id;
+      const t = tabs.find(t => t.id === activeTabId);
+      renderResults(t.query, t.results, false);
+    } else {
+      activeTabId = null;
       document.getElementById('results').style.display = 'none';
-      document.getElementById('loading').style.display = 'block';
-      document.getElementById('searchBtn').disabled = true;
-      let step = 0;
-      const interval = setInterval(() => {
-        if (step < LOADING_STEPS.length) {
-          document.getElementById('loadingText').textContent = LOADING_STEPS[step++];
-        } else {
-          clearInterval(interval);
-          showResults(q);
-        }
-      }, 400);
+      document.getElementById('tabsSection').style.display = 'none';
     }
+  }
+  renderTabs();
+}
 
-    function showResults(q) {
-      currentTarget = q;
-      document.getElementById('groqOutput').style.display = 'none';
-      document.getElementById('groqText').textContent = '';
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('searchBtn').disabled = false;
-      const filtered = activeTag ? TOOLS.filter(t => t.cat === activeTag) : TOOLS;
-      // Analysis box
-      document.getElementById('analysisBox').style.display = 'block';
-      document.getElementById('aTarget').textContent = q.toUpperCase();
-      document.getElementById('aCategory').textContent = activeTag ? activeTag.toUpperCase() : 'GENEL / TÜM KATEGORİLER';
-      document.getElementById('aToolCount').textContent = filtered.length + ' araç bulundu';
-      document.getElementById('aApproach').textContent = APPROACH_MAP[activeTag] || APPROACH_MAP[''];
-      // Tools grid
-      document.getElementById('toolCount').textContent = filtered.length + ' araç listelendi';
-      const grid = document.getElementById('toolsGrid');
-      grid.innerHTML = '';
-      filtered.forEach((tool, i) => {
-        const url = tool.query ? tool.url + encodeURIComponent(q) : tool.url;
-        const card = document.createElement('a');
-        card.className = 'tool-card';
-        card.href = url;
-        card.target = '_blank';
-        card.rel = 'noopener noreferrer';
-        card.style.animationDelay = (i * 0.05) + 's';
-        card.innerHTML = `
-          <div class="tool-cat">${tool.cat}</div>
-          <div class="tool-name">${tool.name}</div>
-          <div class="tool-desc">${tool.desc}</div>
-          <span class="tool-arrow">↗</span>
-        `;
-        grid.appendChild(card);
-      });
-      document.getElementById('results').style.display = 'block';
-      document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+function renderTabs() {
+  const section = document.getElementById('tabsSection');
+  const bar = document.getElementById('tabsBar');
+  if (tabs.length <= 1) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  bar.innerHTML = '';
+  tabs.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (t.id === activeTabId ? ' active' : '');
+    btn.onclick = () => switchTab(t.id);
+    btn.innerHTML = t.query.substring(0,16) + (t.query.length>16?'...':'') +
+      ' <span class="tab-close" onclick="closeTab('+t.id+',event)">×</span>';
+    bar.appendChild(btn);
+  });
+}
 
-    // Init
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('queryInput').addEventListener('keydown', e => {
-        if (e.key === 'Enter') startSearch();
-      });
-      renderHistory();
+// ===================== ARAMA GEÇMİŞİ =====================
+function getHistory() { try { return JSON.parse(localStorage.getItem('osint_history')||'[]'); } catch { return []; } }
+function saveToHistory(q) {
+  let h = getHistory();
+  h = [q,...h.filter(x=>x!==q)].slice(0,8);
+  localStorage.setItem('osint_history', JSON.stringify(h));
+  renderHistory();
+}
+function renderHistory() {
+  const h = getHistory();
+  const section = document.getElementById('historySection');
+  const list = document.getElementById('historyList');
+  if (!h.length) { section.style.display='none'; return; }
+  section.style.display = 'block';
+  list.innerHTML = '';
+  h.forEach(item => {
+    const btn = document.createElement('button');
+    btn.className = 'history-tag';
+    btn.textContent = item;
+    btn.onclick = () => { document.getElementById('queryInput').value = item; startSearch(); };
+    list.appendChild(btn);
+  });
+  const clear = document.createElement('button');
+  clear.className = 'history-clear';
+  clear.textContent = '[ GEÇMİŞİ TEMİZLE ]';
+  clear.onclick = () => { localStorage.removeItem('osint_history'); renderHistory(); };
+  list.appendChild(clear);
+}
+
+let activeTag = '';
+function setTag(el, tag) {
+  document.querySelectorAll('.tag').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  activeTag = tag;
+}
+
+// ===================== ARAMA =====================
+function startSearch() {
+  const q = document.getElementById('queryInput').value.trim();
+  if (!q) {
+    document.getElementById('queryInput').style.borderColor='#ff4c6a';
+    setTimeout(()=>document.getElementById('queryInput').style.borderColor='',1000);
+    return;
+  }
+  const detected = detectTargetType(q);
+  if (detected && !activeTag) {
+    const tagButtons = document.querySelectorAll('.tag');
+    tagButtons.forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes("'"+detected+"'")) btn.classList.add('active');
     });
-  </script>
+    activeTag = detected;
+  }
+  saveToHistory(q);
+  document.getElementById('results').style.display='none';
+  document.getElementById('loading').style.display='block';
+  document.getElementById('searchBtn').disabled=true;
+  let step=0;
+  const interval = setInterval(()=>{
+    if(step<LOADING_STEPS.length) document.getElementById('loadingText').textContent=LOADING_STEPS[step++];
+    else { clearInterval(interval); const filtered=filterTools(q,activeTag); createTab(q,{filtered,tag:activeTag,detected}); showResults(q); }
+  },350);
+}
+
+function filterTools(q,tag) {
+  return tag ? TOOLS.filter(t=>t.cat===tag) : TOOLS;
+}
+
+let currentTarget='', currentRawText='';
+
+function showResults(q) {
+  const t = tabs.find(t=>t.id===activeTabId);
+  renderResults(q, t ? t.results : {}, true);
+}
+
+function renderResults(q, data, scroll) {
+  currentTarget = q;
+  document.getElementById('groqOutput').style.display='none';
+  document.getElementById('groqText').innerHTML='';
+  document.getElementById('exportRow').style.display='none';
+  currentRawText='';
+  document.getElementById('loading').style.display='none';
+  document.getElementById('searchBtn').disabled=false;
+  const { filtered=TOOLS, tag='', detected=null } = data;
+
+  const badge = document.getElementById('detectBadge');
+  if(detected && DETECT_LABELS[detected]) { badge.textContent=DETECT_LABELS[detected]; badge.style.display='block'; }
+  else badge.style.display='none';
+
+  document.getElementById('analysisBox').style.display='block';
+  document.getElementById('aTarget').textContent=q.toUpperCase();
+  document.getElementById('aDetect').textContent=detected ? detected.toUpperCase() + ' (OTOMATİK TESPİT)' : 'MANUEL SEÇİM';
+  document.getElementById('aCategory').textContent=tag ? tag.toUpperCase() : 'GENEL / TÜM KATEGORİLER';
+  document.getElementById('aToolCount').textContent=filtered.length+' araç bulundu';
+  document.getElementById('aApproach').textContent=APPROACH_MAP[tag]||APPROACH_MAP[''];
+  document.getElementById('toolCount').textContent=filtered.length+' araç listelendi';
+
+  const grid=document.getElementById('toolsGrid');
+  grid.innerHTML='';
+  filtered.forEach((tool,i)=>{
+    const url=tool.query ? tool.url+encodeURIComponent(q) : tool.url;
+    const card=document.createElement('a');
+    card.className='tool-card';
+    card.href=url; card.target='_blank'; card.rel='noopener noreferrer';
+    card.innerHTML=`<div class="tool-cat">${tool.cat}</div><div class="tool-name">${tool.name}</div><div class="tool-desc">${tool.desc}</div><span class="tool-arrow">↗</span>`;
+    grid.appendChild(card);
+  });
+
+  document.getElementById('results').style.display='block';
+  if(scroll) document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ===================== GROQ ANALİZİ =====================
+async function runGroqAnalysis() {
+  if (!currentTarget) return;
+  const key = getApiKey();
+  if (!key) { openApiModal(); return; }
+  const btn=document.getElementById('groqBtn');
+  const output=document.getElementById('groqOutput');
+  const loading=document.getElementById('groqLoading');
+  const textEl=document.getElementById('groqText');
+  btn.disabled=true; output.style.display='block'; loading.style.display='block'; textEl.innerHTML='';
+  const prompt='Sen bir OSINT uzmanısın. "'+currentTarget+'" hedefi hakkında kapsamlı bir açık kaynak istihbarat analizi yap. Şunları içer: 1) Hedef tipi ve genel tanım, 2) Önemli dijital ayak izleri ve kamuya açık bilgiler, 3) Sosyal medya ve çevrimiçi varlık durumu, 4) Potansiyel riskler ve tehditler, 5) Önerilen OSINT araçları ve araştırma yöntemleri, 6) Genel değerlendirme ve istihbarat özeti. Yanıtını Türkçe ver ve markdown formatında (## başlıklar, **kalın**, - maddeler) profesyonel bir istihbarat raporu olarak yaz.';
+  try {
+    const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],temperature:0.7,max_tokens:2000})
+    });
+    const data=await res.json();
+    loading.style.display='none';
+    if(data.choices&&data.choices[0]&&data.choices[0].message) {
+      const md=data.choices[0].message.content;
+      currentRawText=md;
+      textEl.innerHTML=renderMarkdown(md);
+      document.getElementById('exportRow').style.display='flex';
+    } else if(data.error) {
+      textEl.innerHTML='<p style="color:var(--red)">Hata: '+data.error.message+'</p>';
+    } else {
+      textEl.textContent='Analiz alınamadı.';
+    }
+  } catch(e) {
+    loading.style.display='none';
+    textEl.innerHTML='<p style="color:var(--red)">Bağlantı hatası: '+e.message+'</p>';
+  }
+  btn.disabled=false;
+}
+
+// ===================== MARKDOWN RENDER =====================
+function renderMarkdown(md) {
+  return md
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>')
+    .replace(/^\d+\. (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g,s=>'<ul>'+s+'</ul>')
+    .replace(/^---$/gm,'<hr>')
+    .replace(/`(.+?)`/g,'<code>$1</code>')
+    .replace(/\n\n/g,'</p><p>')
+    .replace(/^(?!<[hul])(.+)$/gm,'<p>$1</p>')
+    .replace(/<p><\/p>/g,'');
+}
+
+// ===================== EXPORT =====================
+function exportTXT() {
+  if(!currentRawText) return;
+  const blob=new Blob(['OSINT LENS — İSTİHBARAT RAPORU\n'+'='.repeat(50)+'\nHedef: '+currentTarget+'\nTarih: '+new Date().toLocaleString('tr-TR')+'\n'+'='.repeat(50)+'\n\n'+currentRawText],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='osint-rapor-'+currentTarget.replace(/[^a-z0-9]/gi,'-')+'.txt';
+  a.click();
+}
+function exportPDF() {
+  if(!currentRawText) return;
+  const w=window.open('','_blank');
+  w.document.write('<html><head><title>OSINT Raporu — '+currentTarget+'</title><style>body{font-family:monospace;background:#080c10;color:#c9d1d9;padding:40px;max-width:800px;margin:0 auto}h1,h2,h3{color:#21ce70}strong{color:#fff}hr{border-color:#21ce7022}code{background:#0d1117;color:#21ce70;padding:2px 6px}</style></head><body><h1>OSINT LENS — İSTİHBARAT RAPORU</h1><p>Hedef: <strong>'+currentTarget+'</strong> | Tarih: '+new Date().toLocaleString('tr-TR')+'</p><hr>'+renderMarkdown(currentRawText)+'</body></html>');
+  w.document.close();
+  setTimeout(()=>w.print(),500);
+}
+function copyReport() {
+  if(!currentRawText) return;
+  navigator.clipboard.writeText(currentRawText).then(()=>{
+    const btn=event.target; btn.textContent='✓ KOPYALANDI'; setTimeout(()=>btn.textContent='■ KOPYALA',2000);
+  });
+}
+
+// ===================== INIT =====================
+document.addEventListener('DOMContentLoaded',()=>{
+  updateApiStatus();
+  renderHistory();
+  const inp=document.getElementById('queryInput');
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter') startSearch(); });
+  inp.addEventListener('input',()=>{
+    const q=inp.value.trim();
+    const det=detectTargetType(q);
+    const badge=document.getElementById('detectBadge');
+    if(det&&DETECT_LABELS[det]&&q.length>3){ badge.textContent=DETECT_LABELS[det]; badge.style.display='block'; }
+    else badge.style.display='none';
+  });
+  document.getElementById('apiModal').addEventListener('click',e=>{ if(e.target===document.getElementById('apiModal')) closeApiModal(); });
+});
+</script>
 </body>
 </html>
