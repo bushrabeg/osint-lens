@@ -275,8 +275,8 @@
       .tools-grid { grid-template-columns: 1fr; }
     }
 
-    /* GEMINI ANALİZ PANELİ */
-    .gemini-btn {
+    /* GROQ ANALİZ PANELİ */
+    .groq-btn {
       background: transparent;
       border: 1px solid var(--green);
       color: var(--green);
@@ -290,9 +290,9 @@
       margin-top: 16px;
       width: 100%;
     }
-    .gemini-btn:hover { background: var(--green-glow); box-shadow: 0 0 20px var(--green-glow); }
-    .gemini-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .gemini-output {
+    .groq-btn:hover { background: var(--green-glow); box-shadow: 0 0 20px var(--green-glow); }
+    .groq-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .groq-output {
       background: var(--surface);
       border: 1px solid var(--green-dim);
       padding: 28px;
@@ -300,24 +300,24 @@
       position: relative;
       display: none;
     }
-    .gemini-output::before {
-      content: 'GEMİNİ İSTİHBARAT ANALİZİ';
+    .groq-output::before {
+      content: 'GROQ İSTİHBARAT ANALİZİ';
       position: absolute; top: -10px; left: 20px;
       background: var(--surface); padding: 0 8px;
       font-size: 10px; letter-spacing: 3px; color: var(--green);
     }
-    .gemini-text {
+    .groq-text {
       font-size: 13px;
       color: var(--text);
       line-height: 1.9;
       white-space: pre-wrap;
     }
-    .gemini-loading {
+    .groq-loading {
       display: none;
       text-align: center;
       padding: 20px;
     }
-    .gemini-loading-text {
+    .groq-loading-text {
       font-size: 11px;
       letter-spacing: 3px;
       color: var(--green);
@@ -439,17 +439,17 @@
       </div>
 
   
-      <!-- GEMINI ANALİZ BUTONU -->
-      <button class="gemini-btn" id="geminiBtn" onclick="runGeminiAnalysis()">
-        &#9670; GEMİNİ İLE İSTİHBARAT ANALİZİ YAP
+      <!-- GROQ ANALİZ BUTONU -->
+      <button class="groq-btn" id="groqBtn" onclick="runGroqAnalysis()">
+        &#9670; GROQ İLE İSTİHBARAT ANALİZİ YAP
       </button>
 
-      <!-- GEMINI ÇIKTISI -->
-      <div class="gemini-output" id="geminiOutput">
-        <div class="gemini-loading" id="geminiLoading">
-          <div class="gemini-loading-text">ANALİZ YAPILIYOR...</div>
+      <!-- GROQ ÇIKTISI -->
+      <div class="groq-output" id="groqOutput">
+        <div class="groq-loading" id="groqLoading">
+          <div class="groq-loading-text">ANALİZ YAPILIYOR...</div>
         </div>
-        <div class="gemini-text" id="geminiText"></div>
+        <div class="groq-text" id="groqText"></div>
       </div>
 
     <!-- TOOLS -->
@@ -470,12 +470,12 @@
   const GROQ_API_KEY = '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';
   let currentTarget = '';
 
-  async function runGeminiAnalysis() {
+  async function runGroqAnalysis() {
     if (!currentTarget) return;
-    const btn = document.getElementById('geminiBtn');
-    const output = document.getElementById('geminiOutput');
-    const loading = document.getElementById('geminiLoading');
-    const textEl = document.getElementById('geminiText');
+    const btn = document.getElementById('groqBtn');
+    const output = document.getElementById('groqOutput');
+    const loading = document.getElementById('groqLoading');
+    const textEl = document.getElementById('groqText');
 
     btn.disabled = true;
     output.style.display = 'block';
@@ -629,8 +629,8 @@
 
     function showResults(q) {
       currentTarget = q;
-      document.getElementById('geminiOutput').style.display = 'none';
-      document.getElementById('geminiText').textContent = '';
+      document.getElementById('groqOutput').style.display = 'none';
+      document.getElementById('groqText').textContent = '';
       document.getElementById('loading').style.display = 'none';
       document.getElementById('searchBtn').disabled = false;
       const filtered = activeTag ? TOOLS.filter(t => t.cat === activeTag) : TOOLS;
