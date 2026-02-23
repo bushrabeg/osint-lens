@@ -124,6 +124,22 @@
     .tool-desc { font-size: 11px; color: var(--text-dim); line-height: 1.6; }
     .tool-arrow { position: absolute; top: 18px; right: 18px; color: var(--green-dim); font-size: 15px; transition: transform 0.2s; }
     .tool-card:hover .tool-arrow { transform: translate(3px, -3px); }
+    /* CATEGORY SECTIONS */
+    .cat-section { margin-bottom: 32px; }
+    .cat-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .cat-icon { width: 28px; height: 28px; border: 1px solid var(--green); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--green); flex-shrink: 0; }
+    .cat-title { font-family: var(--mono); font-size: 13px; letter-spacing: 3px; color: #fff; text-transform: uppercase; }
+    .cat-count { font-size: 10px; color: var(--green-dim); letter-spacing: 2px; margin-left: auto; }
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+    .tool-card { background: var(--surface); border: 1px solid var(--border); padding: 14px 16px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; text-decoration: none; color: inherit; display: block; }
+    .tool-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--green); opacity: 0; transition: opacity 0.2s; }
+    .tool-card:hover { border-color: var(--green); box-shadow: 0 0 16px #21ce7011; transform: none; }
+    .tool-card:hover::before { opacity: 1; }
+    .tool-card .tool-cat { display: none; }
+    .tool-card .tool-name { font-family: var(--sans); font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .tool-card .tool-desc { font-size: 10px; color: var(--text-dim); line-height: 1.5; }
+    .tool-card .tool-arrow { position: absolute; top: 12px; right: 12px; color: var(--green-dim); font-size: 13px; transition: transform 0.2s; }
+    .tool-card:hover .tool-arrow { transform: translate(2px, -2px); color: var(--green); }
     /* ANALYSIS BOX */
     .analysis-box { background: var(--surface); border: 1px solid var(--green-dim); padding: 24px; margin-bottom: 24px; position: relative; display: none; }
     .analysis-box::before { content: 'ANALİZ ÇIKTISI'; position: absolute; top: -10px; left: 20px; background: var(--surface); padding: 0 8px; font-size: 10px; letter-spacing: 3px; color: var(--green); }
@@ -640,16 +656,42 @@ function renderResults(q, data, scroll) {
 
   const grid=document.getElementById('toolsGrid');
   grid.innerHTML='';
-  filtered.forEach((tool,i)=>{
-    const url=tool.query ? tool.url+encodeURIComponent(q) : tool.url;
-    const card=document.createElement('a');
-    card.className='tool-card';
-    card.href=url; card.target='_blank'; card.rel='noopener noreferrer';
-    card.innerHTML=`<div class="tool-cat">${tool.cat}</div><div class="tool-name">${tool.name}</div><div class="tool-desc">${tool.desc}</div><span class="tool-arrow">↗</span>`;
-    grid.appendChild(card);
+  // Kategorilere göre grupla
+  const catIcons = {
+    'sirket': '[S]', 'kisi': '[K]', 'domain': '[D]', 'ip': '[I]',
+    'email': '[E]', 'olay': '[O]', 'sosyal medya': '[M]', 'genel': '[G]'
+  };
+  const catLabels = {
+    'sirket': 'SIRKET', 'kisi': 'KISI', 'domain': 'DOMAIN', 'ip': 'IP ADRESI',
+    'email': 'E-POSTA', 'olay': 'OLAY / HABER', 'sosyal medya': 'SOSYAL MEDYA', 'genel': 'GENEL'
+  };
+  const groups = {};
+  filtered.forEach(tool => {
+    const cat = tool.cat || 'genel';
+    if (!groups[cat]) groups[cat] = [];
+    groups[cat].push(tool);
+  });
+  Object.entries(groups).forEach(([cat, tools]) => {
+    const catKey = cat.replace(/[^a-z]/g, '');
+    const section = document.createElement('div');
+    section.className = 'cat-section';
+    const iconChar = catIcons[cat] || '[?]';
+    const labelText = catLabels[cat] || cat.toUpperCase();
+    section.innerHTML = '<div class="cat-header"><div class="cat-icon">' + iconChar + '</div><div class="cat-title">' + labelText + '</div><div class="cat-count">[ ' + tools.length + ' ARAC ]</div></div><div class="tools-grid" id="grid-' + catKey + '"></div>';
+    grid.appendChild(section);
+    const subgrid = section.querySelector('.tools-grid');
+    tools.forEach(tool => {
+      const url = tool.query ? tool.url + encodeURIComponent(q) : tool.url;
+      const card = document.createElement('a');
+      card.className = 'tool-card';
+      card.href = url;
+      card.target = '_blank';
+      card.rel = 'noopener noreferrer';
+      card.innerHTML = '<div class="tool-name">' + tool.name + '</div><div class="tool-desc">' + tool.desc + '</div><span class="tool-arrow">&#x2197;</span>';
+      subgrid.appendChild(card);
+    });
   });
 
-  document.getElementById('results').style.display='block';
   if(scroll) document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
