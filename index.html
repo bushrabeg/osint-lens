@@ -599,6 +599,45 @@ const TOOLS = [
   { name: 'TikTok Search', cat: 'sosyal medya', desc: 'TikTok profil ve içerik keşfi.', url: 'https://tiktok.com/search?q=', query: true },
   { name: 'Telegram Search', cat: 'sosyal medya', desc: 'Telegram kanal ve grup arama.', url: 'https://tgstat.com/search?q=', query: true },
   { name: 'GitHub Search', cat: 'sosyal medya', desc: 'GitHub profil, repo ve kod arama.', url: 'https://github.com/search?q=', query: true },
+  // GÖRSEL / FOTOĞRAF OSINT (YENİ KATEGORİ)
+  { name: 'Google Reverse Image', cat: 'görsel', desc: 'Fotoğraftan kaynak arama, benzer görselleri bulma.', url: 'https://images.google.com/?imghp=1', query: false },
+  { name: 'TinEye', cat: 'görsel', desc: 'Ters görsel arama, orijinal kaynağı ve değiştirilmiş versiyonları bulma.', url: 'https://tineye.com/search?url=', query: false },
+  { name: 'Yandex Images', cat: 'görsel', desc: 'Yüz tanıma ve ters görsel aramada en güçlü motor.', url: 'https://yandex.com/images/search?rpt=imageview&url=', query: false },
+  { name: 'FotoForensics', cat: 'görsel', desc: 'Fotoğraf manipülasyonu ve ELA (Error Level Analysis) tespiti.', url: 'https://fotoforensics.com/', query: false },
+  // TELEFON (YENİ KATEGORİ)
+  { name: 'Truecaller', cat: 'telefon', desc: 'Telefon numarası sahibi ve spam kontrolü.', url: 'https://www.truecaller.com/search/', query: true },
+  { name: 'NumVerify', cat: 'telefon', desc: 'Telefon numarası doğrulama, operatör ve konum bilgisi.', url: 'https://numverify.com/', query: false },
+  { name: 'Sync.me', cat: 'telefon', desc: 'Telefon numarası sahibi arama ve sosyal profil eşleştirme.', url: 'https://sync.me/search/?q=', query: true },
+  // ŞİRKET EKLEMELERİ
+  { name: 'ICIJ Offshore Leaks', cat: 'şirket', desc: 'Panama Papers, Paradise Papers — offshore şirket sızıntıları.', url: 'https://offshoreleaks.icij.org/search?q=', query: true },
+  { name: 'SEC EDGAR', cat: 'şirket', desc: 'ABD halka açık şirketlerin finansal raporları ve dosyalamaları.', url: 'https://efts.sec.gov/LATEST/search-index?q=', query: true },
+  { name: 'Owler', cat: 'şirket', desc: 'Şirket profilleri, rakip analizi ve sektör karşılaştırmaları.', url: 'https://www.owler.com/company/', query: true },
+  { name: 'Ticaret Sicil Gazetesi', cat: 'şirket', desc: 'Türkiye şirket tescil ve ilan bilgileri resmi kaynağı.', url: 'https://www.ticaretsicil.gov.tr/sorgu/', query: false },
+  // KİŞİ EKLEMELERİ
+  { name: 'Namechk', cat: 'kişi', desc: 'Kullanıcı adını 100+ platformda arama ve müsaitlik kontrolü.', url: 'https://namechk.com/', query: false },
+  { name: 'WhatsMyName', cat: 'kişi', desc: 'Kullanıcı adını 400+ sitede arama. Açık kaynak OSINT aracı.', url: 'https://whatsmyname.app/', query: false },
+  { name: 'Social Searcher', cat: 'kişi', desc: 'Sosyal medya gerçek zamanlı arama motoru ve analiz.', url: 'https://www.social-searcher.com/search-users/?q6=', query: true },
+  { name: 'That\'s Them', cat: 'kişi', desc: 'İsim, adres, telefon ve e-posta ile kişi arama.', url: 'https://thatsthem.com/name/', query: true },
+  { name: 'Webmii', cat: 'kişi', desc: 'Kişinin çevrimiçi görünürlük skoru ve web varlığı analizi.', url: 'https://webmii.com/people?n=', query: true },
+  // DOMAIN EKLEMELERİ
+  { name: 'crt.sh', cat: 'domain', desc: 'SSL sertifika arama — subdomain keşfinde altın standart.', url: 'https://crt.sh/?q=', query: true },
+  { name: 'Netcraft', cat: 'domain', desc: 'Site altyapı geçmişi, hosting ve teknoloji değişiklik takibi.', url: 'https://sitereport.netcraft.com/?url=', query: true },
+  { name: 'Wappalyzer', cat: 'domain', desc: 'Web sitesi teknoloji stack tespiti — framework, CMS, analytics.', url: 'https://www.wappalyzer.com/lookup/', query: true },
+  // IP EKLEMELERİ
+  { name: 'Talos Intelligence', cat: 'ip', desc: 'Cisco IP ve domain itibar skoru, tehdit istihbaratı.', url: 'https://talosintelligence.com/reputation_center/lookup?search=', query: true },
+  { name: 'Censys IP', cat: 'ip', desc: 'IP ve sertifika bazlı internet geneli tarama ve keşif.', url: 'https://search.censys.io/hosts/', query: true },
+  // EMAIL EKLEMELERİ
+  { name: 'Holehe', cat: 'email', desc: 'E-postanın hangi platformlarda kayıtlı olduğunu tespit etme.', url: 'https://osint.industries/', query: false },
+  { name: 'Intelligence X', cat: 'email', desc: 'E-posta, domain ve leak veritabanı arama motoru.', url: 'https://intelx.io/?s=', query: true },
+  { name: 'Dehashed', cat: 'email', desc: 'Veri sızıntılarında e-posta ve kullanıcı bilgisi arama.', url: 'https://dehashed.com/search?query=', query: true },
+  // OLAY/HABER EKLEMELERİ
+  { name: 'Liveuamap', cat: 'olay', desc: 'Canlı olay haritası — çatışma, kriz ve olayların gerçek zamanlı takibi.', url: 'https://liveuamap.com/', query: false },
+  { name: 'FlightRadar24', cat: 'olay', desc: 'Canlı uçak takibi ve uçuş geçmişi sorgulama.', url: 'https://www.flightradar24.com/', query: false },
+  { name: 'MarineTraffic', cat: 'olay', desc: 'Canlı gemi takibi, liman ve deniz trafiği istihbaratı.', url: 'https://www.marinetraffic.com/en/ais/home', query: false },
+  // SOSYAL MEDYA EKLEMELERİ
+  { name: 'Facebook Search', cat: 'sosyal medya', desc: 'Facebook profil, sayfa ve gönderi araması.', url: 'https://www.facebook.com/search/top?q=', query: true },
+  { name: 'Snapchat Map', cat: 'sosyal medya', desc: 'Konum bazlı Snapchat hikayeleri ve canlı paylaşım haritası.', url: 'https://map.snapchat.com/', query: false },
+  { name: 'Discord Lookup', cat: 'sosyal medya', desc: 'Discord kullanıcı ve sunucu arama.', url: 'https://discordlookup.com/', query: false },
 ];
 
 const LOADING_STEPS = ['KAYNAKLAR TARANYOR...','VERİTABANLARI SORGULANYOR...','ARAÇLAR FİLTRELENİYOR...','ANALİZ HAZIRLANIYOR...','TAMAMLANDI ✓'];
@@ -610,6 +649,8 @@ const APPROACH_MAP = {
   'email':'HaveIBeenPwned → Hunter.io → Sosyal hesap keşfi',
   'olay':'Haber arşivi → Zaman çizelgesi → Kaynak doğrulama',
   'sosyal medya':'Platform taraması → İçerik analizi → Bağlantı haritası',
+  'görsel':'Ters görsel arama → Manipülasyon tespiti → Kaynak doğrulama',
+  'telefon':'Numara doğrulama → Sahip tespiti → Sosyal profil eşleştirme',
   '':'Genel keşif → Çapraz kaynak doğrulama → Bağlantı analizi',
 };
 
@@ -768,11 +809,15 @@ function renderResults(q, data, scroll) {
   // Kategorilere göre grupla
   const catIcons = {
     'sirket': '[S]', 'kisi': '[K]', 'domain': '[D]', 'ip': '[I]',
-    'email': '[E]', 'olay': '[O]', 'sosyal medya': '[M]', 'genel': '[G]'
+    'email': '[E]', 'olay': '[O]', 'sosyal medya': '[M]', 'görsel': '[F]',
+        'telefon': '[T]',
+        'genel': '[G]'
   };
   const catLabels = {
     'sirket': 'SIRKET', 'kisi': 'KISI', 'domain': 'DOMAIN', 'ip': 'IP ADRESI',
-    'email': 'E-POSTA', 'olay': 'OLAY / HABER', 'sosyal medya': 'SOSYAL MEDYA', 'genel': 'GENEL'
+    'email': 'E-POSTA', 'olay': 'OLAY / HABER', 'sosyal medya': 'SOSYAL MEDYA', 'görsel': 'GÖRSEL / FOTOĞRAF OSINT',
+        'telefon': 'TELEFON',
+        'genel': 'GENEL'
   };
   const groups = {};
   filtered.forEach(tool => {
