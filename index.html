@@ -68,6 +68,86 @@
     .howto-num { font-size: 26px; color: var(--green); font-family: var(--sans); font-weight: 700; line-height: 1; }
     .howto-title { font-size: 12px; color: #fff; font-family: var(--sans); font-weight: 600; letter-spacing: 1px; }
     .howto-desc { font-size: 11px; color: var(--text-dim); line-height: 1.7; }
+
+
+    /* API KEY REHBER BÖLÜMÜ */
+    .apikey-guide-section {
+      background: var(--surface);
+      border: 1px solid var(--green-dim);
+      padding: 24px 28px;
+      margin-bottom: 40px;
+      position: relative;
+    }
+    .apikey-guide-section::before {
+      content: '\1F511  API KEY NASIL ALINIR?';
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      background: var(--surface);
+      padding: 0 8px;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--green);
+    }
+    .apikey-guide-note {
+      margin-top: 18px;
+      padding: 10px 14px;
+      background: rgba(33,206,112,0.05);
+      border: 1px solid rgba(33,206,112,0.15);
+      font-size: 11px;
+      color: var(--text-dim);
+      line-height: 1.7;
+      letter-spacing: 0.3px;
+    }
+    .apikey-guide-note strong {
+      color: #fff;
+    }
+    .apikey-guide-section .howto-desc a {
+      color: var(--green);
+      text-decoration: underline;
+    }
+    .apikey-guide-section .howto-desc strong {
+      color: #fff;
+    }
+    .apikey-guide-section .howto-desc code {
+      color: var(--green);
+      background: rgba(33,206,112,0.1);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 10px;
+    }
+    .apikey-guide-section .howto-desc .time-hint {
+      color: var(--text-dim);
+      font-style: italic;
+    }
+    .api-modal-steps {
+      margin-top: 14px;
+      padding: 10px 12px;
+      background: rgba(33,206,112,0.05);
+      border: 1px solid rgba(33,206,112,0.15);
+      font-size: 11px;
+      color: var(--text-dim);
+      line-height: 1.9;
+      letter-spacing: 0.3px;
+    }
+    .api-modal-steps .step-num {
+      color: var(--green);
+      font-weight: 600;
+    }
+    .api-modal-steps a {
+      color: var(--green);
+    }
+    .api-modal-steps strong {
+      color: #fff;
+    }
+    .api-modal-steps code {
+      color: var(--green);
+      background: rgba(33,206,112,0.1);
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 10px;
+    }
+
     /* SEARCH */
     .search-section { margin-bottom: 32px; }
     .search-box { background: var(--surface); border: 1px solid var(--green-dim); padding: 24px; position: relative; }
@@ -252,6 +332,11 @@
   <div class="api-modal-box">
     <button class="api-close-btn" onclick="closeApiModal()">[ X ]</button>
     <p>Groq API key'ini girerek yapay zeka analizini aktifleştir.<br>Ücretsiz key almak için: <a href="https://console.groq.com" target="_blank">console.groq.com</a></p>
+      <div class="api-modal-steps">
+        <span class="step-num">&#9312;</span> <a href="https://console.groq.com" target="_blank">console.groq.com</a>'a git &#8594; ücretsiz kayıt ol<br>
+        <span class="step-num">&#9313;</span> Sol menü &#8594; <strong>API Keys</strong> &#8594; <strong>Create API Key</strong><br>
+        <span class="step-num">&#9314;</span> Oluşan <code>gsk_...</code> kodunu kopyala &#8594; aşağıya yapıştır
+      </div>
     <input type="text" class="api-input" id="apiKeyInput" placeholder="gsk_..." autocomplete="off" />
     <button class="api-save-btn" onclick="saveApiKey()">&#9654; KAYDET VE AKTİFLEŞTİR</button>
   </div>
@@ -296,6 +381,29 @@
       <div class="howto-step"><div class="howto-num">02</div><div class="howto-title">KATEGORİ SEÇ</div><div class="howto-desc">Otomatik algı çalışır veya ŞİRKET, KİŞİ, DOMAIN kategorisi seç.</div></div>
       <div class="howto-step"><div class="howto-num">03</div><div class="howto-title">TARA</div><div class="howto-desc">TARA butonuna bas. Sistem 35+ OSINT aracını filtreler.</div></div>
       <div class="howto-step"><div class="howto-num">04</div><div class="howto-title">ANALİZ ET</div><div class="howto-desc">Groq AI ile derin istihbarat raporu al, PDF/TXT olarak indir.</div></div>
+    </div>
+  </div>
+
+  <div class="apikey-guide-section">
+    <div class="howto-grid">
+      <div class="howto-step">
+        <div class="howto-num">01</div>
+        <div class="howto-title">HESAP OLUŞTUR</div>
+        <div class="howto-desc"><a href="https://console.groq.com" target="_blank" rel="noopener noreferrer">console.groq.com</a> adresine git. Google veya GitHub hesabınla <strong>ücretsiz</strong> kayıt ol. <span class="time-hint">(30 saniye)</span></div>
+      </div>
+      <div class="howto-step">
+        <div class="howto-num">02</div>
+        <div class="howto-title">KEY OLUŞTUR</div>
+        <div class="howto-desc">Sol menüden <strong>API Keys</strong> bölümüne tıkla. <strong>Create API Key</strong> butonuna bas. Key'ine bir isim ver ve oluştur.</div>
+      </div>
+      <div class="howto-step">
+        <div class="howto-num">03</div>
+        <div class="howto-title">BURAYA YAPIŞTIR</div>
+        <div class="howto-desc">Oluşan <code>gsk_...</code> kodunu kopyala. Sağ üstteki <strong>API</strong> butonuna tıkla, yapıştır ve kaydet.</div>
+      </div>
+    </div>
+    <div class="apikey-guide-note">
+      <span style="color:var(--green);">[ &#8505; ]</span> Groq API tamamen <strong>ücretsizdir.</strong> API ile verileriniz güvende kalır. Key'iniz sadece tarayıcınızda saklanır, hiçbir sunucuya gönderilmez.
     </div>
   </div>
 
