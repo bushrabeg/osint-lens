@@ -1494,16 +1494,25 @@ function switchNews(channel, btn) {
 // ────────────────────────────────────────────────
 // WEBCAM DATA
 // ────────────────────────────────────────────────
+// Windy.com webcam IDs - these work in iframes without restrictions
 const webcams = {
   all: [
-    { region: 'mideast', city: 'KUDÜS', id: 'SsA6rF_WtUo' },
-    { region: 'mideast', city: 'TAHRAN', id: 'nTB7rNka8iA' },
-    { region: 'europe', city: 'KİEV', id: 'YNHo7JDhTgY' },
-    { region: 'americas', city: 'WASHINGTON DC', id: 'C2DQ5rUsGaA' },
-    { region: 'europe', city: 'LONDRA', id: '6TNJQB3e0Lk' },
-    { region: 'asia', city: 'TOKYO', id: 'h7MbyKFZSIE' },
-    { region: 'europe', city: 'PARİS', id: 'yl6JgXKVBAY' },
-    { region: 'americas', city: 'NEW YORK', id: 'c1bsGXf4TW8' },
+    { region: 'europe',   city: 'LONDRA',        id: 1562793 },
+    { region: 'europe',   city: 'PARİS',          id: 1562563 },
+    { region: 'europe',   city: 'ROMA',            id: 1227638 },
+    { region: 'europe',   city: 'KİEV',            id: 1605101 },
+    { region: 'mideast',  city: 'KUDÜS',           id: 1669685 },
+    { region: 'mideast',  city: 'DUBAI',           id: 1723229 },
+    { region: 'mideast',  city: 'İSTANBUL',        id: 1580319 },
+    { region: 'mideast',  city: 'KAHIRE',          id: 1672923 },
+    { region: 'americas', city: 'NEW YORK',        id: 1562967 },
+    { region: 'americas', city: 'WASHINGTON DC',   id: 1564730 },
+    { region: 'americas', city: 'LOS ANGELES',     id: 1601352 },
+    { region: 'americas', city: 'SAO PAULO',       id: 1691908 },
+    { region: 'asia',     city: 'TOKYO',           id: 1584198 },
+    { region: 'asia',     city: 'HONG KONG',       id: 1723344 },
+    { region: 'asia',     city: 'SİNGAPUR',        id: 1724737 },
+    { region: 'asia',     city: 'MUMBAI',          id: 1672514 },
   ],
 };
 
@@ -1518,8 +1527,8 @@ function renderWebcams(region) {
   const items = region === 'all' ? webcams.all : webcams.all.filter(w => w.region === region);
   grid.innerHTML = items.map(w => `
     <div class="webcam-item">
-      <iframe src="https://www.youtube.com/embed/${w.id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${w.id}" 
-        allow="autoplay" allowfullscreen></iframe>
+      <iframe src="https://webcams.windy.com/webcam/${w.id}/player?key=public&autoplay=1"
+        allow="autoplay" allowfullscreen loading="lazy"></iframe>
       <div class="webcam-label">
         <div class="webcam-live-dot"></div>
         ${w.city}
