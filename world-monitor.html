@@ -1494,25 +1494,25 @@ function switchNews(channel, btn) {
 // ────────────────────────────────────────────────
 // WEBCAM DATA
 // ────────────────────────────────────────────────
-// Windy.com webcam IDs - these work in iframes without restrictions
+// Verified 24/7 live YouTube cam IDs - autoplay=0 always works in iframes
 const webcams = {
   all: [
-    { region: 'europe',   city: 'LONDRA',        id: 1562793 },
-    { region: 'europe',   city: 'PARİS',          id: 1562563 },
-    { region: 'europe',   city: 'ROMA',            id: 1227638 },
-    { region: 'europe',   city: 'KİEV',            id: 1605101 },
-    { region: 'mideast',  city: 'KUDÜS',           id: 1669685 },
-    { region: 'mideast',  city: 'DUBAI',           id: 1723229 },
-    { region: 'mideast',  city: 'İSTANBUL',        id: 1580319 },
-    { region: 'mideast',  city: 'KAHIRE',          id: 1672923 },
-    { region: 'americas', city: 'NEW YORK',        id: 1562967 },
-    { region: 'americas', city: 'WASHINGTON DC',   id: 1564730 },
-    { region: 'americas', city: 'LOS ANGELES',     id: 1601352 },
-    { region: 'americas', city: 'SAO PAULO',       id: 1691908 },
-    { region: 'asia',     city: 'TOKYO',           id: 1584198 },
-    { region: 'asia',     city: 'HONG KONG',       id: 1723344 },
-    { region: 'asia',     city: 'SİNGAPUR',        id: 1724737 },
-    { region: 'asia',     city: 'MUMBAI',          id: 1672514 },
+    { region: 'americas', city: 'NEW YORK — Times Sq',   id: 'rnXIjl_Rzy4' },
+    { region: 'americas', city: 'NEW YORK — 24/7',       id: 'VGnFLdQW39A' },
+    { region: 'americas', city: 'NEW YORK — Broadway',   id: '4qyZLflp-sI' },
+    { region: 'americas', city: 'NEW YORK — Duffy Sq',   id: 'iiBTWU2FyFo' },
+    { region: 'europe',   city: 'LONDRA',                id: 'WKGK_hYnlGE' },
+    { region: 'europe',   city: 'LONDRA — Trafalgar',    id: 'Lxqcg1qt0XU' },
+    { region: 'europe',   city: 'LONDRA — Thames',       id: '8JCk5M_xrBs' },
+    { region: 'europe',   city: 'LONDRA — Southbank',    id: 'HVGwLboIdYc' },
+    { region: 'asia',     city: 'TOKYO',                 id: 'L6wO1-U2RTY' },
+    { region: 'asia',     city: 'TOKYO — Shibuya',       id: '_k-5U7IeK8g' },
+    { region: 'asia',     city: 'TOKYO — Shinjuku',      id: '6dp-bvQ7RWo' },
+    { region: 'asia',     city: 'TOKYO — Akihabara',     id: 'DjdUEyjx8GM' },
+    { region: 'mideast',  city: 'DUBAI',                 id: 'z7SiAaN4ogw' },
+    { region: 'mideast',  city: 'DUBAI — Skyline',       id: 'HfgIFGbdGJ0' },
+    { region: 'europe',   city: 'PARİS',                 id: '2BLqhS59Elc' },
+    { region: 'mideast',  city: 'İSTANBUL',              id: 'EFum1rGUdkk' },
   ],
 };
 
@@ -1526,9 +1526,13 @@ function renderWebcams(region) {
   const grid = document.getElementById('webcamGrid');
   const items = region === 'all' ? webcams.all : webcams.all.filter(w => w.region === region);
   grid.innerHTML = items.map(w => `
-    <div class="webcam-item">
-      <iframe src="https://webcams.windy.com/webcam/${w.id}/player?key=public&autoplay=1"
-        allow="autoplay" allowfullscreen loading="lazy"></iframe>
+    <div class="webcam-item" onclick="this.querySelector('iframe').src=this.querySelector('iframe').src.replace('autoplay=0','autoplay=1')">
+      <iframe
+        src="https://www.youtube.com/embed/${w.id}?autoplay=0&mute=1&controls=1&rel=0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen
+        loading="lazy">
+      </iframe>
       <div class="webcam-label">
         <div class="webcam-live-dot"></div>
         ${w.city}
