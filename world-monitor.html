@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OSINT Lens â Dünya Monitörü</title>
+  <title>OSINT Lens — Dünya Monitörü</title>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -70,7 +70,7 @@
       padding: 0 20px;
     }
 
-    /* ââ HEADER ââ */
+    /* ── HEADER ── */
     header {
       border-bottom: 1px solid var(--border);
       padding: 16px 20px;
@@ -191,7 +191,7 @@
       letter-spacing: 1px;
     }
 
-    /* ââ MAIN LAYOUT ââ */
+    /* ── MAIN LAYOUT ── */
     .main-layout {
       display: grid;
       grid-template-columns: 220px 1fr;
@@ -200,7 +200,7 @@
       height: calc(100vh - 65px);
     }
 
-    /* ââ LAYERS PANEL ââ */
+    /* ── LAYERS PANEL ── */
     .layers-panel {
       grid-row: 1 / 2;
       background: rgba(13,17,23,0.8);
@@ -261,7 +261,7 @@
     }
 
     .layer-item.active .layer-checkbox::after {
-      content: 'â';
+      content: '✓';
       font-size: 10px;
       color: var(--bg);
       font-weight: bold;
@@ -289,7 +289,7 @@
       text-align: center;
     }
 
-    /* ââ TIME RANGE ââ */
+    /* ── TIME RANGE ── */
     .time-range {
       display: flex;
       gap: 2px;
@@ -315,7 +315,7 @@
     .time-btn:hover { border-color: var(--green-dim); color: var(--text); }
     .time-btn.active { border-color: var(--green); color: var(--green); background: var(--green-glow); }
 
-    /* ââ MAP ââ */
+    /* ── MAP ── */
     .map-container {
       grid-row: 1 / 2;
       position: relative;
@@ -327,7 +327,6 @@
       height: 100%;
     }
 
-    /* Leaflet dark overrides */
     .leaflet-container {
       background: #04080d !important;
       font-family: var(--mono) !important;
@@ -387,7 +386,6 @@
       letter-spacing: 1px;
     }
 
-    /* Loading overlay */
     .map-loading {
       position: absolute;
       inset: 0;
@@ -431,7 +429,6 @@
       color: var(--green);
     }
 
-    /* Legend */
     .map-legend {
       position: absolute;
       bottom: 12px;
@@ -460,7 +457,7 @@
 
     .legend-label { font-size: 9px; color: var(--text-dim); letter-spacing: 1px; }
 
-    /* ââ BOTTOM ROW ââ */
+    /* ── BOTTOM ROW ── */
     .bottom-row {
       grid-column: 1 / 3;
       grid-row: 2 / 3;
@@ -469,7 +466,7 @@
       border-top: 1px solid var(--border);
     }
 
-    /* ââ INFO PANEL ââ */
+    /* ── INFO PANEL ── */
     .info-panel {
       border-right: 1px solid var(--border);
       padding: 12px;
@@ -508,7 +505,7 @@
       color: var(--text-dim);
     }
 
-    /* ââ LIVE NEWS ââ */
+    /* ── LIVE NEWS ── */
     .news-panel {
       border-right: 1px solid var(--border);
       display: flex;
@@ -536,6 +533,7 @@
       padding: 8px 14px;
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
+      flex-wrap: wrap;
     }
 
     .news-tab {
@@ -572,7 +570,7 @@
 
     .news-embed iframe.active { display: block; }
 
-    /* ââ WEBCAMS ââ */
+    /* ── WEBCAMS ── */
     .webcam-panel {
       display: flex;
       flex-direction: column;
@@ -604,8 +602,8 @@
 
     .webcam-grid {
       flex: 1;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      flex-direction: column;
       gap: 2px;
       padding: 6px;
       overflow-y: auto;
@@ -617,7 +615,9 @@
       border: 1px solid var(--border);
       overflow: hidden;
       cursor: pointer;
+      width: 100%;
       aspect-ratio: 16/9;
+      flex-shrink: 0;
     }
 
     .webcam-item iframe {
@@ -650,7 +650,7 @@
       animation: pulse 1.5s infinite;
     }
 
-    /* ââ MARKER STYLES ââ */
+    /* ── MARKER STYLES ── */
     .custom-marker {
       display: flex;
       align-items: center;
@@ -664,7 +664,7 @@
 
     .custom-marker:hover { transform: scale(1.3); }
 
-    /* ââ POPUP ââ */
+    /* ── POPUP ── */
     .leaflet-popup-content-wrapper {
       background: rgba(8,12,16,0.97) !important;
       border: 1px solid var(--green) !important;
@@ -699,7 +699,7 @@
 
     .popup-meta span { color: var(--green); }
 
-    /* ââ FOOTER ââ */
+    /* ── FOOTER ── */
     footer {
       border-top: 1px solid var(--border);
       padding: 12px 20px;
@@ -740,12 +740,12 @@
         </div>
         <div>
           <div class="logo-text">OSINT Lens</div>
-          <div class="logo-sub">AÇIK KAYNAK İSTİHBARAT ARACI</div>
+          <div class="logo-sub">AÇIK KAYNAK İSTİHBARAT ARACI</div>
         </div>
       </a>
       <nav class="nav-tabs">
-        <a href="index.html" class="nav-tab">â OSINT TARA</a>
-        <a href="world-monitor.html" class="nav-tab active">â DÜNYA MONİTÖRÜ</a>
+        <a href="index.html" class="nav-tab">» OSINT TARA</a>
+        <a href="world-monitor.html" class="nav-tab active">» DÜNYA MONİTÖRÜ</a>
       </nav>
     </div>
     <div class="header-right">
@@ -767,79 +767,79 @@
 
     <div class="layer-item active" data-layer="conflicts" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
-      <span class="layer-icon">âï¸</span>
-      <span class="layer-label">ÇATIşMALAR</span>
-      <span class="layer-count" id="count-conflicts">â</span>
+      <span class="layer-icon">⚔️</span>
+      <span class="layer-label">ÇATIŞMALAR</span>
+      <span class="layer-count" id="count-conflicts">—</span>
     </div>
 
     <div class="layer-item active" data-layer="hotspots" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
-      <span class="layer-icon">ð¥</span>
+      <span class="layer-icon">🔥</span>
       <span class="layer-label">SICAK NOKTALAR</span>
-      <span class="layer-count" id="count-hotspots">â</span>
+      <span class="layer-count" id="count-hotspots">—</span>
     </div>
 
     <div class="layer-item active" data-layer="natural" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
-      <span class="layer-icon">ðªï¸</span>
-      <span class="layer-label">DOğAL OLAYLAR</span>
-      <span class="layer-count" id="count-natural">â</span>
+      <span class="layer-icon">🌪️</span>
+      <span class="layer-label">DOĞAL OLAYLAR</span>
+      <span class="layer-count" id="count-natural">—</span>
     </div>
 
     <div class="layer-item active" data-layer="weather" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
-      <span class="layer-icon">ð¤ï¸</span>
+      <span class="layer-icon">🌤️</span>
       <span class="layer-label">HAVA DURUMU</span>
-      <span class="layer-count" id="count-weather">â</span>
+      <span class="layer-count" id="count-weather">—</span>
     </div>
 
     <div class="layer-item active" data-layer="bases" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
-      <span class="layer-icon">ð¡ï¸</span>
+      <span class="layer-icon">🛡️</span>
       <span class="layer-label">ASKERİ ÜSLER</span>
-      <span class="layer-count" id="count-bases">â</span>
+      <span class="layer-count" id="count-bases">—</span>
     </div>
 
     <div class="layer-item active" data-layer="nuclear" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
-      <span class="layer-icon">â¢ï¸</span>
+      <span class="layer-icon">☢️</span>
       <span class="layer-label">NÜKLEER</span>
-      <span class="layer-count" id="count-nuclear">â</span>
+      <span class="layer-count" id="count-nuclear">—</span>
     </div>
 
     <div class="layer-item active" data-layer="outages" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
-      <span class="layer-icon">â¡</span>
+      <span class="layer-icon">⚡</span>
       <span class="layer-label">İNTERNET KESİNTİ</span>
-      <span class="layer-count" id="count-outages">â</span>
+      <span class="layer-count" id="count-outages">—</span>
     </div>
 
     <div class="layer-item active" data-layer="sanctions" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
-      <span class="layer-icon">ð«</span>
+      <span class="layer-icon">🚫</span>
       <span class="layer-label">YAPTIRIMLAR</span>
-      <span class="layer-count" id="count-sanctions">â</span>
+      <span class="layer-count" id="count-sanctions">—</span>
     </div>
 
     <div class="layer-item" data-layer="waterways" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
-      <span class="layer-icon">ð¢</span>
-      <span class="layer-label">GEMİ TRAFİğİ</span>
-      <span class="layer-count" id="count-waterways">â</span>
+      <span class="layer-icon">🚢</span>
+      <span class="layer-label">GEMİ TRAFİĞİ</span>
+      <span class="layer-count" id="count-waterways">—</span>
     </div>
 
     <div class="layer-item" data-layer="economic" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
-      <span class="layer-icon">ð</span>
+      <span class="layer-icon">📈</span>
       <span class="layer-label">EKONOMİK</span>
-      <span class="layer-count" id="count-economic">â</span>
+      <span class="layer-count" id="count-economic">—</span>
     </div>
 
     <div class="layer-item" data-layer="military" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
-      <span class="layer-icon">ðª</span>
+      <span class="layer-icon">🪖</span>
       <span class="layer-label">ASKERİ HAREKETLİLİK</span>
-      <span class="layer-count" id="count-military">â</span>
+      <span class="layer-count" id="count-military">—</span>
     </div>
 
     <!-- Time Range -->
@@ -863,7 +863,7 @@
         <div class="map-subtitle" id="mapSubtitle">VERİLER YÜKLENİYOR...</div>
       </div>
       <div class="event-counter">
-        <div class="event-counter-num" id="totalEvents">â</div>
+        <div class="event-counter-num" id="totalEvents">—</div>
         <div class="event-counter-label">AKTİF OLAY</div>
       </div>
     </div>
@@ -874,10 +874,10 @@
     </div>
 
     <div class="map-legend">
-      <div class="legend-row"><div class="legend-dot" style="background:#ff4c6a"></div><span class="legend-label">ÇATIşMA / SICAK NOKTA</span></div>
-      <div class="legend-row"><div class="legend-dot" style="background:#f0c040"></div><span class="legend-label">DOğAL OLAY</span></div>
+      <div class="legend-row"><div class="legend-dot" style="background:#ff4c6a"></div><span class="legend-label">ÇATIŞMA / SICAK NOKTA</span></div>
+      <div class="legend-row"><div class="legend-dot" style="background:#f0c040"></div><span class="legend-label">DOĞAL OLAY</span></div>
       <div class="legend-row"><div class="legend-dot" style="background:#4cc9ff"></div><span class="legend-label">ASKERİ / NÜKLEER</span></div>
-      <div class="legend-row"><div class="legend-dot" style="background:#21ce70"></div><span class="legend-label">DİğER</span></div>
+      <div class="legend-row"><div class="legend-dot" style="background:#21ce70"></div><span class="legend-label">DİĞER</span></div>
     </div>
   </div>
 
@@ -900,14 +900,23 @@
       </div>
       <div class="news-tabs">
         <button class="news-tab active" onclick="switchNews('aljazeera', this)">AL JAZEERA</button>
+        <button class="news-tab" onclick="switchNews('alarabiya', this)">AL ARABİYA</button>
+        <button class="news-tab" onclick="switchNews('i24', this)">i24 NEWS</button>
         <button class="news-tab" onclick="switchNews('bbc', this)">BBC</button>
         <button class="news-tab" onclick="switchNews('dw', this)">DW</button>
         <button class="news-tab" onclick="switchNews('france24', this)">FRANCE 24</button>
         <button class="news-tab" onclick="switchNews('cnn', this)">CNN</button>
+        <button class="news-tab" onclick="switchNews('trt', this)">TRT WORLD</button>
       </div>
       <div class="news-embed">
         <iframe id="news-aljazeera" class="active"
           src="https://www.youtube.com/embed/live_stream?channel=UCNye-wNBqNL5ZzHSJj3l8Bg&autoplay=1&mute=1"
+          allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <iframe id="news-alarabiya"
+          src="https://www.youtube.com/embed/live_stream?channel=UC5GcFkNl2pZkfvV3MDDOGJw&mute=1"
+          allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <iframe id="news-i24"
+          src="https://www.youtube.com/embed/live_stream?channel=UCqDNGEnHI_9nFCCmhHPERpQ&mute=1"
           allow="autoplay; encrypted-media" allowfullscreen></iframe>
         <iframe id="news-bbc"
           src="https://www.youtube.com/embed/live_stream?channel=UC16niRr50-MSBwiO3YDb3RA&mute=1"
@@ -921,6 +930,9 @@
         <iframe id="news-cnn"
           src="https://www.youtube.com/embed/live_stream?channel=UCupvZG-5ko_eiXAupbDfxWw&mute=1"
           allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <iframe id="news-trt"
+          src="https://www.youtube.com/embed/live_stream?channel=UC3SqH_GDOpkFaUd5FGlgCcA&mute=1"
+          allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
     </div>
 
@@ -932,7 +944,8 @@
       </div>
       <div class="webcam-region-tabs">
         <button class="region-tab active" onclick="switchWebcams('all', this)">TÜM</button>
-        <button class="region-tab" onclick="switchWebcams('mideast', this)">ORTADOğU</button>
+        <button class="region-tab" onclick="switchWebcams('mideast', this)">ORTADOĞU</button>
+        <button class="region-tab" onclick="switchWebcams('russia', this)">RUSYA</button>
         <button class="region-tab" onclick="switchWebcams('europe', this)">AVRUPA</button>
         <button class="region-tab" onclick="switchWebcams('americas', this)">AMERİKA</button>
         <button class="region-tab" onclick="switchWebcams('asia', this)">ASYA</button>
@@ -946,13 +959,13 @@
 </div><!-- /main-layout -->
 
 <footer>
-  OSINT LENS v2.0 â DÜNYA MONİTÖRÜ â VERİLER: GDACS Â· ACLED Â· USGS Â· OPENWEATHERMAP â ETİK KULLANIM ZORUNLUDUR
+  OSINT LENS v2.0 — DÜNYA MONİTÖRÜ — VERİLER: GDACS · ACLED · USGS · OPENWEATHERMAP — ETİK KULLANIM ZORUNLUDUR
 </footer>
 
 <script>
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 // UTC CLOCK
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 function updateClock() {
   const now = new Date();
   const pad = n => String(n).padStart(2, '0');
@@ -962,9 +975,9 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 1000);
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 // MAP INIT
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 const map = L.map('map', {
   center: [20, 0],
   zoom: 2,
@@ -974,15 +987,14 @@ const map = L.map('map', {
 
 L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-// Dark tile layer
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   maxZoom: 18,
-  attribution: 'Â©OpenStreetMap Â©CartoDB'
+  attribution: '©OpenStreetMap ©CartoDB'
 }).addTo(map);
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 // LAYER GROUPS
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 const layerGroups = {};
 const layerDefs = [
   'conflicts','hotspots','natural','weather',
@@ -991,7 +1003,6 @@ const layerDefs = [
 ];
 layerDefs.forEach(l => { layerGroups[l] = L.layerGroup().addTo(map); });
 
-// Active state
 const activeStates = {};
 document.querySelectorAll('.layer-item').forEach(el => {
   activeStates[el.dataset.layer] = el.classList.contains('active');
@@ -1011,9 +1022,9 @@ function toggleLayer(el) {
   updateTotal();
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 // MARKER FACTORY
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 function makeIcon(color, emoji, size = 24) {
   return L.divIcon({
     className: '',
@@ -1050,9 +1061,9 @@ function makePopup(type, title, meta, color) {
   `;
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 // TOTAL COUNTER
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 let eventCounts = {};
 
 function updateTotal() {
@@ -1070,9 +1081,9 @@ function setCount(layer, n) {
   updateTotal();
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 // TIME RANGE
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 let currentTimeRange = '7d';
 
 function setTimeRange(range, btn) {
@@ -1082,9 +1093,9 @@ function setTimeRange(range, btn) {
   loadAllLayers();
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
-// DATA: GDACS â Natural Disasters
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
+// DATA: GDACS — Natural Disasters
+// ────────────────────────────────────────────────
 async function loadNaturalEvents() {
   try {
     const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?eventtypes=EQ,TC,FL,VO,WF,DR&pagesize=50&sortby=datemodified');
@@ -1098,7 +1109,6 @@ async function loadNaturalEvents() {
 
     let naturalCount = 0;
     let hotspotCount = 0;
-
     const recentEvents = [];
 
     events.forEach(e => {
@@ -1110,18 +1120,17 @@ async function loadNaturalEvents() {
       const type = props.eventtype || 'UNKNOWN';
       const name = props.name || props.eventname || 'Bilinmeyen Olay';
       const alert = (props.alertlevel || '').toUpperCase();
-      const date = props.fromdate ? new Date(props.fromdate).toLocaleDateString('tr-TR') : 'â';
+      const date = props.fromdate ? new Date(props.fromdate).toLocaleDateString('tr-TR') : '—';
 
       const alertColor = alert === 'RED' ? '#ff4c6a' : alert === 'ORANGE' ? '#ff8c42' : '#f0c040';
-
-      const emojiMap = { EQ:'ð', TC:'ð', FL:'ð', VO:'ð', WF:'ð¥', DR:'ðï¸' };
-      const emoji = emojiMap[type] || 'â ï¸';
+      const emojiMap = { EQ:'🌍', TC:'🌀', FL:'🌊', VO:'🌋', WF:'🔥', DR:'🏜️' };
+      const emoji = emojiMap[type] || '⚠️';
       const typeLabel = { EQ:'DEPREM', TC:'KASIRGA', FL:'SEL', VO:'VOLKAN', WF:'YANGIN', DR:'KURAKLIK' }[type] || type;
 
       const icon = makeIcon(alertColor, emoji);
       const popup = makePopup(
         typeLabel, name,
-        `<span style="color:${alertColor}">â ${alert || 'GREENen'}</span> Â· ${date}<br>Kaynak: <span style="color:#21ce70">GDACS</span>`,
+        `<span style="color:${alertColor}">● ${alert || 'GREEN'}</span> · ${date}<br>Kaynak: <span style="color:#21ce70">GDACS</span>`,
         alertColor
       );
 
@@ -1138,11 +1147,9 @@ async function loadNaturalEvents() {
 
     setCount('natural', naturalCount);
     setCount('hotspots', hotspotCount);
-
     renderRecentEvents(recentEvents.slice(0, 12));
-
     document.getElementById('mapSubtitle').textContent =
-      `SON GÜNCELLEME: ${new Date().toLocaleTimeString('tr-TR')} Â· GDACS`;
+      `SON GÜNCELLEME: ${new Date().toLocaleTimeString('tr-TR')} · GDACS`;
 
   } catch (err) {
     console.warn('GDACS yüklenemedi:', err);
@@ -1152,26 +1159,26 @@ async function loadNaturalEvents() {
 
 function loadFallbackNatural() {
   const fallback = [
-    { lat: 38.0, lon: 38.5, type: 'DEPREM', name: 'Doğu Türkiye M5.2', alert: 'ORANGE', date: 'Bugün' },
+    { lat: 38.0, lon: 38.5, type: 'DEPREM', name: 'Doğu Türkiye M5.2', alert: 'ORANGE', date: 'Bugün' },
     { lat: 15.0, lon: -90.0, type: 'KASIRGA', name: 'TC Miriam', alert: 'RED', date: 'Dün' },
-    { lat: -8.0, lon: -78.0, type: 'SEL', name: 'Peru Taşkını', alert: 'ORANGE', date: '2 gün önce' },
+    { lat: -8.0, lon: -78.0, type: 'SEL', name: 'Peru Taşkını', alert: 'ORANGE', date: '2 gün önce' },
     { lat: 37.7, lon: 15.0, type: 'VOLKAN', name: 'Etna Aktivitesi', alert: 'GREEN', date: '3 gün önce' },
     { lat: 35.0, lon: 136.0, type: 'DEPREM', name: 'Japonya M4.8', alert: 'GREEN', date: '4 gün önce' },
-    { lat: -23.0, lon: -46.0, type: 'SEL', name: 'Brezilya Taşkın', alert: 'ORANGE', date: '5 gün önce' },
+    { lat: -23.0, lon: -46.0, type: 'SEL', name: 'Brezilya Taşkın', alert: 'ORANGE', date: '5 gün önce' },
   ];
   layerGroups.natural.clearLayers();
   fallback.forEach(e => {
     const c = e.alert === 'RED' ? '#ff4c6a' : e.alert === 'ORANGE' ? '#ff8c42' : '#f0c040';
-    addMarker('natural', e.lat, e.lon, makeIcon(c, 'â ï¸'),
-      makePopup(e.type, e.name, `<span style="color:${c}">â ${e.alert}</span> Â· ${e.date}<br>Kaynak: <span style="color:#21ce70">FALLBACK</span>`, c));
+    addMarker('natural', e.lat, e.lon, makeIcon(c, '⚠️'),
+      makePopup(e.type, e.name, `<span style="color:${c}">● ${e.alert}</span> · ${e.date}<br>Kaynak: <span style="color:#21ce70">FALLBACK</span>`, c));
   });
   setCount('natural', fallback.length);
   renderRecentEvents(fallback.map(e => ({...e, color: e.alert === 'RED' ? '#ff4c6a' : '#f0c040'})));
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
-// DATA: USGS â Earthquakes
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
+// DATA: USGS — Earthquakes
+// ────────────────────────────────────────────────
 async function loadEarthquakes() {
   try {
     const timeParam = currentTimeRange === '1h' ? 'hour' :
@@ -1184,16 +1191,15 @@ async function loadEarthquakes() {
     const res = await fetch(proxy);
     const data = await res.json();
     const json = JSON.parse(data.contents);
-
     const quakes = json.features || [];
-    // Add to natural layer (significant only)
+
     quakes.slice(0, 20).forEach(q => {
       const [lon, lat] = q.geometry.coordinates;
       const mag = q.properties.mag?.toFixed(1);
       const place = q.properties.place || 'Bilinmeyen';
       const color = mag >= 6 ? '#ff4c6a' : mag >= 5 ? '#ff8c42' : '#f0c040';
-      addMarker('natural', lat, lon, makeIcon(color, 'ð', 22),
-        makePopup('DEPREM', `M${mag} â ${place}`,
+      addMarker('natural', lat, lon, makeIcon(color, '🌍', 22),
+        makePopup('DEPREM', `M${mag} — ${place}`,
           `Derinlik: <span>${q.geometry.coordinates[2]} km</span><br>Zaman: <span>${new Date(q.properties.time).toLocaleString('tr-TR')}</span><br>Kaynak: <span>USGS</span>`, color));
     });
     setCount('natural', (eventCounts.natural || 0) + quakes.length);
@@ -1202,48 +1208,48 @@ async function loadEarthquakes() {
   }
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
-// DATA: ACLED-style Conflicts (static curated)
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
+// DATA: Conflicts
+// ────────────────────────────────────────────────
 function loadConflicts() {
   const conflicts = [
-    { lat: 48.5, lon: 37.5, name: 'Ukrayna-Rusya Cephesi', desc: 'Aktif çatışma bölgesi', severity: 'high' },
-    { lat: 31.5, lon: 34.8, name: 'Gazze', desc: 'Aktif çatışma', severity: 'high' },
-    { lat: 33.5, lon: 36.3, name: 'Suriye', desc: 'Devam eden çatışma', severity: 'med' },
-    { lat: 15.5, lon: 32.5, name: 'Sudan', desc: 'İç savaş', severity: 'high' },
+    { lat: 48.5, lon: 37.5, name: 'Ukrayna-Rusya Cephesi', desc: 'Aktif çatışma bölgesi', severity: 'high' },
+    { lat: 31.5, lon: 34.8, name: 'Gazze', desc: 'Aktif çatışma', severity: 'high' },
+    { lat: 33.5, lon: 36.3, name: 'Suriye', desc: 'Devam eden çatışma', severity: 'med' },
+    { lat: 15.5, lon: 32.5, name: 'Sudan', desc: 'İç savaş', severity: 'high' },
     { lat: 9.0, lon: 7.5, name: 'Nijerya (Boko Haram)', desc: 'Silahlı grup aktivitesi', severity: 'med' },
-    { lat: 6.0, lon: 37.0, name: 'Etiyopya (Tigray)', desc: 'Dönemsel çatışma', severity: 'med' },
-    { lat: 23.5, lon: 67.5, name: 'Pakistan-Afganistan Sınırı', desc: 'Sınır gerginliği', severity: 'low' },
+    { lat: 6.0, lon: 37.0, name: 'Etiyopya (Tigray)', desc: 'Dönemsel çatışma', severity: 'med' },
+    { lat: 23.5, lon: 67.5, name: 'Pakistan-Afganistan Sınırı', desc: 'Sınır gerginliği', severity: 'low' },
     { lat: 16.5, lon: -14.0, name: 'Mali (Sahel)', desc: 'İsyancı faaliyeti', severity: 'med' },
-    { lat: 12.0, lon: 15.0, name: 'Çad Havzası', desc: 'İnsancıl kriz', severity: 'med' },
-    { lat: 14.5, lon: 43.5, name: 'Yemen', desc: 'Çatışma / insani kriz', severity: 'high' },
+    { lat: 12.0, lon: 15.0, name: 'Çad Havzası', desc: 'İnsancıl kriz', severity: 'med' },
+    { lat: 14.5, lon: 43.5, name: 'Yemen', desc: 'Çatışma / insani kriz', severity: 'high' },
     { lat: 35.0, lon: 44.5, name: 'Irak (Kuzey)', desc: 'Dönemsel saldırı', severity: 'low' },
     { lat: 34.5, lon: 69.0, name: 'Afganistan', desc: 'Taliban kontrolü / gerilim', severity: 'med' },
-    { lat: 4.5, lon: 31.5, name: 'Güney Sudan', desc: 'Etnik çatışma', severity: 'med' },
-    { lat: 25.5, lon: 84.5, name: 'Myanmar', desc: 'Cunta karşıtı çatışma', severity: 'high' },
+    { lat: 4.5, lon: 31.5, name: 'Güney Sudan', desc: 'Etnik çatışma', severity: 'med' },
+    { lat: 25.5, lon: 84.5, name: 'Myanmar', desc: 'Cunta karşıtı çatışma', severity: 'high' },
     { lat: 7.5, lon: -11.5, name: 'Sierra Leone', desc: 'Siyasi gerilim', severity: 'low' },
   ];
 
   layerGroups.conflicts.clearLayers();
   conflicts.forEach(c => {
     const color = c.severity === 'high' ? '#ff4c6a' : c.severity === 'med' ? '#ff8c42' : '#f0c040';
-    addMarker('conflicts', c.lat, c.lon, makeIcon(color, 'âï¸', 22),
-      makePopup('ÇATIşMA', c.name,
+    addMarker('conflicts', c.lat, c.lon, makeIcon(color, '⚔️', 22),
+      makePopup('ÇATIŞMA', c.name,
         `${c.desc}<br>Seviye: <span style="color:${color}">${c.severity.toUpperCase()}</span><br>Kaynak: <span style="color:#21ce70">ACLED/OSM</span>`, color));
   });
   setCount('conflicts', conflicts.length);
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
-// DATA: Military Bases (curated)
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
+// DATA: Military Bases
+// ────────────────────────────────────────────────
 function loadBases() {
   const bases = [
     { lat: 36.9, lon: 38.8, name: 'İncirlik Hava Üssü', country: 'Türkiye/ABD', type: 'NATO' },
     { lat: 35.1, lon: 33.3, name: 'Akrotiri Üssü', country: 'İngiltere', type: 'RAF' },
     { lat: 11.5, lon: 43.1, name: 'Camp Lemonnier', country: 'ABD', type: 'AFRICOM' },
     { lat: 26.1, lon: 50.6, name: 'Naval Support Bahrain', country: 'ABD', type: 'US NAVCENT' },
-    { lat: 22.8, lon: 114.0, name: 'Pearl River Delta', country: 'Çin', type: 'PLA NAVY' },
+    { lat: 22.8, lon: 114.0, name: 'Pearl River Delta', country: 'Çin', type: 'PLA NAVY' },
     { lat: 44.8, lon: 34.9, name: 'Sivastopol (Rus Donanma)', country: 'Rusya', type: 'Karadeniz Filosu' },
     { lat: 13.5, lon: -16.7, name: 'Banjul (Fransız Üs)', country: 'Fransa', type: 'Batı Afrika' },
     { lat: 36.8, lon: 3.0, name: 'Cezayir Hava Üssü', country: 'Cezayir', type: 'Hava Kuvvetleri' },
@@ -1256,29 +1262,28 @@ function loadBases() {
   ];
   layerGroups.bases.clearLayers();
   bases.forEach(b => {
-    addMarker('bases', b.lat, b.lon, makeIcon('#4cc9ff', 'ð¡ï¸', 20),
+    addMarker('bases', b.lat, b.lon, makeIcon('#4cc9ff', '🛡️', 20),
       makePopup('ASKERİ ÜS', b.name,
         `Ülke: <span>${b.country}</span><br>Tip: <span>${b.type}</span>`, '#4cc9ff'));
   });
   setCount('bases', bases.length);
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 // DATA: Nuclear Sites
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 function loadNuclear() {
   const nuclear = [
     { lat: 34.0, lon: -118.0, name: 'San Onofre (Deaktif)', country: 'ABD', type: 'Nükleer Santral' },
-    { lat: 50.1, lon: 30.1, name: 'Zaporijya NPP', country: 'Ukrayna', type: 'Aktif / Çatışma Bölgesi', alert: true },
+    { lat: 50.1, lon: 30.1, name: 'Zaporijya NPP', country: 'Ukrayna', type: 'Aktif / Çatışma Bölgesi', alert: true },
     { lat: 48.6, lon: 6.2, name: 'Cattenom NPP', country: 'Fransa', type: 'Nükleer Santral' },
-    { lat: 55.8, lon: 37.6, name: 'Nükleer Araştırma (Moskova)', country: 'Rusya', type: 'Araştırma' },
+    { lat: 55.8, lon: 37.6, name: 'Nükleer Araştırma (Moskova)', country: 'Rusya', type: 'Araştırma' },
     { lat: 36.0, lon: 129.4, name: 'Fukushima', country: 'Japonya', type: 'Deaktif / İzleme' },
     { lat: 35.6, lon: 129.4, name: 'Wolseong NPP', country: 'Güney Kore', type: 'Aktif' },
-    { lat: 36.8, lon: 10.9, name: 'Bizerte (Araştırma)', country: 'Tunus', type: 'Araştırma' },
-    { lat: 29.0, lon: 57.0, name: 'Natanz', country: 'İran', type: 'Uranyum Zenginleştirme', alert: true },
+    { lat: 36.8, lon: 10.9, name: 'Bizerte (Araştırma)', country: 'Tunus', type: 'Araştırma' },
+    { lat: 29.0, lon: 57.0, name: 'Natanz', country: 'İran', type: 'Uranyum Zenginleştirme', alert: true },
     { lat: 40.2, lon: 44.5, name: 'Metsamor NPP', country: 'Ermenistan', type: 'Aktif' },
-    { lat: 37.2, lon: 9.8, name: 'Sidi Thabet (Araştırma)', country: 'Tunus', type: 'Araştırma' },
-    { lat: 31.8, lon: 35.1, name: 'Dimona (şüpheli)', country: 'İsrail', type: 'Askeri / Gizlendi', alert: true },
+    { lat: 31.8, lon: 35.1, name: 'Dimona (şüpheli)', country: 'İsrail', type: 'Askeri / Gizlendi', alert: true },
     { lat: 33.7, lon: 72.7, name: 'Kahuta (Silah)', country: 'Pakistan', type: 'Nükleer Silah', alert: true },
     { lat: 28.9, lon: 76.0, name: 'Narora NPP', country: 'Hindistan', type: 'Aktif' },
     { lat: 40.8, lon: -74.0, name: 'Indian Point (Deaktif)', country: 'ABD', type: 'Deaktif' },
@@ -1286,16 +1291,16 @@ function loadNuclear() {
   layerGroups.nuclear.clearLayers();
   nuclear.forEach(n => {
     const color = n.alert ? '#ff4c6a' : '#4cc9ff';
-    addMarker('nuclear', n.lat, n.lon, makeIcon(color, 'â¢ï¸', 20),
+    addMarker('nuclear', n.lat, n.lon, makeIcon(color, '☢️', 20),
       makePopup('NÜKLEER TESİS', n.name,
-        `Ülke: <span>${n.country}</span><br>Tip: <span>${n.type}</span>${n.alert ? '<br><span style="color:#ff4c6a">â ï¸ DİKKAT</span>' : ''}`, color));
+        `Ülke: <span>${n.country}</span><br>Tip: <span>${n.type}</span>${n.alert ? '<br><span style="color:#ff4c6a">⚠️ DİKKAT</span>' : ''}`, color));
   });
   setCount('nuclear', nuclear.length);
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
-// DATA: Sanctions (curated)
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
+// DATA: Sanctions
+// ────────────────────────────────────────────────
 function loadSanctions() {
   const sanctions = [
     { lat: 55.7, lon: 37.6, name: 'Rusya Federasyonu', regime: 'AB/ABD/G7 Yaptırımları', scope: 'Kapsamlı' },
@@ -1304,44 +1309,44 @@ function loadSanctions() {
     { lat: 23.1, lon: -82.3, name: 'Küba', regime: 'ABD Ambargosu', scope: 'Kısmi' },
     { lat: 15.5, lon: 32.5, name: 'Sudan', regime: 'ABD/AB Yaptırımları', scope: 'Kısmi' },
     { lat: 14.5, lon: 43.5, name: 'Yemen (Husileri)', regime: 'ABD/AB Yaptırımları', scope: 'Hedefli' },
-    { lat: 7.5, lon: -5.5, name: "Kuzey Afrika (Wagner)", regime: 'AB Yaptırımları', scope: 'Hedefli' },
+    { lat: 7.5, lon: -5.5, name: 'Kuzey Afrika (Wagner)', regime: 'AB Yaptırımları', scope: 'Hedefli' },
     { lat: 17.3, lon: 102.6, name: 'Myanmar Cuntası', regime: 'AB/ABD Yaptırımları', scope: 'Hedefli' },
     { lat: 11.5, lon: 43.1, name: 'Somali (Al-Shabaab)', regime: 'BM Yaptırımları', scope: 'Hedefli' },
     { lat: 4.5, lon: 31.5, name: 'Güney Sudan', regime: 'ABD Yaptırımları', scope: 'Kısmi' },
   ];
   layerGroups.sanctions.clearLayers();
   sanctions.forEach(s => {
-    addMarker('sanctions', s.lat, s.lon, makeIcon('#ff8c42', 'ð«', 20),
+    addMarker('sanctions', s.lat, s.lon, makeIcon('#ff8c42', '🚫', 20),
       makePopup('YAPTIRIM', s.name,
         `Rejim: <span>${s.regime}</span><br>Kapsam: <span>${s.scope}</span>`, '#ff8c42'));
   });
   setCount('sanctions', sanctions.length);
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
-// DATA: Internet Outages (curated + live)
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
+// DATA: Internet Outages
+// ────────────────────────────────────────────────
 function loadOutages() {
   const outages = [
     { lat: 15.5, lon: 32.5, name: 'Sudan İnternet Kesintisi', severity: 'severe', note: 'Altyapı hasarı' },
     { lat: 17.3, lon: 102.6, name: 'Myanmar Bölgesel Kesinti', severity: 'moderate', note: 'Devlet kontrolü' },
     { lat: 14.0, lon: -15.0, name: 'Batı Afrika Kablo Arızası', severity: 'moderate', note: 'WACS/SAT3 kesintisi' },
-    { lat: 24.0, lon: 54.0, name: 'BAE Yavaş Bağlantı', severity: 'minor', note: 'İzleme altında' },
-    { lat: 33.0, lon: 44.0, name: 'Irak Bölgesel Kesinti', severity: 'moderate', note: 'Çatışma etkisi' },
+    { lat: 24.0, lon: 54.0, name: 'BAE Yavaş Bağlantı', severity: 'minor', note: 'İzleme altında' },
+    { lat: 33.0, lon: 44.0, name: 'Irak Bölgesel Kesinti', severity: 'moderate', note: 'Çatışma etkisi' },
   ];
   layerGroups.outages.clearLayers();
   outages.forEach(o => {
     const color = o.severity === 'severe' ? '#ff4c6a' : o.severity === 'moderate' ? '#ff8c42' : '#f0c040';
-    addMarker('outages', o.lat, o.lon, makeIcon(color, 'â¡', 20),
+    addMarker('outages', o.lat, o.lon, makeIcon(color, '⚡', 20),
       makePopup('İNTERNET KESİNTİSİ', o.name,
-        `şiddet: <span style="color:${color}">${o.severity.toUpperCase()}</span><br>Not: <span>${o.note}</span>`, color));
+        `Şiddet: <span style="color:${color}">${o.severity.toUpperCase()}</span><br>Not: <span>${o.note}</span>`, color));
   });
   setCount('outages', outages.length);
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 // DATA: Economic Hotspots
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 function loadEconomic() {
   const economic = [
     { lat: 1.3, lon: 103.8, name: 'Singapur Finans', type: 'Küresel Finans Merkezi', trend: 'stabil' },
@@ -1358,21 +1363,21 @@ function loadEconomic() {
   layerGroups.economic.clearLayers();
   economic.forEach(e => {
     const color = e.trend === 'gerilim' ? '#ff8c42' : '#21ce70';
-    addMarker('economic', e.lat, e.lon, makeIcon(color, 'ð', 20),
+    addMarker('economic', e.lat, e.lon, makeIcon(color, '📈', 20),
       makePopup('EKONOMİK', e.name,
         `Tip: <span>${e.type}</span><br>Durum: <span style="color:${color}">${e.trend.toUpperCase()}</span>`, color));
   });
   setCount('economic', economic.length);
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 // DATA: Military Movement
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 function loadMilitary() {
   const military = [
     { lat: 50.4, lon: 30.5, name: 'Ukrayna Cephesi Hareketi', detail: 'Aktif muharebe' },
     { lat: 31.0, lon: 35.0, name: 'İsrail Kuzey Sınırı', detail: 'Gerilim' },
-    { lat: 39.9, lon: 116.4, name: 'Çin PLA Tatbikatı', detail: 'Güney Çin Denizi' },
+    { lat: 39.9, lon: 116.4, name: 'Çin PLA Tatbikatı', detail: 'Güney Çin Denizi' },
     { lat: 35.7, lon: 51.4, name: 'İran IRGC Hareketi', detail: 'İzleme altında' },
     { lat: 37.5, lon: 127.0, name: 'Kore Yarımadası', detail: 'Ortak tatbikat' },
     { lat: 34.5, lon: 69.0, name: 'Afganistan Hava Sahası', detail: 'İnsansız hava aracı' },
@@ -1381,18 +1386,17 @@ function loadMilitary() {
   ];
   layerGroups.military.clearLayers();
   military.forEach(m => {
-    addMarker('military', m.lat, m.lon, makeIcon('#4cc9ff', 'ðª', 22),
+    addMarker('military', m.lat, m.lon, makeIcon('#4cc9ff', '🪖', 22),
       makePopup('ASKERİ HAREKETLİLİK', m.name,
         `Detay: <span>${m.detail}</span>`, '#4cc9ff'));
   });
   setCount('military', military.length);
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
-// DATA: Weather Extremes (OpenWeatherMap public)
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
+// DATA: Weather
+// ────────────────────────────────────────────────
 async function loadWeather() {
-  // Major cities weather
   const cities = [
     { lat: 48.8, lon: 2.3, name: 'Paris' },
     { lat: 40.7, lon: -74.0, name: 'New York' },
@@ -1409,7 +1413,6 @@ async function loadWeather() {
   layerGroups.weather.clearLayers();
   let count = 0;
 
-  // Use wttr.in (no key required)
   for (const city of cities.slice(0, 5)) {
     try {
       const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(`https://wttr.in/${city.name}?format=j1`);
@@ -1421,18 +1424,17 @@ async function loadWeather() {
         const temp = current.temp_C;
         const desc = current.weatherDesc?.[0]?.value || '';
         const color = temp > 35 ? '#ff4c6a' : temp < 0 ? '#4cc9ff' : '#21ce70';
-        addMarker('weather', city.lat, city.lon, makeIcon(color, 'ð¤ï¸', 20),
+        addMarker('weather', city.lat, city.lon, makeIcon(color, '🌤️', 20),
           makePopup('HAVA DURUMU', city.name,
-            `Sıcaklık: <span>${temp}Â°C</span><br>Durum: <span>${desc}</span>`, color));
+            `Sıcaklık: <span>${temp}°C</span><br>Durum: <span>${desc}</span>`, color));
         count++;
       }
     } catch(e) { /* skip */ }
   }
 
   if (count === 0) {
-    // Fallback static
     cities.forEach(c => {
-      addMarker('weather', c.lat, c.lon, makeIcon('#21ce70', 'ð¤ï¸', 18),
+      addMarker('weather', c.lat, c.lon, makeIcon('#21ce70', '🌤️', 18),
         makePopup('HAVA DURUMU', c.name, 'Veri bekleniyor...', '#21ce70'));
     });
     count = cities.length;
@@ -1441,9 +1443,9 @@ async function loadWeather() {
   setCount('weather', count);
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 // RECENT EVENTS PANEL
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 function renderRecentEvents(events) {
   const container = document.getElementById('recentEvents');
   container.innerHTML = events.map(e => `
@@ -1455,9 +1457,9 @@ function renderRecentEvents(events) {
   `).join('');
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 // LOAD ALL
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 async function loadAllLayers() {
   document.getElementById('mapLoading').classList.remove('hidden');
   layerDefs.forEach(l => layerGroups[l].clearLayers());
@@ -1477,13 +1479,11 @@ async function loadAllLayers() {
 }
 
 loadAllLayers();
-
-// Auto-refresh every 10 minutes
 setInterval(loadAllLayers, 10 * 60 * 1000);
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 // NEWS SWITCH
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ────────────────────────────────────────────────
 function switchNews(channel, btn) {
   document.querySelectorAll('.news-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
@@ -1491,28 +1491,35 @@ function switchNews(channel, btn) {
   document.getElementById('news-' + channel).classList.add('active');
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
-// WEBCAM DATA
-// ââââââââââââââââââââââââââââââââââââââââââââââââ
-// Verified 24/7 live YouTube cam IDs - autoplay=1 always works in iframes
+// ────────────────────────────────────────────────
+// WEBCAM DATA — Ortadoğu + Rusya odaklı
+// ────────────────────────────────────────────────
 const webcams = {
   all: [
+    // ORTADOĞU
+    { region: 'mideast', city: 'KUDÜS — Mescid-i Aksa', id: 'RXdPMcMnVtA' },
+    { region: 'mideast', city: 'KUDÜS — Eski Şehir', id: 'dG_VCqCBOvQ' },
+    { region: 'mideast', city: 'TEL AVİV — Hayfa Limanı', id: 'ZWMJn5MxOKY' },
+    { region: 'mideast', city: 'BEYRUT — Liman Bölgesi', id: 'NcRVJtzQBvg' },
+    { region: 'mideast', city: 'AMMAN — Ürdün', id: 'sS-zNnJAn5c' },
+    { region: 'mideast', city: 'BAĞDAT — Irak', id: 'hPSgFQoZfLM' },
+    { region: 'mideast', city: 'DUBAI — Skyline', id: 'z7SiAaN4ogw' },
+    { region: 'mideast', city: 'DUBAI — Şehir Merkezi', id: 'HfgIFGbdGJ0' },
+    { region: 'mideast', city: 'İSTANBUL — Boğaz', id: 'EFum1rGUdkk' },
+    // RUSYA
+    { region: 'russia',  city: 'MOSKOVA — Kızıl Meydan', id: 'oj4DlOO_NTs' },
+    { region: 'russia',  city: 'MOSKOVA — Kremlin', id: 'Z7ZOAEiMpR4' },
+    { region: 'russia',  city: 'ST. PETERSBURG — Nevski', id: 'BbhBZXy3MrI' },
+    { region: 'russia',  city: 'MOSKOVA — Arbat', id: 'IOgF32rLBDc' },
+    // AVRUPA
+    { region: 'europe',  city: 'PARİS — Eyfel', id: '2BLqhS59Elc' },
+    { region: 'europe',  city: 'LONDRA — Thames', id: '8JCk5M_xrBs' },
+    // AMERİKA
     { region: 'americas', city: 'NEW YORK — Times Sq', id: 'rnXIjl_Rzy4' },
-    { region: 'americas', city: 'NEW YORK — 24/7',     id: 'VGnFLdQW39A' },
-    { region: 'americas', city: 'NEW YORK — Broadway', id: '4qyZLflp-sI' },
-    { region: 'americas', city: 'NEW YORK — Duffy Sq', id: 'iiBTWU2FyFo' },
-    { region: 'europe',   city: 'LONDRA',              id: 'WKGK_hYnlGE' },
-    { region: 'europe',   city: 'LONDRA — Trafalgar',  id: 'Lxqcg1qt0XU' },
-    { region: 'europe',   city: 'LONDRA — Thames',     id: '8JCk5M_xrBs' },
-    { region: 'europe',   city: 'LONDRA — Southbank',  id: 'HVGwLboIdYc' },
-    { region: 'asia',     city: 'TOKYO',               id: 'L6wO1-U2RTY' },
-    { region: 'asia',     city: 'TOKYO — Shibuya',     id: '_k-5U7IeK8g' },
-    { region: 'asia',     city: 'TOKYO — Shinjuku',    id: '6dp-bvQ7RWo' },
-    { region: 'asia',     city: 'TOKYO — Akihabara',   id: 'DjdUEyjx8GM' },
-    { region: 'mideast',  city: 'DUBAI',               id: 'z7SiAaN4ogw' },
-    { region: 'mideast',  city: 'DUBAI — Skyline',     id: 'HfgIFGbdGJ0' },
-    { region: 'europe',   city: 'PARİS',               id: '2BLqhS59Elc' },
-    { region: 'mideast',  city: 'İSTANBUL',            id: 'EFum1rGUdkk' },
+    { region: 'americas', city: 'NEW YORK — 24/7', id: 'VGnFLdQW39A' },
+    // ASYA
+    { region: 'asia',    city: 'TOKYO — Shibuya', id: '_k-5U7IeK8g' },
+    { region: 'asia',    city: 'TOKYO — Shinjuku', id: '6dp-bvQ7RWo' },
   ],
 };
 
