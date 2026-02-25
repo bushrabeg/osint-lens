@@ -576,6 +576,40 @@
       flex-direction: column;
     }
 
+    /* Haber multi-grid — 5 kanal aynı anda */
+    .news-multi-grid {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 6px;
+      overflow-y: auto;
+    }
+
+    .news-multi-item {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .news-multi-item iframe {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border: none;
+      display: block;
+    }
+
+    .news-multi-label {
+      padding: 3px 8px;
+      font-size: 8px;
+      letter-spacing: 1.5px;
+      color: var(--green);
+      background: rgba(8,12,16,0.9);
+      border-bottom: 1px solid var(--border);
+    }
+
     .webcam-region-tabs {
       display: flex;
       gap: 2px;
@@ -602,11 +636,12 @@
 
     .webcam-grid {
       flex: 1;
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 2px;
       padding: 6px;
       overflow-y: auto;
+      align-content: start;
     }
 
     .webcam-item {
@@ -892,63 +927,41 @@
       </div>
     </div>
 
-    <!-- Live News -->
+    <!-- Live News — 5 kanal aynı anda -->
     <div class="news-panel">
       <div class="panel-header">
         <span class="panel-header-title">CANLI HABERLER</span>
         <div class="live-badge"><div class="live-dot"></div><span>LIVE</span></div>
       </div>
-      <div class="news-tabs">
-        <button class="news-tab active" onclick="switchNews('aljazeera', this)">AL JAZEERA</button>
-        <button class="news-tab" onclick="switchNews('alarabiya', this)">AL ARABİYA</button>
-        <button class="news-tab" onclick="switchNews('i24', this)">i24 NEWS</button>
-        <button class="news-tab" onclick="switchNews('bbc', this)">BBC</button>
-        <button class="news-tab" onclick="switchNews('dw', this)">DW</button>
-        <button class="news-tab" onclick="switchNews('france24', this)">FRANCE 24</button>
-        <button class="news-tab" onclick="switchNews('cnn', this)">CNN</button>
-        <button class="news-tab" onclick="switchNews('trt', this)">TRT WORLD</button>
-      </div>
-      <div class="news-embed">
-        <iframe id="news-aljazeera" class="active"
-          src="https://www.youtube.com/embed/live_stream?channel=UCNye-wNBqNL5ZzHSJj3l8Bg&autoplay=1&mute=1"
-          allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        <iframe id="news-alarabiya"
-          src="https://www.youtube.com/embed/live_stream?channel=UC5GcFkNl2pZkfvV3MDDOGJw&mute=1"
-          allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        <iframe id="news-i24"
-          src="https://www.youtube.com/embed/live_stream?channel=UCqDNGEnHI_9nFCCmhHPERpQ&mute=1"
-          allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        <iframe id="news-bbc"
-          src="https://www.youtube.com/embed/live_stream?channel=UC16niRr50-MSBwiO3YDb3RA&mute=1"
-          allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        <iframe id="news-dw"
-          src="https://www.youtube.com/embed/live_stream?channel=UCknLrEdhRCp1aegoMqRaCZg&mute=1"
-          allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        <iframe id="news-france24"
-          src="https://www.youtube.com/embed/live_stream?channel=UCQfwfsi5VrQ8yKZ-UWmAEFg&mute=1"
-          allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        <iframe id="news-cnn"
-          src="https://www.youtube.com/embed/live_stream?channel=UCupvZG-5ko_eiXAupbDfxWw&mute=1"
-          allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        <iframe id="news-trt"
-          src="https://www.youtube.com/embed/live_stream?channel=UC3SqH_GDOpkFaUd5FGlgCcA&mute=1"
-          allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      <div class="news-multi-grid">
+        <div class="news-multi-item">
+          <div class="news-multi-label">● AL JAZEERA</div>
+          <iframe src="https://www.youtube.com/embed/live_stream?channel=UCNye-wNBqNL5ZzHSJj3l8Bg&autoplay=1&mute=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+        <div class="news-multi-item">
+          <div class="news-multi-label">● AL ARABİYA</div>
+          <iframe src="https://www.youtube.com/embed/live_stream?channel=UC5GcFkNl2pZkfvV3MDDOGJw&mute=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+        <div class="news-multi-item">
+          <div class="news-multi-label">● BBC ARABIC</div>
+          <iframe src="https://www.youtube.com/embed/live_stream?channel=UC16niRr50-MSBwiO3YDb3RA&mute=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+        <div class="news-multi-item">
+          <div class="news-multi-label">● DW NEWS</div>
+          <iframe src="https://www.youtube.com/embed/live_stream?channel=UCknLrEdhRCp1aegoMqRaCZg&mute=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+        <div class="news-multi-item">
+          <div class="news-multi-label">● FRANCE 24</div>
+          <iframe src="https://www.youtube.com/embed/live_stream?channel=UCQfwfsi5VrQ8yKZ-UWmAEFg&mute=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
       </div>
     </div>
 
-    <!-- Live Webcams -->
+    <!-- Live Webcams — 7 şehir, 2 sütun sabit -->
     <div class="webcam-panel">
       <div class="panel-header">
         <span class="panel-header-title">CANLI KAMERALAR</span>
         <div class="live-badge"><div class="live-dot"></div><span>LIVE</span></div>
-      </div>
-      <div class="webcam-region-tabs">
-        <button class="region-tab active" onclick="switchWebcams('all', this)">TÜM</button>
-        <button class="region-tab" onclick="switchWebcams('mideast', this)">ORTADOĞU</button>
-        <button class="region-tab" onclick="switchWebcams('russia', this)">RUSYA</button>
-        <button class="region-tab" onclick="switchWebcams('europe', this)">AVRUPA</button>
-        <button class="region-tab" onclick="switchWebcams('americas', this)">AMERİKA</button>
-        <button class="region-tab" onclick="switchWebcams('asia', this)">ASYA</button>
       </div>
       <div class="webcam-grid" id="webcamGrid">
         <!-- populated by JS -->
@@ -1492,63 +1505,71 @@ function switchNews(channel, btn) {
 }
 
 // ────────────────────────────────────────────────
-// WEBCAM DATA — Ortadoğu + Rusya odaklı
+// CANLI KAMERALAR — 7 şehir, YouTube IFrame API
 // ────────────────────────────────────────────────
-const webcams = {
-  all: [
-    // ORTADOĞU
-    { region: 'mideast', city: 'KUDÜS — Mescid-i Aksa', id: 'RXdPMcMnVtA' },
-    { region: 'mideast', city: 'KUDÜS — Eski Şehir', id: 'dG_VCqCBOvQ' },
-    { region: 'mideast', city: 'TEL AVİV — Hayfa Limanı', id: 'ZWMJn5MxOKY' },
-    { region: 'mideast', city: 'BEYRUT — Liman Bölgesi', id: 'NcRVJtzQBvg' },
-    { region: 'mideast', city: 'AMMAN — Ürdün', id: 'sS-zNnJAn5c' },
-    { region: 'mideast', city: 'BAĞDAT — Irak', id: 'hPSgFQoZfLM' },
-    { region: 'mideast', city: 'DUBAI — Skyline', id: 'z7SiAaN4ogw' },
-    { region: 'mideast', city: 'DUBAI — Şehir Merkezi', id: 'HfgIFGbdGJ0' },
-    { region: 'mideast', city: 'İSTANBUL — Boğaz', id: 'EFum1rGUdkk' },
-    // RUSYA
-    { region: 'russia',  city: 'MOSKOVA — Kızıl Meydan', id: 'oj4DlOO_NTs' },
-    { region: 'russia',  city: 'MOSKOVA — Kremlin', id: 'Z7ZOAEiMpR4' },
-    { region: 'russia',  city: 'ST. PETERSBURG — Nevski', id: 'BbhBZXy3MrI' },
-    { region: 'russia',  city: 'MOSKOVA — Arbat', id: 'IOgF32rLBDc' },
-    // AVRUPA
-    { region: 'europe',  city: 'PARİS — Eyfel', id: '2BLqhS59Elc' },
-    { region: 'europe',  city: 'LONDRA — Thames', id: '8JCk5M_xrBs' },
-    // AMERİKA
-    { region: 'americas', city: 'NEW YORK — Times Sq', id: 'rnXIjl_Rzy4' },
-    { region: 'americas', city: 'NEW YORK — 24/7', id: 'VGnFLdQW39A' },
-    // ASYA
-    { region: 'asia',    city: 'TOKYO — Shibuya', id: '_k-5U7IeK8g' },
-    { region: 'asia',    city: 'TOKYO — Shinjuku', id: '6dp-bvQ7RWo' },
-  ],
+// Normal iframe embed "Hata 153" verir çünkü YouTube
+// bazı canlı yayınların başka sitelerde görünmesini engeller.
+// Çözüm: YouTube IFrame API + playerVars.origin
+// worldmonitor.app da tam bu yöntemi kullanıyor.
+
+const CAMS = [
+  { city: 'KUDÜS',    id: 'UyduhBUpO7Q' },
+  { city: 'BEYRUT',   id: 'IzqMj1MNZEM' },
+  { city: 'TAHRAN',   id: '-zGuR1qVKrU' },
+  { city: 'MOSKOVA',  id: 'oj4DlOO_NTs' },
+  { city: 'LONDRA',   id: '8JCk5M_xrBs' },
+  { city: 'NEW YORK', id: 'rnXIjl_Rzy4' },
+  { city: 'TOKYO',    id: '_k-5U7IeK8g' },
+];
+
+window.onYouTubeIframeAPIReady = function() {
+  const grid = document.getElementById('webcamGrid');
+  grid.innerHTML = '';
+
+  CAMS.forEach(cam => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'webcam-item';
+
+    const playerDiv = document.createElement('div');
+    const safeId = 'cam-' + cam.city.replace(/[^a-zA-Z]/g, '');
+    playerDiv.id = safeId;
+
+    const label = document.createElement('div');
+    label.className = 'webcam-label';
+    label.innerHTML = `<div class="webcam-live-dot"></div>${cam.city}`;
+
+    wrapper.appendChild(playerDiv);
+    wrapper.appendChild(label);
+    grid.appendChild(wrapper);
+
+    new YT.Player(safeId, {
+      videoId: cam.id,
+      playerVars: {
+        autoplay: 0,
+        mute: 1,
+        controls: 1,
+        rel: 0,
+        modestbranding: 1,
+        origin: 'https://osintlens.org',
+      },
+      events: {
+        onError: function() {
+          playerDiv.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;aspect-ratio:16/9;font-size:9px;color:var(--text-dim);letter-spacing:1px">● YAYINDA DEĞİL</div>`;
+        }
+      }
+    });
+  });
 };
 
-function switchWebcams(region, btn) {
-  document.querySelectorAll('.region-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  renderWebcams(region);
-}
-
-function renderWebcams(region) {
-  const grid = document.getElementById('webcamGrid');
-  const items = region === 'all' ? webcams.all : webcams.all.filter(w => w.region === region);
-  grid.innerHTML = items.map(w => `
-    <div class="webcam-item">
-      <iframe
-        src="https://www.youtube.com/embed/${w.id}?autoplay=1&mute=1&controls=1&rel=0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen
-        loading="lazy">
-      </iframe>
-      <div class="webcam-label">
-        <div class="webcam-live-dot"></div>
-        ${w.city}
-      </div>
-    </div>
-  `).join('');
-}
-
-renderWebcams('all');
+(function() {
+  if (window.YT && window.YT.Player) {
+    window.onYouTubeIframeAPIReady();
+  } else {
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+  }
+})();
 </script>
 </body>
 </html>
