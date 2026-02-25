@@ -33,6 +33,9 @@
     .logo-text { font-family: var(--sans); font-size: 20px; font-weight: 700; letter-spacing: 3px; color: var(--green); text-transform: uppercase; }
     .logo-sub { font-size: 9px; color: var(--text-dim); letter-spacing: 2px; }
     .header-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .header-nav { display: flex; align-items: center; }
+    .header-nav-link { padding: 6px 16px; font-family: var(--mono); font-size: 11px; letter-spacing: 2px; border: 1px solid var(--border); color: var(--text-dim); text-decoration: none; transition: all 0.2s; }
+    .header-nav-link:hover { border-color: var(--green-dim); color: var(--green); background: var(--green-glow); }
     .status-bar { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-dim); }
     .dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: blink 1.5s ease-in-out infinite; flex-shrink: 0; }
     @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
@@ -356,6 +359,9 @@
           <div class="logo-sub">AÇIK KAYNAK İSTİHBARAT ARACI</div>
         </div>
       </div>
+      <nav class="header-nav">
+        <a href="world-monitor.html" class="header-nav-link">◉ DÜNYA MONİTÖRÜ</a>
+      </nav>
       <div class="header-right">
         <div class="api-key-panel" onclick="openApiModal()" id="apiKeyPanel">
           <div class="api-dot" id="apiDot"></div>
