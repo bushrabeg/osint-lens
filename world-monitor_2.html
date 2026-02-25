@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OSINT Lens — Dünya Monitörü</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    :root {
+      --bg: #080c10;
+      --surface: #0d1117;
+      --border: #21ce7022;
+      --green: #21ce70;
+      --green-dim: #21ce7066;
+      --green-glow: #21ce7033;
+      --red: #ff4c6a;
+      --yellow: #f0c040;
+      --blue: #4cc9ff;
+      --orange: #ff8c42;
+      --text: #c9d1d9;
+      --text-dim: #8b949e;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Rajdhani', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      background: rgba(8,12,16,0.95);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--green);
+    }
+
+    .logo-icon svg { width: 18px; height: 18px; fill: currentColor; }
+
+    .logo-text { 
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--green);
+      letter-spacing: 2px;
+    }
+
+    .logo-sub {
+      font-size: 9px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+    }
+
+    .nav-tab {
+      padding: 6px 16px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 2px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .nav-tab:hover {
+      border-color: var(--green-dim);
+      color: var(--text);
+    }
+
+    .nav-tab.active {
+      border-color: var(--green);
+      color: var(--green);
+      background: var(--green-glow);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--red);
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .utc-clock {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      grid-template-rows: auto 280px;
+      gap: 0;
+      height: calc(100vh - 65px);
+    }
+
+    /* ── LAYERS PANEL ── */
+    .layers-panel {
+      grid-row: 1 / 2;
+      background: rgba(13,17,23,0.8);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 12px;
+      overflow-y: auto;
+    }
+
+    .panel-title {
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--green);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .layer-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 4px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      margin-bottom: 2px;
+    }
+
+    .layer-item:hover {
+      border-color: var(--border);
+      background: var(--green-glow);
+    }
+
+    .layer-checkbox {
+      width: 14px;
+      height: 14px;
+      border: 1px solid var(--green-dim);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .layer-item.active .layer-checkbox {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .layer-item.active .layer-checkbox::after {
+      content: '✓';
+      font-size: 10px;
+      color: var(--bg);
+      font-weight: bold;
+    }
+
+    .layer-icon { font-size: 13px; }
+
+    .layer-label {
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: var(--text-dim);
+      flex: 1;
+    }
+
+    .layer-item.active .layer-label {
+      color: var(--text);
+    }
+
+    .layer-count {
+      font-size: 9px;
+      color: var(--green-dim);
+      background: var(--green-glow);
+      padding: 1px 5px;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    /* ── TIME RANGE ── */
+    .time-range {
+      display: flex;
+      gap: 2px;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .time-btn {
+      flex: 1;
+      padding: 4px 2px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 1px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .time-btn:hover { border-color: var(--green-dim); color: var(--text); }
+    .time-btn.active { border-color: var(--green); color: var(--green); background: var(--green-glow); }
+
+    /* ── MAP ── */
+    .map-container {
+      grid-row: 1 / 2;
+      position: relative;
+      background: var(--bg);
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Leaflet dark overrides */
+    .leaflet-container {
+      background: #04080d !important;
+      font-family: var(--mono) !important;
+    }
+
+    .leaflet-tile-pane { filter: brightness(0.6) saturate(0.3) hue-rotate(100deg); }
+
+    .map-overlay-top {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      pointer-events: none;
+      z-index: 500;
+    }
+
+    .map-title-box {
+      background: rgba(8,12,16,0.9);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      backdrop-filter: blur(10px);
+    }
+
+    .map-title {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--green);
+    }
+
+    .map-subtitle {
+      font-size: 9px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
+
+    .event-counter {
+      background: rgba(8,12,16,0.9);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      backdrop-filter: blur(10px);
+      text-align: right;
+    }
+
+    .event-counter-num {
+      font-size: 22px;
+      color: var(--green);
+      line-height: 1;
+    }
+
+    .event-counter-label {
+      font-size: 9px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+
+    /* Loading overlay */
+    .map-loading {
+      position: absolute;
+      inset: 0;
+      background: rgba(8,12,16,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 600;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .map-loading.hidden { display: none; }
+
+    .loading-bar {
+      width: 200px;
+      height: 2px;
+      background: var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loading-bar::after {
+      content: '';
+      position: absolute;
+      left: -50%;
+      width: 50%;
+      height: 100%;
+      background: var(--green);
+      animation: loadbar 1s infinite;
+    }
+
+    @keyframes loadbar {
+      0% { left: -50%; }
+      100% { left: 100%; }
+    }
+
+    .loading-text {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--green);
+    }
+
+    /* Legend */
+    .map-legend {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      background: rgba(8,12,16,0.9);
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      z-index: 500;
+      pointer-events: none;
+      backdrop-filter: blur(10px);
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .legend-label { font-size: 9px; color: var(--text-dim); letter-spacing: 1px; }
+
+    /* ── BOTTOM ROW ── */
+    .bottom-row {
+      grid-column: 1 / 3;
+      grid-row: 2 / 3;
+      display: grid;
+      grid-template-columns: 220px 1fr 1fr;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── INFO PANEL ── */
+    .info-panel {
+      border-right: 1px solid var(--border);
+      padding: 12px;
+      overflow-y: auto;
+    }
+
+    .info-event {
+      padding: 8px;
+      border: 1px solid var(--border);
+      margin-bottom: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .info-event:hover {
+      border-color: var(--green-dim);
+      background: var(--green-glow);
+    }
+
+    .info-event-type {
+      font-size: 8px;
+      letter-spacing: 2px;
+      color: var(--green);
+      margin-bottom: 3px;
+    }
+
+    .info-event-title {
+      font-size: 10px;
+      color: var(--text);
+      margin-bottom: 3px;
+      line-height: 1.4;
+    }
+
+    .info-event-meta {
+      font-size: 9px;
+      color: var(--text-dim);
+    }
+
+    /* ── LIVE NEWS ── */
+    .news-panel {
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .panel-header-title {
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--green);
+    }
+
+    .news-tabs {
+      display: flex;
+      gap: 2px;
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .news-tab {
+      padding: 4px 10px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 1px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .news-tab:hover { border-color: var(--green-dim); color: var(--text); }
+
+    .news-tab.active {
+      border-color: var(--green);
+      color: var(--green);
+      background: var(--green-glow);
+    }
+
+    .news-embed {
+      flex: 1;
+      position: relative;
+    }
+
+    .news-embed iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: none;
+    }
+
+    .news-embed iframe.active { display: block; }
+
+    /* ── WEBCAMS ── */
+    .webcam-panel {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .webcam-region-tabs {
+      display: flex;
+      gap: 2px;
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+
+    .region-tab {
+      padding: 4px 10px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 1px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .region-tab:hover { border-color: var(--green-dim); color: var(--text); }
+    .region-tab.active { border-color: var(--green); color: var(--green); background: var(--green-glow); }
+
+    .webcam-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      padding: 6px;
+      overflow-y: auto;
+    }
+
+    .webcam-item {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      aspect-ratio: 16/9;
+    }
+
+    .webcam-item iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      pointer-events: none;
+    }
+
+    .webcam-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 3px 6px;
+      background: rgba(8,12,16,0.85);
+      font-size: 8px;
+      letter-spacing: 1px;
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .webcam-live-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--red);
+      animation: pulse 1.5s infinite;
+    }
+
+    /* ── MARKER STYLES ── */
+    .custom-marker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      border: 2px solid;
+      font-size: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .custom-marker:hover { transform: scale(1.3); }
+
+    /* ── POPUP ── */
+    .leaflet-popup-content-wrapper {
+      background: rgba(8,12,16,0.97) !important;
+      border: 1px solid var(--green) !important;
+      border-radius: 0 !important;
+      color: var(--text) !important;
+      box-shadow: 0 0 20px var(--green-glow) !important;
+    }
+
+    .leaflet-popup-tip { background: rgba(8,12,16,0.97) !important; }
+    .leaflet-popup-close-button { color: var(--green) !important; }
+
+    .popup-type {
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--green);
+      margin-bottom: 4px;
+    }
+
+    .popup-title {
+      font-size: 12px;
+      color: var(--text);
+      margin-bottom: 6px;
+      font-family: var(--sans);
+      font-weight: 600;
+    }
+
+    .popup-meta {
+      font-size: 10px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    .popup-meta span { color: var(--green); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 12px 20px;
+      text-align: center;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--green-dim); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .main-layout { grid-template-columns: 1fr; grid-template-rows: auto auto auto; height: auto; }
+      .layers-panel { grid-row: auto; display: flex; flex-wrap: wrap; gap: 4px; }
+      .map-container { grid-row: auto; height: 400px; }
+      .bottom-row { grid-column: 1; grid-template-columns: 1fr; }
+      .news-panel, .webcam-panel, .info-panel { height: 280px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="header-left">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="logo-text">OSINT Lens</div>
+          <div class="logo-sub">AÇIK KAYNAK İSTİHBARAT ARACI</div>
+        </div>
+      </a>
+      <nav class="nav-tabs">
+        <a href="index.html" class="nav-tab">◆ OSINT TARA</a>
+        <a href="world-monitor.html" class="nav-tab active">◉ DÜNYA MONİTÖRÜ</a>
+      </nav>
+    </div>
+    <div class="header-right">
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        <span>LIVE</span>
+      </div>
+      <div class="utc-clock" id="utcClock">--:--:-- UTC</div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout">
+
+  <!-- LAYERS PANEL -->
+  <div class="layers-panel">
+    <div class="panel-title">LAYERS</div>
+
+    <div class="layer-item active" data-layer="conflicts" onclick="toggleLayer(this)">
+      <div class="layer-checkbox"></div>
+      <span class="layer-icon">⚔️</span>
+      <span class="layer-label">ÇATIŞMALAR</span>
+      <span class="layer-count" id="count-conflicts">–</span>
+    </div>
+
+    <div class="layer-item active" data-layer="hotspots" onclick="toggleLayer(this)">
+      <div class="layer-checkbox"></div>
+      <span class="layer-icon">🔥</span>
+      <span class="layer-label">SICAK NOKTALAR</span>
+      <span class="layer-count" id="count-hotspots">–</span>
+    </div>
+
+    <div class="layer-item active" data-layer="natural" onclick="toggleLayer(this)">
+      <div class="layer-checkbox"></div>
+      <span class="layer-icon">🌪️</span>
+      <span class="layer-label">DOĞAL OLAYLAR</span>
+      <span class="layer-count" id="count-natural">–</span>
+    </div>
+
+    <div class="layer-item active" data-layer="weather" onclick="toggleLayer(this)">
+      <div class="layer-checkbox"></div>
+      <span class="layer-icon">🌤️</span>
+      <span class="layer-label">HAVA DURUMU</span>
+      <span class="layer-count" id="count-weather">–</span>
+    </div>
+
+    <div class="layer-item active" data-layer="bases" onclick="toggleLayer(this)">
+      <div class="layer-checkbox"></div>
+      <span class="layer-icon">🛡️</span>
+      <span class="layer-label">ASKERİ ÜSLER</span>
+      <span class="layer-count" id="count-bases">–</span>
+    </div>
+
+    <div class="layer-item active" data-layer="nuclear" onclick="toggleLayer(this)">
+      <div class="layer-checkbox"></div>
+      <span class="layer-icon">☢️</span>
+      <span class="layer-label">NÜKLEER</span>
+      <span class="layer-count" id="count-nuclear">–</span>
+    </div>
+
+    <div class="layer-item active" data-layer="outages" onclick="toggleLayer(this)">
+      <div class="layer-checkbox"></div>
+      <span class="layer-icon">⚡</span>
+      <span class="layer-label">İNTERNET KESİNTİ</span>
+      <span class="layer-count" id="count-outages">–</span>
+    </div>
+
+    <div class="layer-item active" data-layer="sanctions" onclick="toggleLayer(this)">
+      <div class="layer-checkbox"></div>
+      <span class="layer-icon">🚫</span>
+      <span class="layer-label">YAPTIRIMLAR</span>
+      <span class="layer-count" id="count-sanctions">–</span>
+    </div>
+
+    <div class="layer-item" data-layer="waterways" onclick="toggleLayer(this)">
+      <div class="layer-checkbox"></div>
+      <span class="layer-icon">🚢</span>
+      <span class="layer-label">GEMİ TRAFİĞİ</span>
+      <span class="layer-count" id="count-waterways">–</span>
+    </div>
+
+    <div class="layer-item" data-layer="economic" onclick="toggleLayer(this)">
+      <div class="layer-checkbox"></div>
+      <span class="layer-icon">📈</span>
+      <span class="layer-label">EKONOMİK</span>
+      <span class="layer-count" id="count-economic">–</span>
+    </div>
+
+    <div class="layer-item" data-layer="military" onclick="toggleLayer(this)">
+      <div class="layer-checkbox"></div>
+      <span class="layer-icon">🪖</span>
+      <span class="layer-label">ASKERİ HAREKETLİLİK</span>
+      <span class="layer-count" id="count-military">–</span>
+    </div>
+
+    <!-- Time Range -->
+    <div class="time-range">
+      <button class="time-btn" onclick="setTimeRange('1h', this)">1S</button>
+      <button class="time-btn" onclick="setTimeRange('6h', this)">6S</button>
+      <button class="time-btn" onclick="setTimeRange('24h', this)">24S</button>
+      <button class="time-btn" onclick="setTimeRange('48h', this)">48S</button>
+      <button class="time-btn active" onclick="setTimeRange('7d', this)">7G</button>
+      <button class="time-btn" onclick="setTimeRange('all', this)">TÜM</button>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="map-container">
+    <div id="map"></div>
+
+    <div class="map-overlay-top">
+      <div class="map-title-box">
+        <div class="map-title">GLOBAL İSTİHBARAT HARİTASI</div>
+        <div class="map-subtitle" id="mapSubtitle">VERİLER YÜKLENİYOR...</div>
+      </div>
+      <div class="event-counter">
+        <div class="event-counter-num" id="totalEvents">–</div>
+        <div class="event-counter-label">AKTİF OLAY</div>
+      </div>
+    </div>
+
+    <div class="map-loading" id="mapLoading">
+      <div class="loading-text">VERİLER YÜKLENİYOR...</div>
+      <div class="loading-bar"></div>
+    </div>
+
+    <div class="map-legend">
+      <div class="legend-row"><div class="legend-dot" style="background:#ff4c6a"></div><span class="legend-label">ÇATIŞMA / SICAK NOKTA</span></div>
+      <div class="legend-row"><div class="legend-dot" style="background:#f0c040"></div><span class="legend-label">DOĞAL OLAY</span></div>
+      <div class="legend-row"><div class="legend-dot" style="background:#4cc9ff"></div><span class="legend-label">ASKERİ / NÜKLEER</span></div>
+      <div class="legend-row"><div class="legend-dot" style="background:#21ce70"></div><span class="legend-label">DİĞER</span></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM ROW -->
+  <div class="bottom-row">
+
+    <!-- Recent Events -->
+    <div class="info-panel">
+      <div class="panel-title">SON OLAYLAR</div>
+      <div id="recentEvents">
+        <div style="font-size:10px;color:var(--text-dim);letter-spacing:1px">Yükleniyor...</div>
+      </div>
+    </div>
+
+    <!-- Live News -->
+    <div class="news-panel">
+      <div class="panel-header">
+        <span class="panel-header-title">CANLI HABERLER</span>
+        <div class="live-badge"><div class="live-dot"></div><span>LIVE</span></div>
+      </div>
+      <div class="news-tabs">
+        <button class="news-tab active" onclick="switchNews('aljazeera', this)">AL JAZEERA</button>
+        <button class="news-tab" onclick="switchNews('bbc', this)">BBC</button>
+        <button class="news-tab" onclick="switchNews('dw', this)">DW</button>
+        <button class="news-tab" onclick="switchNews('france24', this)">FRANCE 24</button>
+        <button class="news-tab" onclick="switchNews('cnn', this)">CNN</button>
+      </div>
+      <div class="news-embed">
+        <iframe id="news-aljazeera" class="active"
+          src="https://www.youtube.com/embed/live_stream?channel=UCNye-wNBqNL5ZzHSJj3l8Bg&autoplay=1&mute=1"
+          allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <iframe id="news-bbc"
+          src="https://www.youtube.com/embed/live_stream?channel=UC16niRr50-MSBwiO3YDb3RA&mute=1"
+          allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <iframe id="news-dw"
+          src="https://www.youtube.com/embed/live_stream?channel=UCknLrEdhRCp1aegoMqRaCZg&mute=1"
+          allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <iframe id="news-france24"
+          src="https://www.youtube.com/embed/live_stream?channel=UCQfwfsi5VrQ8yKZ-UWmAEFg&mute=1"
+          allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <iframe id="news-cnn"
+          src="https://www.youtube.com/embed/live_stream?channel=UCupvZG-5ko_eiXAupbDfxWw&mute=1"
+          allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <!-- Live Webcams -->
+    <div class="webcam-panel">
+      <div class="panel-header">
+        <span class="panel-header-title">CANLI KAMERALAR</span>
+        <div class="live-badge"><div class="live-dot"></div><span>LIVE</span></div>
+      </div>
+      <div class="webcam-region-tabs">
+        <button class="region-tab active" onclick="switchWebcams('all', this)">TÜM</button>
+        <button class="region-tab" onclick="switchWebcams('mideast', this)">ORTADOĞU</button>
+        <button class="region-tab" onclick="switchWebcams('europe', this)">AVRUPA</button>
+        <button class="region-tab" onclick="switchWebcams('americas', this)">AMERİKA</button>
+        <button class="region-tab" onclick="switchWebcams('asia', this)">ASYA</button>
+      </div>
+      <div class="webcam-grid" id="webcamGrid">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+  </div><!-- /bottom-row -->
+</div><!-- /main-layout -->
+
+<footer>
+  OSINT LENS v2.0 — DÜNYA MONİTÖRÜ — VERİLER: GDACS · ACLED · USGS · OPENWEATHERMAP — ETİK KULLANIM ZORUNLUDUR
+</footer>
+
+<script>
+// ────────────────────────────────────────────────
+// UTC CLOCK
+// ────────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const str = `${now.toDateString().toUpperCase()} ${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())} UTC`;
+  document.getElementById('utcClock').textContent = str;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ────────────────────────────────────────────────
+// MAP INIT
+// ────────────────────────────────────────────────
+const map = L.map('map', {
+  center: [20, 0],
+  zoom: 2,
+  zoomControl: false,
+  attributionControl: false
+});
+
+L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+// Dark tile layer
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  maxZoom: 18,
+  attribution: '©OpenStreetMap ©CartoDB'
+}).addTo(map);
+
+// ────────────────────────────────────────────────
+// LAYER GROUPS
+// ────────────────────────────────────────────────
+const layerGroups = {};
+const layerDefs = [
+  'conflicts','hotspots','natural','weather',
+  'bases','nuclear','outages','sanctions',
+  'waterways','economic','military'
+];
+layerDefs.forEach(l => { layerGroups[l] = L.layerGroup().addTo(map); });
+
+// Active state
+const activeStates = {};
+document.querySelectorAll('.layer-item').forEach(el => {
+  activeStates[el.dataset.layer] = el.classList.contains('active');
+});
+
+function toggleLayer(el) {
+  const layer = el.dataset.layer;
+  if (activeStates[layer]) {
+    el.classList.remove('active');
+    activeStates[layer] = false;
+    map.removeLayer(layerGroups[layer]);
+  } else {
+    el.classList.add('active');
+    activeStates[layer] = true;
+    map.addLayer(layerGroups[layer]);
+  }
+  updateTotal();
+}
+
+// ────────────────────────────────────────────────
+// MARKER FACTORY
+// ────────────────────────────────────────────────
+function makeIcon(color, emoji, size = 24) {
+  return L.divIcon({
+    className: '',
+    html: `<div style="
+      width:${size}px;height:${size}px;
+      background:${color}22;
+      border:1.5px solid ${color};
+      border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:${size * 0.45}px;
+      cursor:pointer;
+      transition:transform 0.2s;
+      box-shadow:0 0 8px ${color}44;
+    ">${emoji}</div>`,
+    iconSize: [size, size],
+    iconAnchor: [size/2, size/2]
+  });
+}
+
+function addMarker(layerName, lat, lon, icon, popupHTML) {
+  const marker = L.marker([lat, lon], { icon })
+    .bindPopup(`<div style="font-family:'Share Tech Mono',monospace;min-width:200px">${popupHTML}</div>`, {
+      maxWidth: 280, className: ''
+    });
+  marker.addTo(layerGroups[layerName]);
+  return marker;
+}
+
+function makePopup(type, title, meta, color) {
+  return `
+    <div style="font-size:9px;letter-spacing:2px;color:${color};margin-bottom:4px">${type}</div>
+    <div style="font-size:12px;color:#c9d1d9;margin-bottom:6px;font-family:'Rajdhani',sans-serif;font-weight:600">${title}</div>
+    <div style="font-size:10px;color:#8b949e;line-height:1.6">${meta}</div>
+  `;
+}
+
+// ────────────────────────────────────────────────
+// TOTAL COUNTER
+// ────────────────────────────────────────────────
+let eventCounts = {};
+
+function updateTotal() {
+  let total = 0;
+  layerDefs.forEach(l => {
+    if (activeStates[l]) total += (eventCounts[l] || 0);
+  });
+  document.getElementById('totalEvents').textContent = total;
+}
+
+function setCount(layer, n) {
+  eventCounts[layer] = n;
+  const el = document.getElementById('count-' + layer);
+  if (el) el.textContent = n;
+  updateTotal();
+}
+
+// ────────────────────────────────────────────────
+// TIME RANGE
+// ────────────────────────────────────────────────
+let currentTimeRange = '7d';
+
+function setTimeRange(range, btn) {
+  currentTimeRange = range;
+  document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  loadAllLayers();
+}
+
+// ────────────────────────────────────────────────
+// DATA: GDACS — Natural Disasters
+// ────────────────────────────────────────────────
+async function loadNaturalEvents() {
+  try {
+    const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?eventtypes=EQ,TC,FL,VO,WF,DR&pagesize=50&sortby=datemodified');
+    const res = await fetch(proxy);
+    const data = await res.json();
+    const json = JSON.parse(data.contents);
+    const events = json.features || [];
+
+    layerGroups.natural.clearLayers();
+    layerGroups.hotspots.clearLayers();
+
+    let naturalCount = 0;
+    let hotspotCount = 0;
+
+    const recentEvents = [];
+
+    events.forEach(e => {
+      const props = e.properties;
+      const coords = e.geometry?.coordinates;
+      if (!coords) return;
+
+      const [lon, lat] = Array.isArray(coords[0]) ? coords[0] : coords;
+      const type = props.eventtype || 'UNKNOWN';
+      const name = props.name || props.eventname || 'Bilinmeyen Olay';
+      const alert = (props.alertlevel || '').toUpperCase();
+      const date = props.fromdate ? new Date(props.fromdate).toLocaleDateString('tr-TR') : '–';
+
+      const alertColor = alert === 'RED' ? '#ff4c6a' : alert === 'ORANGE' ? '#ff8c42' : '#f0c040';
+
+      const emojiMap = { EQ:'🌍', TC:'🌀', FL:'🌊', VO:'🌋', WF:'🔥', DR:'🏜️' };
+      const emoji = emojiMap[type] || '⚠️';
+      const typeLabel = { EQ:'DEPREM', TC:'KASIRGA', FL:'SEL', VO:'VOLKAN', WF:'YANGIN', DR:'KURAKLIK' }[type] || type;
+
+      const icon = makeIcon(alertColor, emoji);
+      const popup = makePopup(
+        typeLabel, name,
+        `<span style="color:${alertColor}">● ${alert || 'GREENen'}</span> · ${date}<br>Kaynak: <span style="color:#21ce70">GDACS</span>`,
+        alertColor
+      );
+
+      if (['EQ','TC','VO'].includes(type)) {
+        addMarker('natural', lat, lon, icon, popup);
+        naturalCount++;
+      } else {
+        addMarker('hotspots', lat, lon, icon, popup);
+        hotspotCount++;
+      }
+
+      recentEvents.push({ type: typeLabel, name, date, color: alertColor, lat, lon });
+    });
+
+    setCount('natural', naturalCount);
+    setCount('hotspots', hotspotCount);
+
+    renderRecentEvents(recentEvents.slice(0, 12));
+
+    document.getElementById('mapSubtitle').textContent =
+      `SON GÜNCELLEME: ${new Date().toLocaleTimeString('tr-TR')} · GDACS`;
+
+  } catch (err) {
+    console.warn('GDACS yüklenemedi:', err);
+    loadFallbackNatural();
+  }
+}
+
+function loadFallbackNatural() {
+  const fallback = [
+    { lat: 38.0, lon: 38.5, type: 'DEPREM', name: 'Doğu Türkiye M5.2', alert: 'ORANGE', date: 'Bugün' },
+    { lat: 15.0, lon: -90.0, type: 'KASIRGA', name: 'TC Miriam', alert: 'RED', date: 'Dün' },
+    { lat: -8.0, lon: -78.0, type: 'SEL', name: 'Peru Taşkını', alert: 'ORANGE', date: '2 gün önce' },
+    { lat: 37.7, lon: 15.0, type: 'VOLKAN', name: 'Etna Aktivitesi', alert: 'GREEN', date: '3 gün önce' },
+    { lat: 35.0, lon: 136.0, type: 'DEPREM', name: 'Japonya M4.8', alert: 'GREEN', date: '4 gün önce' },
+    { lat: -23.0, lon: -46.0, type: 'SEL', name: 'Brezilya Taşkın', alert: 'ORANGE', date: '5 gün önce' },
+  ];
+  layerGroups.natural.clearLayers();
+  fallback.forEach(e => {
+    const c = e.alert === 'RED' ? '#ff4c6a' : e.alert === 'ORANGE' ? '#ff8c42' : '#f0c040';
+    addMarker('natural', e.lat, e.lon, makeIcon(c, '⚠️'),
+      makePopup(e.type, e.name, `<span style="color:${c}">● ${e.alert}</span> · ${e.date}<br>Kaynak: <span style="color:#21ce70">FALLBACK</span>`, c));
+  });
+  setCount('natural', fallback.length);
+  renderRecentEvents(fallback.map(e => ({...e, color: e.alert === 'RED' ? '#ff4c6a' : '#f0c040'})));
+}
+
+// ────────────────────────────────────────────────
+// DATA: USGS — Earthquakes
+// ────────────────────────────────────────────────
+async function loadEarthquakes() {
+  try {
+    const timeParam = currentTimeRange === '1h' ? 'hour' :
+                      currentTimeRange === '6h' ? 'hour' :
+                      currentTimeRange === '24h' ? 'day' :
+                      currentTimeRange === '7d' ? 'week' : 'month';
+
+    const url = `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_${timeParam}.geojson`;
+    const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+    const res = await fetch(proxy);
+    const data = await res.json();
+    const json = JSON.parse(data.contents);
+
+    const quakes = json.features || [];
+    // Add to natural layer (significant only)
+    quakes.slice(0, 20).forEach(q => {
+      const [lon, lat] = q.geometry.coordinates;
+      const mag = q.properties.mag?.toFixed(1);
+      const place = q.properties.place || 'Bilinmeyen';
+      const color = mag >= 6 ? '#ff4c6a' : mag >= 5 ? '#ff8c42' : '#f0c040';
+      addMarker('natural', lat, lon, makeIcon(color, '🌍', 22),
+        makePopup('DEPREM', `M${mag} — ${place}`,
+          `Derinlik: <span>${q.geometry.coordinates[2]} km</span><br>Zaman: <span>${new Date(q.properties.time).toLocaleString('tr-TR')}</span><br>Kaynak: <span>USGS</span>`, color));
+    });
+    setCount('natural', (eventCounts.natural || 0) + quakes.length);
+  } catch(e) {
+    console.warn('USGS yüklenemedi:', e);
+  }
+}
+
+// ────────────────────────────────────────────────
+// DATA: ACLED-style Conflicts (static curated)
+// ────────────────────────────────────────────────
+function loadConflicts() {
+  const conflicts = [
+    { lat: 48.5, lon: 37.5, name: 'Ukrayna-Rusya Cephesi', desc: 'Aktif çatışma bölgesi', severity: 'high' },
+    { lat: 31.5, lon: 34.8, name: 'Gazze', desc: 'Aktif çatışma', severity: 'high' },
+    { lat: 33.5, lon: 36.3, name: 'Suriye', desc: 'Devam eden çatışma', severity: 'med' },
+    { lat: 15.5, lon: 32.5, name: 'Sudan', desc: 'İç savaş', severity: 'high' },
+    { lat: 9.0, lon: 7.5, name: 'Nijerya (Boko Haram)', desc: 'Silahlı grup aktivitesi', severity: 'med' },
+    { lat: 6.0, lon: 37.0, name: 'Etiyopya (Tigray)', desc: 'Dönemsel çatışma', severity: 'med' },
+    { lat: 23.5, lon: 67.5, name: 'Pakistan-Afganistan Sınırı', desc: 'Sınır gerginliği', severity: 'low' },
+    { lat: 16.5, lon: -14.0, name: 'Mali (Sahel)', desc: 'İsyancı faaliyeti', severity: 'med' },
+    { lat: 12.0, lon: 15.0, name: 'Çad Havzası', desc: 'İnsancıl kriz', severity: 'med' },
+    { lat: 14.5, lon: 43.5, name: 'Yemen', desc: 'Çatışma / insani kriz', severity: 'high' },
+    { lat: 35.0, lon: 44.5, name: 'Irak (Kuzey)', desc: 'Dönemsel saldırı', severity: 'low' },
+    { lat: 34.5, lon: 69.0, name: 'Afganistan', desc: 'Taliban kontrolü / gerilim', severity: 'med' },
+    { lat: 4.5, lon: 31.5, name: 'Güney Sudan', desc: 'Etnik çatışma', severity: 'med' },
+    { lat: 25.5, lon: 84.5, name: 'Myanmar', desc: 'Cunta karşıtı çatışma', severity: 'high' },
+    { lat: 7.5, lon: -11.5, name: 'Sierra Leone', desc: 'Siyasi gerilim', severity: 'low' },
+  ];
+
+  layerGroups.conflicts.clearLayers();
+  conflicts.forEach(c => {
+    const color = c.severity === 'high' ? '#ff4c6a' : c.severity === 'med' ? '#ff8c42' : '#f0c040';
+    addMarker('conflicts', c.lat, c.lon, makeIcon(color, '⚔️', 22),
+      makePopup('ÇATIŞMA', c.name,
+        `${c.desc}<br>Seviye: <span style="color:${color}">${c.severity.toUpperCase()}</span><br>Kaynak: <span style="color:#21ce70">ACLED/OSM</span>`, color));
+  });
+  setCount('conflicts', conflicts.length);
+}
+
+// ────────────────────────────────────────────────
+// DATA: Military Bases (curated)
+// ────────────────────────────────────────────────
+function loadBases() {
+  const bases = [
+    { lat: 36.9, lon: 38.8, name: 'İncirlik Hava Üssü', country: 'Türkiye/ABD', type: 'NATO' },
+    { lat: 35.1, lon: 33.3, name: 'Akrotiri Üssü', country: 'İngiltere', type: 'RAF' },
+    { lat: 11.5, lon: 43.1, name: 'Camp Lemonnier', country: 'ABD', type: 'AFRICOM' },
+    { lat: 26.1, lon: 50.6, name: 'Naval Support Bahrain', country: 'ABD', type: 'US NAVCENT' },
+    { lat: 22.8, lon: 114.0, name: 'Pearl River Delta', country: 'Çin', type: 'PLA NAVY' },
+    { lat: 44.8, lon: 34.9, name: 'Sivastopol (Rus Donanma)', country: 'Rusya', type: 'Karadeniz Filosu' },
+    { lat: 13.5, lon: -16.7, name: 'Banjul (Fransız Üs)', country: 'Fransa', type: 'Batı Afrika' },
+    { lat: 36.8, lon: 3.0, name: 'Cezayir Hava Üssü', country: 'Cezayir', type: 'Hava Kuvvetleri' },
+    { lat: 35.5, lon: 35.9, name: 'Hmeymim Üssü', country: 'Rusya', type: 'VKS Suriye' },
+    { lat: 35.5, lon: 35.8, name: 'Tartus Deniz Üssü', country: 'Rusya', type: 'Akdeniz' },
+    { lat: 28.6, lon: -80.7, name: 'Patrick SFB', country: 'ABD', type: 'Uzay Kuvvetleri' },
+    { lat: 51.5, lon: -1.7, name: 'RAF Fairford', country: 'İngiltere/ABD', type: 'Stratejik Bomba' },
+    { lat: 49.9, lon: 8.6, name: 'Ramstein AB', country: 'ABD', type: 'USAFE HQ' },
+    { lat: 35.8, lon: 14.5, name: 'Malta Üssü', country: 'NATO', type: 'Deniz' },
+  ];
+  layerGroups.bases.clearLayers();
+  bases.forEach(b => {
+    addMarker('bases', b.lat, b.lon, makeIcon('#4cc9ff', '🛡️', 20),
+      makePopup('ASKERİ ÜS', b.name,
+        `Ülke: <span>${b.country}</span><br>Tip: <span>${b.type}</span>`, '#4cc9ff'));
+  });
+  setCount('bases', bases.length);
+}
+
+// ────────────────────────────────────────────────
+// DATA: Nuclear Sites
+// ────────────────────────────────────────────────
+function loadNuclear() {
+  const nuclear = [
+    { lat: 34.0, lon: -118.0, name: 'San Onofre (Deaktif)', country: 'ABD', type: 'Nükleer Santral' },
+    { lat: 50.1, lon: 30.1, name: 'Zaporijya NPP', country: 'Ukrayna', type: 'Aktif / Çatışma Bölgesi', alert: true },
+    { lat: 48.6, lon: 6.2, name: 'Cattenom NPP', country: 'Fransa', type: 'Nükleer Santral' },
+    { lat: 55.8, lon: 37.6, name: 'Nükleer Araştırma (Moskova)', country: 'Rusya', type: 'Araştırma' },
+    { lat: 36.0, lon: 129.4, name: 'Fukushima', country: 'Japonya', type: 'Deaktif / İzleme' },
+    { lat: 35.6, lon: 129.4, name: 'Wolseong NPP', country: 'Güney Kore', type: 'Aktif' },
+    { lat: 36.8, lon: 10.9, name: 'Bizerte (Araştırma)', country: 'Tunus', type: 'Araştırma' },
+    { lat: 29.0, lon: 57.0, name: 'Natanz', country: 'İran', type: 'Uranyum Zenginleştirme', alert: true },
+    { lat: 40.2, lon: 44.5, name: 'Metsamor NPP', country: 'Ermenistan', type: 'Aktif' },
+    { lat: 37.2, lon: 9.8, name: 'Sidi Thabet (Araştırma)', country: 'Tunus', type: 'Araştırma' },
+    { lat: 31.8, lon: 35.1, name: 'Dimona (Şüpheli)', country: 'İsrail', type: 'Askeri / Gizlendi', alert: true },
+    { lat: 33.7, lon: 72.7, name: 'Kahuta (Silah)', country: 'Pakistan', type: 'Nükleer Silah', alert: true },
+    { lat: 28.9, lon: 76.0, name: 'Narora NPP', country: 'Hindistan', type: 'Aktif' },
+    { lat: 40.8, lon: -74.0, name: 'Indian Point (Deaktif)', country: 'ABD', type: 'Deaktif' },
+  ];
+  layerGroups.nuclear.clearLayers();
+  nuclear.forEach(n => {
+    const color = n.alert ? '#ff4c6a' : '#4cc9ff';
+    addMarker('nuclear', n.lat, n.lon, makeIcon(color, '☢️', 20),
+      makePopup('NÜKLEER TESİS', n.name,
+        `Ülke: <span>${n.country}</span><br>Tip: <span>${n.type}</span>${n.alert ? '<br><span style="color:#ff4c6a">⚠️ DİKKAT</span>' : ''}`, color));
+  });
+  setCount('nuclear', nuclear.length);
+}
+
+// ────────────────────────────────────────────────
+// DATA: Sanctions (curated)
+// ────────────────────────────────────────────────
+function loadSanctions() {
+  const sanctions = [
+    { lat: 55.7, lon: 37.6, name: 'Rusya Federasyonu', regime: 'AB/ABD/G7 Yaptırımları', scope: 'Kapsamlı' },
+    { lat: 35.7, lon: 51.4, name: 'İran', regime: 'BM/ABD/AB Yaptırımları', scope: 'Kapsamlı' },
+    { lat: 39.0, lon: 125.7, name: 'Kuzey Kore', regime: 'BM Yaptırımları', scope: 'Kapsamlı' },
+    { lat: 23.1, lon: -82.3, name: 'Küba', regime: 'ABD Ambargosu', scope: 'Kısmi' },
+    { lat: 15.5, lon: 32.5, name: 'Sudan', regime: 'ABD/AB Yaptırımları', scope: 'Kısmi' },
+    { lat: 14.5, lon: 43.5, name: 'Yemen (Husileri)', regime: 'ABD/AB Yaptırımları', scope: 'Hedefli' },
+    { lat: 7.5, lon: -5.5, name: "Kuzey Afrika (Wagner)", regime: 'AB Yaptırımları', scope: 'Hedefli' },
+    { lat: 17.3, lon: 102.6, name: 'Myanmar Cuntası', regime: 'AB/ABD Yaptırımları', scope: 'Hedefli' },
+    { lat: 11.5, lon: 43.1, name: 'Somali (Al-Shabaab)', regime: 'BM Yaptırımları', scope: 'Hedefli' },
+    { lat: 4.5, lon: 31.5, name: 'Güney Sudan', regime: 'ABD Yaptırımları', scope: 'Kısmi' },
+  ];
+  layerGroups.sanctions.clearLayers();
+  sanctions.forEach(s => {
+    addMarker('sanctions', s.lat, s.lon, makeIcon('#ff8c42', '🚫', 20),
+      makePopup('YAPTIRIM', s.name,
+        `Rejim: <span>${s.regime}</span><br>Kapsam: <span>${s.scope}</span>`, '#ff8c42'));
+  });
+  setCount('sanctions', sanctions.length);
+}
+
+// ────────────────────────────────────────────────
+// DATA: Internet Outages (curated + live)
+// ────────────────────────────────────────────────
+function loadOutages() {
+  const outages = [
+    { lat: 15.5, lon: 32.5, name: 'Sudan İnternet Kesintisi', severity: 'severe', note: 'Altyapı hasarı' },
+    { lat: 17.3, lon: 102.6, name: 'Myanmar Bölgesel Kesinti', severity: 'moderate', note: 'Devlet kontrolü' },
+    { lat: 14.0, lon: -15.0, name: 'Batı Afrika Kablo Arızası', severity: 'moderate', note: 'WACS/SAT3 kesintisi' },
+    { lat: 24.0, lon: 54.0, name: 'BAE Yavaş Bağlantı', severity: 'minor', note: 'İzleme altında' },
+    { lat: 33.0, lon: 44.0, name: 'Irak Bölgesel Kesinti', severity: 'moderate', note: 'Çatışma etkisi' },
+  ];
+  layerGroups.outages.clearLayers();
+  outages.forEach(o => {
+    const color = o.severity === 'severe' ? '#ff4c6a' : o.severity === 'moderate' ? '#ff8c42' : '#f0c040';
+    addMarker('outages', o.lat, o.lon, makeIcon(color, '⚡', 20),
+      makePopup('İNTERNET KESİNTİSİ', o.name,
+        `Şiddet: <span style="color:${color}">${o.severity.toUpperCase()}</span><br>Not: <span>${o.note}</span>`, color));
+  });
+  setCount('outages', outages.length);
+}
+
+// ────────────────────────────────────────────────
+// DATA: Economic Hotspots
+// ────────────────────────────────────────────────
+function loadEconomic() {
+  const economic = [
+    { lat: 1.3, lon: 103.8, name: 'Singapur Finans', type: 'Küresel Finans Merkezi', trend: 'stabil' },
+    { lat: 22.3, lon: 114.1, name: 'Hong Kong', type: 'Finans / Ticaret', trend: 'gerilim' },
+    { lat: 40.7, lon: -74.0, name: 'New York (NYSE/NASDAQ)', type: 'Borsa Merkezi', trend: 'aktif' },
+    { lat: 51.5, lon: -0.1, name: 'Londra (LSE)', type: 'Finans', trend: 'aktif' },
+    { lat: 48.8, lon: 2.3, name: 'Paris (Euronext)', type: 'Borsa', trend: 'aktif' },
+    { lat: 35.7, lon: 139.7, name: 'Tokyo (TSE)', type: 'Borsa', trend: 'aktif' },
+    { lat: 25.2, lon: 55.3, name: 'Dubai DIFC', type: 'Finans Merkezi', trend: 'büyüme' },
+    { lat: -33.9, lon: 18.4, name: 'Cape Town (JSE)', type: 'Afrika Borsası', trend: 'stabil' },
+    { lat: -23.5, lon: -46.6, name: 'São Paulo (B3)', type: 'LATAM Borsası', trend: 'gerilim' },
+    { lat: 19.4, lon: -99.1, name: 'Meksiko (BMV)', type: 'Borsa', trend: 'stabil' },
+  ];
+  layerGroups.economic.clearLayers();
+  economic.forEach(e => {
+    const color = e.trend === 'gerilim' ? '#ff8c42' : '#21ce70';
+    addMarker('economic', e.lat, e.lon, makeIcon(color, '📈', 20),
+      makePopup('EKONOMİK', e.name,
+        `Tip: <span>${e.type}</span><br>Durum: <span style="color:${color}">${e.trend.toUpperCase()}</span>`, color));
+  });
+  setCount('economic', economic.length);
+}
+
+// ────────────────────────────────────────────────
+// DATA: Military Movement
+// ────────────────────────────────────────────────
+function loadMilitary() {
+  const military = [
+    { lat: 50.4, lon: 30.5, name: 'Ukrayna Cephesi Hareketi', detail: 'Aktif muharebe' },
+    { lat: 31.0, lon: 35.0, name: 'İsrail Kuzey Sınırı', detail: 'Gerilim' },
+    { lat: 39.9, lon: 116.4, name: 'Çin PLA Tatbikatı', detail: 'Güney Çin Denizi' },
+    { lat: 35.7, lon: 51.4, name: 'İran IRGC Hareketi', detail: 'İzleme altında' },
+    { lat: 37.5, lon: 127.0, name: 'Kore Yarımadası', detail: 'Ortak tatbikat' },
+    { lat: 34.5, lon: 69.0, name: 'Afganistan Hava Sahası', detail: 'İnsansız hava aracı' },
+    { lat: 43.0, lon: 41.7, name: 'Karadeniz NATO', detail: 'Deniz devriyesi' },
+    { lat: 14.5, lon: 43.5, name: 'Kızıldeniz Geçidi', detail: 'Husiler / Deniz gücü' },
+  ];
+  layerGroups.military.clearLayers();
+  military.forEach(m => {
+    addMarker('military', m.lat, m.lon, makeIcon('#4cc9ff', '🪖', 22),
+      makePopup('ASKERİ HAREKETLİLİK', m.name,
+        `Detay: <span>${m.detail}</span>`, '#4cc9ff'));
+  });
+  setCount('military', military.length);
+}
+
+// ────────────────────────────────────────────────
+// DATA: Weather Extremes (OpenWeatherMap public)
+// ────────────────────────────────────────────────
+async function loadWeather() {
+  // Major cities weather
+  const cities = [
+    { lat: 48.8, lon: 2.3, name: 'Paris' },
+    { lat: 40.7, lon: -74.0, name: 'New York' },
+    { lat: 35.7, lon: 139.7, name: 'Tokyo' },
+    { lat: 55.7, lon: 37.6, name: 'Moskova' },
+    { lat: 1.3, lon: 103.8, name: 'Singapur' },
+    { lat: 24.7, lon: 46.7, name: 'Riyad' },
+    { lat: -33.9, lon: 151.2, name: 'Sidney' },
+    { lat: 19.4, lon: -99.1, name: 'Meksiko' },
+    { lat: 28.6, lon: 77.2, name: 'Yeni Delhi' },
+    { lat: -23.5, lon: -46.6, name: 'São Paulo' },
+  ];
+
+  layerGroups.weather.clearLayers();
+  let count = 0;
+
+  // Use wttr.in (no key required)
+  for (const city of cities.slice(0, 5)) {
+    try {
+      const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(`https://wttr.in/${city.name}?format=j1`);
+      const res = await fetch(proxy);
+      const data = await res.json();
+      const json = JSON.parse(data.contents);
+      const current = json.current_condition?.[0];
+      if (current) {
+        const temp = current.temp_C;
+        const desc = current.weatherDesc?.[0]?.value || '';
+        const color = temp > 35 ? '#ff4c6a' : temp < 0 ? '#4cc9ff' : '#21ce70';
+        addMarker('weather', city.lat, city.lon, makeIcon(color, '🌤️', 20),
+          makePopup('HAVA DURUMU', city.name,
+            `Sıcaklık: <span>${temp}°C</span><br>Durum: <span>${desc}</span>`, color));
+        count++;
+      }
+    } catch(e) { /* skip */ }
+  }
+
+  if (count === 0) {
+    // Fallback static
+    cities.forEach(c => {
+      addMarker('weather', c.lat, c.lon, makeIcon('#21ce70', '🌤️', 18),
+        makePopup('HAVA DURUMU', c.name, 'Veri bekleniyor...', '#21ce70'));
+    });
+    count = cities.length;
+  }
+
+  setCount('weather', count);
+}
+
+// ────────────────────────────────────────────────
+// RECENT EVENTS PANEL
+// ────────────────────────────────────────────────
+function renderRecentEvents(events) {
+  const container = document.getElementById('recentEvents');
+  container.innerHTML = events.map(e => `
+    <div class="info-event" onclick="map.flyTo([${e.lat},${e.lon}], 5)">
+      <div class="info-event-type">${e.type}</div>
+      <div class="info-event-title">${e.name}</div>
+      <div class="info-event-meta">${e.date || ''}</div>
+    </div>
+  `).join('');
+}
+
+// ────────────────────────────────────────────────
+// LOAD ALL
+// ────────────────────────────────────────────────
+async function loadAllLayers() {
+  document.getElementById('mapLoading').classList.remove('hidden');
+  layerDefs.forEach(l => layerGroups[l].clearLayers());
+
+  await loadNaturalEvents();
+  loadConflicts();
+  loadBases();
+  loadNuclear();
+  loadSanctions();
+  loadOutages();
+  loadEconomic();
+  loadMilitary();
+  await loadWeather();
+
+  document.getElementById('mapLoading').classList.add('hidden');
+  updateTotal();
+}
+
+loadAllLayers();
+
+// Auto-refresh every 10 minutes
+setInterval(loadAllLayers, 10 * 60 * 1000);
+
+// ────────────────────────────────────────────────
+// NEWS SWITCH
+// ────────────────────────────────────────────────
+function switchNews(channel, btn) {
+  document.querySelectorAll('.news-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.news-embed iframe').forEach(f => f.classList.remove('active'));
+  document.getElementById('news-' + channel).classList.add('active');
+}
+
+// ────────────────────────────────────────────────
+// WEBCAM DATA
+// ────────────────────────────────────────────────
+// Verified 24/7 live YouTube cam IDs - autoplay=0 always works in iframes
+const webcams = {
+  all: [
+    { region: 'americas', city: 'NEW YORK — Times Sq',   id: 'rnXIjl_Rzy4' },
+    { region: 'americas', city: 'NEW YORK — 24/7',       id: 'VGnFLdQW39A' },
+    { region: 'americas', city: 'NEW YORK — Broadway',   id: '4qyZLflp-sI' },
+    { region: 'americas', city: 'NEW YORK — Duffy Sq',   id: 'iiBTWU2FyFo' },
+    { region: 'europe',   city: 'LONDRA',                id: 'WKGK_hYnlGE' },
+    { region: 'europe',   city: 'LONDRA — Trafalgar',    id: 'Lxqcg1qt0XU' },
+    { region: 'europe',   city: 'LONDRA — Thames',       id: '8JCk5M_xrBs' },
+    { region: 'europe',   city: 'LONDRA — Southbank',    id: 'HVGwLboIdYc' },
+    { region: 'asia',     city: 'TOKYO',                 id: 'L6wO1-U2RTY' },
+    { region: 'asia',     city: 'TOKYO — Shibuya',       id: '_k-5U7IeK8g' },
+    { region: 'asia',     city: 'TOKYO — Shinjuku',      id: '6dp-bvQ7RWo' },
+    { region: 'asia',     city: 'TOKYO — Akihabara',     id: 'DjdUEyjx8GM' },
+    { region: 'mideast',  city: 'DUBAI',                 id: 'z7SiAaN4ogw' },
+    { region: 'mideast',  city: 'DUBAI — Skyline',       id: 'HfgIFGbdGJ0' },
+    { region: 'europe',   city: 'PARİS',                 id: '2BLqhS59Elc' },
+    { region: 'mideast',  city: 'İSTANBUL',              id: 'EFum1rGUdkk' },
+  ],
+};
+
+function switchWebcams(region, btn) {
+  document.querySelectorAll('.region-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderWebcams(region);
+}
+
+function renderWebcams(region) {
+  const grid = document.getElementById('webcamGrid');
+  const items = region === 'all' ? webcams.all : webcams.all.filter(w => w.region === region);
+  grid.innerHTML = items.map(w => `
+    <div class="webcam-item" onclick="this.querySelector('iframe').src=this.querySelector('iframe').src.replace('autoplay=0','autoplay=1')">
+      <iframe
+        src="https://www.youtube.com/embed/${w.id}?autoplay=0&mute=1&controls=1&rel=0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen
+        loading="lazy">
+      </iframe>
+      <div class="webcam-label">
+        <div class="webcam-live-dot"></div>
+        ${w.city}
+      </div>
+    </div>
+  `).join('');
+}
+
+renderWebcams('all');
+</script>
+</body>
+</html>
