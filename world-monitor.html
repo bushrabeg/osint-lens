@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OSINT Lens â DÃ¼nya MonitÃ¶rÃ¼</title>
+  <title>OSINT Lens â Dünya Monitörü</title>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -740,12 +740,12 @@
         </div>
         <div>
           <div class="logo-text">OSINT Lens</div>
-          <div class="logo-sub">AÃIK KAYNAK Ä°STÄ°HBARAT ARACI</div>
+          <div class="logo-sub">AÇIK KAYNAK İSTİHBARAT ARACI</div>
         </div>
       </a>
       <nav class="nav-tabs">
         <a href="index.html" class="nav-tab">â OSINT TARA</a>
-        <a href="world-monitor.html" class="nav-tab active">â DÃNYA MONÄ°TÃRÃ</a>
+        <a href="world-monitor.html" class="nav-tab active">â DÜNYA MONİTÖRÜ</a>
       </nav>
     </div>
     <div class="header-right">
@@ -768,7 +768,7 @@
     <div class="layer-item active" data-layer="conflicts" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
       <span class="layer-icon">âï¸</span>
-      <span class="layer-label">ÃATIÅMALAR</span>
+      <span class="layer-label">ÇATIşMALAR</span>
       <span class="layer-count" id="count-conflicts">â</span>
     </div>
 
@@ -782,7 +782,7 @@
     <div class="layer-item active" data-layer="natural" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
       <span class="layer-icon">ðªï¸</span>
-      <span class="layer-label">DOÄAL OLAYLAR</span>
+      <span class="layer-label">DOğAL OLAYLAR</span>
       <span class="layer-count" id="count-natural">â</span>
     </div>
 
@@ -796,21 +796,21 @@
     <div class="layer-item active" data-layer="bases" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
       <span class="layer-icon">ð¡ï¸</span>
-      <span class="layer-label">ASKERÄ° ÃSLER</span>
+      <span class="layer-label">ASKERİ ÜSLER</span>
       <span class="layer-count" id="count-bases">â</span>
     </div>
 
     <div class="layer-item active" data-layer="nuclear" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
       <span class="layer-icon">â¢ï¸</span>
-      <span class="layer-label">NÃKLEER</span>
+      <span class="layer-label">NÜKLEER</span>
       <span class="layer-count" id="count-nuclear">â</span>
     </div>
 
     <div class="layer-item active" data-layer="outages" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
       <span class="layer-icon">â¡</span>
-      <span class="layer-label">Ä°NTERNET KESÄ°NTÄ°</span>
+      <span class="layer-label">İNTERNET KESİNTİ</span>
       <span class="layer-count" id="count-outages">â</span>
     </div>
 
@@ -824,21 +824,21 @@
     <div class="layer-item" data-layer="waterways" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
       <span class="layer-icon">ð¢</span>
-      <span class="layer-label">GEMÄ° TRAFÄ°ÄÄ°</span>
+      <span class="layer-label">GEMİ TRAFİğİ</span>
       <span class="layer-count" id="count-waterways">â</span>
     </div>
 
     <div class="layer-item" data-layer="economic" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
       <span class="layer-icon">ð</span>
-      <span class="layer-label">EKONOMÄ°K</span>
+      <span class="layer-label">EKONOMİK</span>
       <span class="layer-count" id="count-economic">â</span>
     </div>
 
     <div class="layer-item" data-layer="military" onclick="toggleLayer(this)">
       <div class="layer-checkbox"></div>
       <span class="layer-icon">ðª</span>
-      <span class="layer-label">ASKERÄ° HAREKETLÄ°LÄ°K</span>
+      <span class="layer-label">ASKERİ HAREKETLİLİK</span>
       <span class="layer-count" id="count-military">â</span>
     </div>
 
@@ -849,7 +849,7 @@
       <button class="time-btn" onclick="setTimeRange('24h', this)">24S</button>
       <button class="time-btn" onclick="setTimeRange('48h', this)">48S</button>
       <button class="time-btn active" onclick="setTimeRange('7d', this)">7G</button>
-      <button class="time-btn" onclick="setTimeRange('all', this)">TÃM</button>
+      <button class="time-btn" onclick="setTimeRange('all', this)">TÜM</button>
     </div>
   </div>
 
@@ -859,25 +859,25 @@
 
     <div class="map-overlay-top">
       <div class="map-title-box">
-        <div class="map-title">GLOBAL Ä°STÄ°HBARAT HARÄ°TASI</div>
-        <div class="map-subtitle" id="mapSubtitle">VERÄ°LER YÃKLENÄ°YOR...</div>
+        <div class="map-title">GLOBAL İSTİHBARAT HARİTASI</div>
+        <div class="map-subtitle" id="mapSubtitle">VERİLER YÜKLENİYOR...</div>
       </div>
       <div class="event-counter">
         <div class="event-counter-num" id="totalEvents">â</div>
-        <div class="event-counter-label">AKTÄ°F OLAY</div>
+        <div class="event-counter-label">AKTİF OLAY</div>
       </div>
     </div>
 
     <div class="map-loading" id="mapLoading">
-      <div class="loading-text">VERÄ°LER YÃKLENÄ°YOR...</div>
+      <div class="loading-text">VERİLER YÜKLENİYOR...</div>
       <div class="loading-bar"></div>
     </div>
 
     <div class="map-legend">
-      <div class="legend-row"><div class="legend-dot" style="background:#ff4c6a"></div><span class="legend-label">ÃATIÅMA / SICAK NOKTA</span></div>
-      <div class="legend-row"><div class="legend-dot" style="background:#f0c040"></div><span class="legend-label">DOÄAL OLAY</span></div>
-      <div class="legend-row"><div class="legend-dot" style="background:#4cc9ff"></div><span class="legend-label">ASKERÄ° / NÃKLEER</span></div>
-      <div class="legend-row"><div class="legend-dot" style="background:#21ce70"></div><span class="legend-label">DÄ°ÄER</span></div>
+      <div class="legend-row"><div class="legend-dot" style="background:#ff4c6a"></div><span class="legend-label">ÇATIşMA / SICAK NOKTA</span></div>
+      <div class="legend-row"><div class="legend-dot" style="background:#f0c040"></div><span class="legend-label">DOğAL OLAY</span></div>
+      <div class="legend-row"><div class="legend-dot" style="background:#4cc9ff"></div><span class="legend-label">ASKERİ / NÜKLEER</span></div>
+      <div class="legend-row"><div class="legend-dot" style="background:#21ce70"></div><span class="legend-label">DİğER</span></div>
     </div>
   </div>
 
@@ -888,7 +888,7 @@
     <div class="info-panel">
       <div class="panel-title">SON OLAYLAR</div>
       <div id="recentEvents">
-        <div style="font-size:10px;color:var(--text-dim);letter-spacing:1px">YÃ¼kleniyor...</div>
+        <div style="font-size:10px;color:var(--text-dim);letter-spacing:1px">Yükleniyor...</div>
       </div>
     </div>
 
@@ -931,10 +931,10 @@
         <div class="live-badge"><div class="live-dot"></div><span>LIVE</span></div>
       </div>
       <div class="webcam-region-tabs">
-        <button class="region-tab active" onclick="switchWebcams('all', this)">TÃM</button>
-        <button class="region-tab" onclick="switchWebcams('mideast', this)">ORTADOÄU</button>
+        <button class="region-tab active" onclick="switchWebcams('all', this)">TÜM</button>
+        <button class="region-tab" onclick="switchWebcams('mideast', this)">ORTADOğU</button>
         <button class="region-tab" onclick="switchWebcams('europe', this)">AVRUPA</button>
-        <button class="region-tab" onclick="switchWebcams('americas', this)">AMERÄ°KA</button>
+        <button class="region-tab" onclick="switchWebcams('americas', this)">AMERİKA</button>
         <button class="region-tab" onclick="switchWebcams('asia', this)">ASYA</button>
       </div>
       <div class="webcam-grid" id="webcamGrid">
@@ -946,7 +946,7 @@
 </div><!-- /main-layout -->
 
 <footer>
-  OSINT LENS v2.0 â DÃNYA MONÄ°TÃRÃ â VERÄ°LER: GDACS Â· ACLED Â· USGS Â· OPENWEATHERMAP â ETÄ°K KULLANIM ZORUNLUDUR
+  OSINT LENS v2.0 â DÜNYA MONİTÖRÜ â VERİLER: GDACS Â· ACLED Â· USGS Â· OPENWEATHERMAP â ETİK KULLANIM ZORUNLUDUR
 </footer>
 
 <script>
@@ -1142,22 +1142,22 @@ async function loadNaturalEvents() {
     renderRecentEvents(recentEvents.slice(0, 12));
 
     document.getElementById('mapSubtitle').textContent =
-      `SON GÃNCELLEME: ${new Date().toLocaleTimeString('tr-TR')} Â· GDACS`;
+      `SON GÜNCELLEME: ${new Date().toLocaleTimeString('tr-TR')} Â· GDACS`;
 
   } catch (err) {
-    console.warn('GDACS yÃ¼klenemedi:', err);
+    console.warn('GDACS yüklenemedi:', err);
     loadFallbackNatural();
   }
 }
 
 function loadFallbackNatural() {
   const fallback = [
-    { lat: 38.0, lon: 38.5, type: 'DEPREM', name: 'DoÄu TÃ¼rkiye M5.2', alert: 'ORANGE', date: 'BugÃ¼n' },
-    { lat: 15.0, lon: -90.0, type: 'KASIRGA', name: 'TC Miriam', alert: 'RED', date: 'DÃ¼n' },
-    { lat: -8.0, lon: -78.0, type: 'SEL', name: 'Peru TaÅkÄ±nÄ±', alert: 'ORANGE', date: '2 gÃ¼n Ã¶nce' },
-    { lat: 37.7, lon: 15.0, type: 'VOLKAN', name: 'Etna Aktivitesi', alert: 'GREEN', date: '3 gÃ¼n Ã¶nce' },
-    { lat: 35.0, lon: 136.0, type: 'DEPREM', name: 'Japonya M4.8', alert: 'GREEN', date: '4 gÃ¼n Ã¶nce' },
-    { lat: -23.0, lon: -46.0, type: 'SEL', name: 'Brezilya TaÅkÄ±n', alert: 'ORANGE', date: '5 gÃ¼n Ã¶nce' },
+    { lat: 38.0, lon: 38.5, type: 'DEPREM', name: 'Doğu Türkiye M5.2', alert: 'ORANGE', date: 'Bugün' },
+    { lat: 15.0, lon: -90.0, type: 'KASIRGA', name: 'TC Miriam', alert: 'RED', date: 'Dün' },
+    { lat: -8.0, lon: -78.0, type: 'SEL', name: 'Peru Taşkını', alert: 'ORANGE', date: '2 gün önce' },
+    { lat: 37.7, lon: 15.0, type: 'VOLKAN', name: 'Etna Aktivitesi', alert: 'GREEN', date: '3 gün önce' },
+    { lat: 35.0, lon: 136.0, type: 'DEPREM', name: 'Japonya M4.8', alert: 'GREEN', date: '4 gün önce' },
+    { lat: -23.0, lon: -46.0, type: 'SEL', name: 'Brezilya Taşkın', alert: 'ORANGE', date: '5 gün önce' },
   ];
   layerGroups.natural.clearLayers();
   fallback.forEach(e => {
@@ -1198,7 +1198,7 @@ async function loadEarthquakes() {
     });
     setCount('natural', (eventCounts.natural || 0) + quakes.length);
   } catch(e) {
-    console.warn('USGS yÃ¼klenemedi:', e);
+    console.warn('USGS yüklenemedi:', e);
   }
 }
 
@@ -1207,20 +1207,20 @@ async function loadEarthquakes() {
 // ââââââââââââââââââââââââââââââââââââââââââââââââ
 function loadConflicts() {
   const conflicts = [
-    { lat: 48.5, lon: 37.5, name: 'Ukrayna-Rusya Cephesi', desc: 'Aktif Ã§atÄ±Åma bÃ¶lgesi', severity: 'high' },
-    { lat: 31.5, lon: 34.8, name: 'Gazze', desc: 'Aktif Ã§atÄ±Åma', severity: 'high' },
-    { lat: 33.5, lon: 36.3, name: 'Suriye', desc: 'Devam eden Ã§atÄ±Åma', severity: 'med' },
-    { lat: 15.5, lon: 32.5, name: 'Sudan', desc: 'Ä°Ã§ savaÅ', severity: 'high' },
-    { lat: 9.0, lon: 7.5, name: 'Nijerya (Boko Haram)', desc: 'SilahlÄ± grup aktivitesi', severity: 'med' },
-    { lat: 6.0, lon: 37.0, name: 'Etiyopya (Tigray)', desc: 'DÃ¶nemsel Ã§atÄ±Åma', severity: 'med' },
-    { lat: 23.5, lon: 67.5, name: 'Pakistan-Afganistan SÄ±nÄ±rÄ±', desc: 'SÄ±nÄ±r gerginliÄi', severity: 'low' },
-    { lat: 16.5, lon: -14.0, name: 'Mali (Sahel)', desc: 'Ä°syancÄ± faaliyeti', severity: 'med' },
-    { lat: 12.0, lon: 15.0, name: 'Ãad HavzasÄ±', desc: 'Ä°nsancÄ±l kriz', severity: 'med' },
-    { lat: 14.5, lon: 43.5, name: 'Yemen', desc: 'ÃatÄ±Åma / insani kriz', severity: 'high' },
-    { lat: 35.0, lon: 44.5, name: 'Irak (Kuzey)', desc: 'DÃ¶nemsel saldÄ±rÄ±', severity: 'low' },
-    { lat: 34.5, lon: 69.0, name: 'Afganistan', desc: 'Taliban kontrolÃ¼ / gerilim', severity: 'med' },
-    { lat: 4.5, lon: 31.5, name: 'GÃ¼ney Sudan', desc: 'Etnik Ã§atÄ±Åma', severity: 'med' },
-    { lat: 25.5, lon: 84.5, name: 'Myanmar', desc: 'Cunta karÅÄ±tÄ± Ã§atÄ±Åma', severity: 'high' },
+    { lat: 48.5, lon: 37.5, name: 'Ukrayna-Rusya Cephesi', desc: 'Aktif çatışma bölgesi', severity: 'high' },
+    { lat: 31.5, lon: 34.8, name: 'Gazze', desc: 'Aktif çatışma', severity: 'high' },
+    { lat: 33.5, lon: 36.3, name: 'Suriye', desc: 'Devam eden çatışma', severity: 'med' },
+    { lat: 15.5, lon: 32.5, name: 'Sudan', desc: 'İç savaş', severity: 'high' },
+    { lat: 9.0, lon: 7.5, name: 'Nijerya (Boko Haram)', desc: 'Silahlı grup aktivitesi', severity: 'med' },
+    { lat: 6.0, lon: 37.0, name: 'Etiyopya (Tigray)', desc: 'Dönemsel çatışma', severity: 'med' },
+    { lat: 23.5, lon: 67.5, name: 'Pakistan-Afganistan Sınırı', desc: 'Sınır gerginliği', severity: 'low' },
+    { lat: 16.5, lon: -14.0, name: 'Mali (Sahel)', desc: 'İsyancı faaliyeti', severity: 'med' },
+    { lat: 12.0, lon: 15.0, name: 'Çad Havzası', desc: 'İnsancıl kriz', severity: 'med' },
+    { lat: 14.5, lon: 43.5, name: 'Yemen', desc: 'Çatışma / insani kriz', severity: 'high' },
+    { lat: 35.0, lon: 44.5, name: 'Irak (Kuzey)', desc: 'Dönemsel saldırı', severity: 'low' },
+    { lat: 34.5, lon: 69.0, name: 'Afganistan', desc: 'Taliban kontrolü / gerilim', severity: 'med' },
+    { lat: 4.5, lon: 31.5, name: 'Güney Sudan', desc: 'Etnik çatışma', severity: 'med' },
+    { lat: 25.5, lon: 84.5, name: 'Myanmar', desc: 'Cunta karşıtı çatışma', severity: 'high' },
     { lat: 7.5, lon: -11.5, name: 'Sierra Leone', desc: 'Siyasi gerilim', severity: 'low' },
   ];
 
@@ -1228,7 +1228,7 @@ function loadConflicts() {
   conflicts.forEach(c => {
     const color = c.severity === 'high' ? '#ff4c6a' : c.severity === 'med' ? '#ff8c42' : '#f0c040';
     addMarker('conflicts', c.lat, c.lon, makeIcon(color, 'âï¸', 22),
-      makePopup('ÃATIÅMA', c.name,
+      makePopup('ÇATIşMA', c.name,
         `${c.desc}<br>Seviye: <span style="color:${color}">${c.severity.toUpperCase()}</span><br>Kaynak: <span style="color:#21ce70">ACLED/OSM</span>`, color));
   });
   setCount('conflicts', conflicts.length);
@@ -1239,26 +1239,26 @@ function loadConflicts() {
 // ââââââââââââââââââââââââââââââââââââââââââââââââ
 function loadBases() {
   const bases = [
-    { lat: 36.9, lon: 38.8, name: 'Ä°ncirlik Hava ÃssÃ¼', country: 'TÃ¼rkiye/ABD', type: 'NATO' },
-    { lat: 35.1, lon: 33.3, name: 'Akrotiri ÃssÃ¼', country: 'Ä°ngiltere', type: 'RAF' },
+    { lat: 36.9, lon: 38.8, name: 'İncirlik Hava Üssü', country: 'Türkiye/ABD', type: 'NATO' },
+    { lat: 35.1, lon: 33.3, name: 'Akrotiri Üssü', country: 'İngiltere', type: 'RAF' },
     { lat: 11.5, lon: 43.1, name: 'Camp Lemonnier', country: 'ABD', type: 'AFRICOM' },
     { lat: 26.1, lon: 50.6, name: 'Naval Support Bahrain', country: 'ABD', type: 'US NAVCENT' },
-    { lat: 22.8, lon: 114.0, name: 'Pearl River Delta', country: 'Ãin', type: 'PLA NAVY' },
+    { lat: 22.8, lon: 114.0, name: 'Pearl River Delta', country: 'Çin', type: 'PLA NAVY' },
     { lat: 44.8, lon: 34.9, name: 'Sivastopol (Rus Donanma)', country: 'Rusya', type: 'Karadeniz Filosu' },
-    { lat: 13.5, lon: -16.7, name: 'Banjul (FransÄ±z Ãs)', country: 'Fransa', type: 'BatÄ± Afrika' },
-    { lat: 36.8, lon: 3.0, name: 'Cezayir Hava ÃssÃ¼', country: 'Cezayir', type: 'Hava Kuvvetleri' },
-    { lat: 35.5, lon: 35.9, name: 'Hmeymim ÃssÃ¼', country: 'Rusya', type: 'VKS Suriye' },
-    { lat: 35.5, lon: 35.8, name: 'Tartus Deniz ÃssÃ¼', country: 'Rusya', type: 'Akdeniz' },
+    { lat: 13.5, lon: -16.7, name: 'Banjul (Fransız Üs)', country: 'Fransa', type: 'Batı Afrika' },
+    { lat: 36.8, lon: 3.0, name: 'Cezayir Hava Üssü', country: 'Cezayir', type: 'Hava Kuvvetleri' },
+    { lat: 35.5, lon: 35.9, name: 'Hmeymim Üssü', country: 'Rusya', type: 'VKS Suriye' },
+    { lat: 35.5, lon: 35.8, name: 'Tartus Deniz Üssü', country: 'Rusya', type: 'Akdeniz' },
     { lat: 28.6, lon: -80.7, name: 'Patrick SFB', country: 'ABD', type: 'Uzay Kuvvetleri' },
-    { lat: 51.5, lon: -1.7, name: 'RAF Fairford', country: 'Ä°ngiltere/ABD', type: 'Stratejik Bomba' },
+    { lat: 51.5, lon: -1.7, name: 'RAF Fairford', country: 'İngiltere/ABD', type: 'Stratejik Bomba' },
     { lat: 49.9, lon: 8.6, name: 'Ramstein AB', country: 'ABD', type: 'USAFE HQ' },
-    { lat: 35.8, lon: 14.5, name: 'Malta ÃssÃ¼', country: 'NATO', type: 'Deniz' },
+    { lat: 35.8, lon: 14.5, name: 'Malta Üssü', country: 'NATO', type: 'Deniz' },
   ];
   layerGroups.bases.clearLayers();
   bases.forEach(b => {
     addMarker('bases', b.lat, b.lon, makeIcon('#4cc9ff', 'ð¡ï¸', 20),
-      makePopup('ASKERÄ° ÃS', b.name,
-        `Ãlke: <span>${b.country}</span><br>Tip: <span>${b.type}</span>`, '#4cc9ff'));
+      makePopup('ASKERİ ÜS', b.name,
+        `Ülke: <span>${b.country}</span><br>Tip: <span>${b.type}</span>`, '#4cc9ff'));
   });
   setCount('bases', bases.length);
 }
@@ -1268,18 +1268,18 @@ function loadBases() {
 // ââââââââââââââââââââââââââââââââââââââââââââââââ
 function loadNuclear() {
   const nuclear = [
-    { lat: 34.0, lon: -118.0, name: 'San Onofre (Deaktif)', country: 'ABD', type: 'NÃ¼kleer Santral' },
-    { lat: 50.1, lon: 30.1, name: 'Zaporijya NPP', country: 'Ukrayna', type: 'Aktif / ÃatÄ±Åma BÃ¶lgesi', alert: true },
-    { lat: 48.6, lon: 6.2, name: 'Cattenom NPP', country: 'Fransa', type: 'NÃ¼kleer Santral' },
-    { lat: 55.8, lon: 37.6, name: 'NÃ¼kleer AraÅtÄ±rma (Moskova)', country: 'Rusya', type: 'AraÅtÄ±rma' },
-    { lat: 36.0, lon: 129.4, name: 'Fukushima', country: 'Japonya', type: 'Deaktif / Ä°zleme' },
-    { lat: 35.6, lon: 129.4, name: 'Wolseong NPP', country: 'GÃ¼ney Kore', type: 'Aktif' },
-    { lat: 36.8, lon: 10.9, name: 'Bizerte (AraÅtÄ±rma)', country: 'Tunus', type: 'AraÅtÄ±rma' },
-    { lat: 29.0, lon: 57.0, name: 'Natanz', country: 'Ä°ran', type: 'Uranyum ZenginleÅtirme', alert: true },
+    { lat: 34.0, lon: -118.0, name: 'San Onofre (Deaktif)', country: 'ABD', type: 'Nükleer Santral' },
+    { lat: 50.1, lon: 30.1, name: 'Zaporijya NPP', country: 'Ukrayna', type: 'Aktif / Çatışma Bölgesi', alert: true },
+    { lat: 48.6, lon: 6.2, name: 'Cattenom NPP', country: 'Fransa', type: 'Nükleer Santral' },
+    { lat: 55.8, lon: 37.6, name: 'Nükleer Araştırma (Moskova)', country: 'Rusya', type: 'Araştırma' },
+    { lat: 36.0, lon: 129.4, name: 'Fukushima', country: 'Japonya', type: 'Deaktif / İzleme' },
+    { lat: 35.6, lon: 129.4, name: 'Wolseong NPP', country: 'Güney Kore', type: 'Aktif' },
+    { lat: 36.8, lon: 10.9, name: 'Bizerte (Araştırma)', country: 'Tunus', type: 'Araştırma' },
+    { lat: 29.0, lon: 57.0, name: 'Natanz', country: 'İran', type: 'Uranyum Zenginleştirme', alert: true },
     { lat: 40.2, lon: 44.5, name: 'Metsamor NPP', country: 'Ermenistan', type: 'Aktif' },
-    { lat: 37.2, lon: 9.8, name: 'Sidi Thabet (AraÅtÄ±rma)', country: 'Tunus', type: 'AraÅtÄ±rma' },
-    { lat: 31.8, lon: 35.1, name: 'Dimona (ÅÃ¼pheli)', country: 'Ä°srail', type: 'Askeri / Gizlendi', alert: true },
-    { lat: 33.7, lon: 72.7, name: 'Kahuta (Silah)', country: 'Pakistan', type: 'NÃ¼kleer Silah', alert: true },
+    { lat: 37.2, lon: 9.8, name: 'Sidi Thabet (Araştırma)', country: 'Tunus', type: 'Araştırma' },
+    { lat: 31.8, lon: 35.1, name: 'Dimona (şüpheli)', country: 'İsrail', type: 'Askeri / Gizlendi', alert: true },
+    { lat: 33.7, lon: 72.7, name: 'Kahuta (Silah)', country: 'Pakistan', type: 'Nükleer Silah', alert: true },
     { lat: 28.9, lon: 76.0, name: 'Narora NPP', country: 'Hindistan', type: 'Aktif' },
     { lat: 40.8, lon: -74.0, name: 'Indian Point (Deaktif)', country: 'ABD', type: 'Deaktif' },
   ];
@@ -1287,8 +1287,8 @@ function loadNuclear() {
   nuclear.forEach(n => {
     const color = n.alert ? '#ff4c6a' : '#4cc9ff';
     addMarker('nuclear', n.lat, n.lon, makeIcon(color, 'â¢ï¸', 20),
-      makePopup('NÃKLEER TESÄ°S', n.name,
-        `Ãlke: <span>${n.country}</span><br>Tip: <span>${n.type}</span>${n.alert ? '<br><span style="color:#ff4c6a">â ï¸ DÄ°KKAT</span>' : ''}`, color));
+      makePopup('NÜKLEER TESİS', n.name,
+        `Ülke: <span>${n.country}</span><br>Tip: <span>${n.type}</span>${n.alert ? '<br><span style="color:#ff4c6a">â ï¸ DİKKAT</span>' : ''}`, color));
   });
   setCount('nuclear', nuclear.length);
 }
@@ -1298,16 +1298,16 @@ function loadNuclear() {
 // ââââââââââââââââââââââââââââââââââââââââââââââââ
 function loadSanctions() {
   const sanctions = [
-    { lat: 55.7, lon: 37.6, name: 'Rusya Federasyonu', regime: 'AB/ABD/G7 YaptÄ±rÄ±mlarÄ±', scope: 'KapsamlÄ±' },
-    { lat: 35.7, lon: 51.4, name: 'Ä°ran', regime: 'BM/ABD/AB YaptÄ±rÄ±mlarÄ±', scope: 'KapsamlÄ±' },
-    { lat: 39.0, lon: 125.7, name: 'Kuzey Kore', regime: 'BM YaptÄ±rÄ±mlarÄ±', scope: 'KapsamlÄ±' },
-    { lat: 23.1, lon: -82.3, name: 'KÃ¼ba', regime: 'ABD Ambargosu', scope: 'KÄ±smi' },
-    { lat: 15.5, lon: 32.5, name: 'Sudan', regime: 'ABD/AB YaptÄ±rÄ±mlarÄ±', scope: 'KÄ±smi' },
-    { lat: 14.5, lon: 43.5, name: 'Yemen (Husileri)', regime: 'ABD/AB YaptÄ±rÄ±mlarÄ±', scope: 'Hedefli' },
-    { lat: 7.5, lon: -5.5, name: "Kuzey Afrika (Wagner)", regime: 'AB YaptÄ±rÄ±mlarÄ±', scope: 'Hedefli' },
-    { lat: 17.3, lon: 102.6, name: 'Myanmar CuntasÄ±', regime: 'AB/ABD YaptÄ±rÄ±mlarÄ±', scope: 'Hedefli' },
-    { lat: 11.5, lon: 43.1, name: 'Somali (Al-Shabaab)', regime: 'BM YaptÄ±rÄ±mlarÄ±', scope: 'Hedefli' },
-    { lat: 4.5, lon: 31.5, name: 'GÃ¼ney Sudan', regime: 'ABD YaptÄ±rÄ±mlarÄ±', scope: 'KÄ±smi' },
+    { lat: 55.7, lon: 37.6, name: 'Rusya Federasyonu', regime: 'AB/ABD/G7 Yaptırımları', scope: 'Kapsamlı' },
+    { lat: 35.7, lon: 51.4, name: 'İran', regime: 'BM/ABD/AB Yaptırımları', scope: 'Kapsamlı' },
+    { lat: 39.0, lon: 125.7, name: 'Kuzey Kore', regime: 'BM Yaptırımları', scope: 'Kapsamlı' },
+    { lat: 23.1, lon: -82.3, name: 'Küba', regime: 'ABD Ambargosu', scope: 'Kısmi' },
+    { lat: 15.5, lon: 32.5, name: 'Sudan', regime: 'ABD/AB Yaptırımları', scope: 'Kısmi' },
+    { lat: 14.5, lon: 43.5, name: 'Yemen (Husileri)', regime: 'ABD/AB Yaptırımları', scope: 'Hedefli' },
+    { lat: 7.5, lon: -5.5, name: "Kuzey Afrika (Wagner)", regime: 'AB Yaptırımları', scope: 'Hedefli' },
+    { lat: 17.3, lon: 102.6, name: 'Myanmar Cuntası', regime: 'AB/ABD Yaptırımları', scope: 'Hedefli' },
+    { lat: 11.5, lon: 43.1, name: 'Somali (Al-Shabaab)', regime: 'BM Yaptırımları', scope: 'Hedefli' },
+    { lat: 4.5, lon: 31.5, name: 'Güney Sudan', regime: 'ABD Yaptırımları', scope: 'Kısmi' },
   ];
   layerGroups.sanctions.clearLayers();
   sanctions.forEach(s => {
@@ -1323,18 +1323,18 @@ function loadSanctions() {
 // ââââââââââââââââââââââââââââââââââââââââââââââââ
 function loadOutages() {
   const outages = [
-    { lat: 15.5, lon: 32.5, name: 'Sudan Ä°nternet Kesintisi', severity: 'severe', note: 'AltyapÄ± hasarÄ±' },
-    { lat: 17.3, lon: 102.6, name: 'Myanmar BÃ¶lgesel Kesinti', severity: 'moderate', note: 'Devlet kontrolÃ¼' },
-    { lat: 14.0, lon: -15.0, name: 'BatÄ± Afrika Kablo ArÄ±zasÄ±', severity: 'moderate', note: 'WACS/SAT3 kesintisi' },
-    { lat: 24.0, lon: 54.0, name: 'BAE YavaÅ BaÄlantÄ±', severity: 'minor', note: 'Ä°zleme altÄ±nda' },
-    { lat: 33.0, lon: 44.0, name: 'Irak BÃ¶lgesel Kesinti', severity: 'moderate', note: 'ÃatÄ±Åma etkisi' },
+    { lat: 15.5, lon: 32.5, name: 'Sudan İnternet Kesintisi', severity: 'severe', note: 'Altyapı hasarı' },
+    { lat: 17.3, lon: 102.6, name: 'Myanmar Bölgesel Kesinti', severity: 'moderate', note: 'Devlet kontrolü' },
+    { lat: 14.0, lon: -15.0, name: 'Batı Afrika Kablo Arızası', severity: 'moderate', note: 'WACS/SAT3 kesintisi' },
+    { lat: 24.0, lon: 54.0, name: 'BAE Yavaş Bağlantı', severity: 'minor', note: 'İzleme altında' },
+    { lat: 33.0, lon: 44.0, name: 'Irak Bölgesel Kesinti', severity: 'moderate', note: 'Çatışma etkisi' },
   ];
   layerGroups.outages.clearLayers();
   outages.forEach(o => {
     const color = o.severity === 'severe' ? '#ff4c6a' : o.severity === 'moderate' ? '#ff8c42' : '#f0c040';
     addMarker('outages', o.lat, o.lon, makeIcon(color, 'â¡', 20),
-      makePopup('Ä°NTERNET KESÄ°NTÄ°SÄ°', o.name,
-        `Åiddet: <span style="color:${color}">${o.severity.toUpperCase()}</span><br>Not: <span>${o.note}</span>`, color));
+      makePopup('İNTERNET KESİNTİSİ', o.name,
+        `şiddet: <span style="color:${color}">${o.severity.toUpperCase()}</span><br>Not: <span>${o.note}</span>`, color));
   });
   setCount('outages', outages.length);
 }
@@ -1344,22 +1344,22 @@ function loadOutages() {
 // ââââââââââââââââââââââââââââââââââââââââââââââââ
 function loadEconomic() {
   const economic = [
-    { lat: 1.3, lon: 103.8, name: 'Singapur Finans', type: 'KÃ¼resel Finans Merkezi', trend: 'stabil' },
+    { lat: 1.3, lon: 103.8, name: 'Singapur Finans', type: 'Küresel Finans Merkezi', trend: 'stabil' },
     { lat: 22.3, lon: 114.1, name: 'Hong Kong', type: 'Finans / Ticaret', trend: 'gerilim' },
     { lat: 40.7, lon: -74.0, name: 'New York (NYSE/NASDAQ)', type: 'Borsa Merkezi', trend: 'aktif' },
     { lat: 51.5, lon: -0.1, name: 'Londra (LSE)', type: 'Finans', trend: 'aktif' },
     { lat: 48.8, lon: 2.3, name: 'Paris (Euronext)', type: 'Borsa', trend: 'aktif' },
     { lat: 35.7, lon: 139.7, name: 'Tokyo (TSE)', type: 'Borsa', trend: 'aktif' },
-    { lat: 25.2, lon: 55.3, name: 'Dubai DIFC', type: 'Finans Merkezi', trend: 'bÃ¼yÃ¼me' },
-    { lat: -33.9, lon: 18.4, name: 'Cape Town (JSE)', type: 'Afrika BorsasÄ±', trend: 'stabil' },
-    { lat: -23.5, lon: -46.6, name: 'SÃ£o Paulo (B3)', type: 'LATAM BorsasÄ±', trend: 'gerilim' },
+    { lat: 25.2, lon: 55.3, name: 'Dubai DIFC', type: 'Finans Merkezi', trend: 'büyüme' },
+    { lat: -33.9, lon: 18.4, name: 'Cape Town (JSE)', type: 'Afrika Borsası', trend: 'stabil' },
+    { lat: -23.5, lon: -46.6, name: 'São Paulo (B3)', type: 'LATAM Borsası', trend: 'gerilim' },
     { lat: 19.4, lon: -99.1, name: 'Meksiko (BMV)', type: 'Borsa', trend: 'stabil' },
   ];
   layerGroups.economic.clearLayers();
   economic.forEach(e => {
     const color = e.trend === 'gerilim' ? '#ff8c42' : '#21ce70';
     addMarker('economic', e.lat, e.lon, makeIcon(color, 'ð', 20),
-      makePopup('EKONOMÄ°K', e.name,
+      makePopup('EKONOMİK', e.name,
         `Tip: <span>${e.type}</span><br>Durum: <span style="color:${color}">${e.trend.toUpperCase()}</span>`, color));
   });
   setCount('economic', economic.length);
@@ -1371,18 +1371,18 @@ function loadEconomic() {
 function loadMilitary() {
   const military = [
     { lat: 50.4, lon: 30.5, name: 'Ukrayna Cephesi Hareketi', detail: 'Aktif muharebe' },
-    { lat: 31.0, lon: 35.0, name: 'Ä°srail Kuzey SÄ±nÄ±rÄ±', detail: 'Gerilim' },
-    { lat: 39.9, lon: 116.4, name: 'Ãin PLA TatbikatÄ±', detail: 'GÃ¼ney Ãin Denizi' },
-    { lat: 35.7, lon: 51.4, name: 'Ä°ran IRGC Hareketi', detail: 'Ä°zleme altÄ±nda' },
-    { lat: 37.5, lon: 127.0, name: 'Kore YarÄ±madasÄ±', detail: 'Ortak tatbikat' },
-    { lat: 34.5, lon: 69.0, name: 'Afganistan Hava SahasÄ±', detail: 'Ä°nsansÄ±z hava aracÄ±' },
+    { lat: 31.0, lon: 35.0, name: 'İsrail Kuzey Sınırı', detail: 'Gerilim' },
+    { lat: 39.9, lon: 116.4, name: 'Çin PLA Tatbikatı', detail: 'Güney Çin Denizi' },
+    { lat: 35.7, lon: 51.4, name: 'İran IRGC Hareketi', detail: 'İzleme altında' },
+    { lat: 37.5, lon: 127.0, name: 'Kore Yarımadası', detail: 'Ortak tatbikat' },
+    { lat: 34.5, lon: 69.0, name: 'Afganistan Hava Sahası', detail: 'İnsansız hava aracı' },
     { lat: 43.0, lon: 41.7, name: 'Karadeniz NATO', detail: 'Deniz devriyesi' },
-    { lat: 14.5, lon: 43.5, name: 'KÄ±zÄ±ldeniz GeÃ§idi', detail: 'Husiler / Deniz gÃ¼cÃ¼' },
+    { lat: 14.5, lon: 43.5, name: 'Kızıldeniz Geçidi', detail: 'Husiler / Deniz gücü' },
   ];
   layerGroups.military.clearLayers();
   military.forEach(m => {
     addMarker('military', m.lat, m.lon, makeIcon('#4cc9ff', 'ðª', 22),
-      makePopup('ASKERÄ° HAREKETLÄ°LÄ°K', m.name,
+      makePopup('ASKERİ HAREKETLİLİK', m.name,
         `Detay: <span>${m.detail}</span>`, '#4cc9ff'));
   });
   setCount('military', military.length);
@@ -1403,7 +1403,7 @@ async function loadWeather() {
     { lat: -33.9, lon: 151.2, name: 'Sidney' },
     { lat: 19.4, lon: -99.1, name: 'Meksiko' },
     { lat: 28.6, lon: 77.2, name: 'Yeni Delhi' },
-    { lat: -23.5, lon: -46.6, name: 'SÃ£o Paulo' },
+    { lat: -23.5, lon: -46.6, name: 'São Paulo' },
   ];
 
   layerGroups.weather.clearLayers();
@@ -1423,7 +1423,7 @@ async function loadWeather() {
         const color = temp > 35 ? '#ff4c6a' : temp < 0 ? '#4cc9ff' : '#21ce70';
         addMarker('weather', city.lat, city.lon, makeIcon(color, 'ð¤ï¸', 20),
           makePopup('HAVA DURUMU', city.name,
-            `SÄ±caklÄ±k: <span>${temp}Â°C</span><br>Durum: <span>${desc}</span>`, color));
+            `Sıcaklık: <span>${temp}Â°C</span><br>Durum: <span>${desc}</span>`, color));
         count++;
       }
     } catch(e) { /* skip */ }
@@ -1494,7 +1494,7 @@ function switchNews(channel, btn) {
 // ââââââââââââââââââââââââââââââââââââââââââââââââ
 // WEBCAM DATA
 // ââââââââââââââââââââââââââââââââââââââââââââââââ
-// Verified 24/7 live YouTube cam IDs - autoplay=0 always works in iframes
+// Verified 24/7 live YouTube cam IDs - autoplay=1 always works in iframes
 const webcams = {
   all: [
     { region: 'americas', city: 'NEW YORK — Times Sq', id: 'rnXIjl_Rzy4' },
@@ -1528,7 +1528,7 @@ function renderWebcams(region) {
   grid.innerHTML = items.map(w => `
     <div class="webcam-item">
       <iframe
-        src="https://www.youtube.com/embed/${w.id}?autoplay=0&mute=1&controls=1&rel=0"
+        src="https://www.youtube.com/embed/${w.id}?autoplay=1&mute=1&controls=1&rel=0"
         allow="autoplay; encrypted-media"
         allowfullscreen
         loading="lazy">
