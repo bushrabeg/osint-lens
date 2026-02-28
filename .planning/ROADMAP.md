@@ -57,11 +57,11 @@ Plans:
   3. "Yenile" butonu tıklandığında veri çekimi yeniden tetiklenir ve sonuçlar güncellenir
   4. Yükleme sırasında her kaynağın durumu ayrı ayrı (yükleniyor / tamam / hata) gösterilir
   5. "Reddit / RSS / Hepsi" filtre butonları ile görüntülenen içerikler kaynak tipine göre süzülür
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: Canlı İstihbarat panel HTML ve CSS'ini yaz, araç sonuçlarının altına yerleştir
-- [ ] 03-02: renderLiveIntel() fonksiyonu ve filtre/yükleme durumu mantığını yaz
+- [ ] 03-01-PLAN.md — Panel HTML iskeleti ve CSS'i yaz, showLiveIntelPanel() ile startSearch()'e bagla
+- [ ] 03-02-PLAN.md — renderLiveIntel(), setLiveIntelFilter(), refreshLiveIntel() fonksiyonlarini yaz
 
 ### Phase 4: Groq Entegrasyonu
 **Goal**: Kullanıcı Groq İstihbarat Analizi çalıştırdığında çekilen canlı veriler prompt'a otomatik dahil edilir
