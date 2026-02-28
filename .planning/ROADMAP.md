@@ -28,10 +28,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. r/netsec, r/OSINT ve r/cybersecurity için son gönderiler çekilebilir (üç subreddit birbirinden bağımsız sorgulanır)
   3. Çekilen her gönderi için başlık, kaynak (subreddit), tarih ve URL mevcut yapıda tutulur
   4. Reddit API çağrısı CORS hatası vermez, proxy gerektirmez
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 01-01: fetchRedditTarget() ve fetchRedditSubreddits() fonksiyonlarını yaz, window.liveIntelData nesnesinde sakla
+- [ ] 01-01-PLAN.md — fetchRedditTarget() ve fetchRedditSubreddits() fonksiyonlarını yaz, window.liveIntelData nesnesinde sakla
 
 ### Phase 2: RSS ve Google News Veri Çekme
 **Goal**: Kullanıcı bir hedef aradığında Reuters, BBC, Al Jazeera ve Google News'ten o hedefe ait haberler çekilmiş olur
