@@ -943,6 +943,69 @@ async function sendChatMessage() {
   input.focus();
 }
 
+// ===================== CANLI İSTİHBARAT — VERİ ÇEKME =====================
+window.liveIntelData = {
+  redditTarget: [],      // fetchRedditTarget() sonuçları
+  redditSubreddits: [],  // fetchRedditSubreddits() sonuçları
+  lastTarget: '',        // son aranan hedef
+  loading: {
+    redditTarget: false,
+    redditSubreddits: false
+  }
+};
+
+async function fetchRedditTarget(target) {
+  window.liveIntelData.loading.redditTarget = true;
+  window.liveIntelData.redditTarget = [];
+  try {
+    const url = 'https://www.reddit.com/search.json?q=' + encodeURIComponent(target) + '&sort=new&limit=10';
+    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const posts = (data.data && data.data.children) ? data.data.children : [];
+    window.liveIntelData.redditTarget = posts.map(p => ({
+      title: p.data.title,
+      subreddit: p.data.subreddit,
+      date: new Date(p.data.created_utc * 1000).toISOString().split('T')[0],
+      url: 'https://www.reddit.com' + p.data.permalink
+    }));
+  } catch(e) {
+    console.warn('[OSINT Lens] Reddit hedef araması başarısız:', e.message);
+    window.liveIntelData.redditTarget = [];
+  } finally {
+    window.liveIntelData.loading.redditTarget = false;
+  }
+}
+
+async function fetchRedditSubreddits() {
+  window.liveIntelData.loading.redditSubreddits = true;
+  window.liveIntelData.redditSubreddits = [];
+  const OSINT_SUBREDDITS = ['netsec', 'OSINT', 'cybersecurity'];
+  try {
+    const fetches = OSINT_SUBREDDITS.map(sub =>
+      fetch('https://www.reddit.com/r/' + sub + '/new.json?limit=10', { headers: { 'Accept': 'application/json' } })
+        .then(r => r.ok ? r.json() : Promise.reject('HTTP ' + r.status))
+        .then(data => {
+          const posts = (data.data && data.data.children) ? data.data.children : [];
+          return posts.map(p => ({
+            title: p.data.title,
+            subreddit: p.data.subreddit,
+            date: new Date(p.data.created_utc * 1000).toISOString().split('T')[0],
+            url: 'https://www.reddit.com' + p.data.permalink
+          }));
+        })
+        .catch(e => { console.warn('[OSINT Lens] r/' + sub + ' çekilemedi:', e); return []; })
+    );
+    const results = await Promise.all(fetches);
+    window.liveIntelData.redditSubreddits = results.flat();
+  } catch(e) {
+    console.warn('[OSINT Lens] Subreddit çekme başarısız:', e.message);
+    window.liveIntelData.redditSubreddits = [];
+  } finally {
+    window.liveIntelData.loading.redditSubreddits = false;
+  }
+}
+
 // ===================== GROQ ANALİZİ =====================
 async function runGroqAnalysis() {
   if (!currentTarget) return;
