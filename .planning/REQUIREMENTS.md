@@ -9,8 +9,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Veri Çekme (Data Fetch)
 
-- [ ] **FETCH-01**: Kullanıcı hedef aradığında Reddit'te o hedef için arama yapılabilir (Reddit JSON API)
-- [ ] **FETCH-02**: Kullanıcı belirli OSINT subreddit'lerinden (r/netsec, r/OSINT, r/cybersecurity) son gönderileri görebilir
+- [x] **FETCH-01**: Kullanıcı hedef aradığında Reddit'te o hedef için arama yapılabilir (Reddit JSON API)
+- [x] **FETCH-02**: Kullanıcı belirli OSINT subreddit'lerinden (r/netsec, r/OSINT, r/cybersecurity) son gönderileri görebilir
 - [ ] **FETCH-03**: Kullanıcı sabit haber RSS kaynaklarından (Reuters, BBC, Al Jazeera) güncel başlıkları görebilir (allorigins proxy)
 - [ ] **FETCH-04**: Kullanıcı Google News RSS'den hedefle ilgili güncel haberleri görebilir (allorigins proxy)
 
@@ -59,8 +59,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FETCH-01 | Phase 1 | Pending |
-| FETCH-02 | Phase 1 | Pending |
+| FETCH-01 | Phase 1 | Complete |
+| FETCH-02 | Phase 1 | Complete |
 | FETCH-03 | Phase 2 | Pending |
 | FETCH-04 | Phase 2 | Pending |
 | PANEL-01 | Phase 3 | Pending |
