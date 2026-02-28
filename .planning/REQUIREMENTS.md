@@ -16,11 +16,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Panel (Canlı İstihbarat)
 
-- [ ] **PANEL-01**: Kullanıcı araç sonuçlarının altında "Canlı İstihbarat" panelini görebilir
+- [x] **PANEL-01**: Kullanıcı araç sonuçlarının altında "Canlı İstihbarat" panelini görebilir
 - [ ] **PANEL-02**: Kullanıcı her kaynaktan gelen içerikleri (başlık, kaynak, tarih, link) liste olarak görebilir
-- [ ] **PANEL-03**: Kullanıcı veri çekimini manuel olarak tetikleyebilir (panel içindeki buton ile)
-- [ ] **PANEL-04**: Kullanıcı yükleme durumunu görebilir (kaynaklar tek tek yüklenirken)
-- [ ] **PANEL-05**: Kullanıcı kaynaklar arasında filtreleme yapabilir (Reddit / RSS / Hepsi)
+- [x] **PANEL-03**: Kullanıcı veri çekimini manuel olarak tetikleyebilir (panel içindeki buton ile)
+- [x] **PANEL-04**: Kullanıcı yükleme durumunu görebilir (kaynaklar tek tek yüklenirken)
+- [x] **PANEL-05**: Kullanıcı kaynaklar arasında filtreleme yapabilir (Reddit / RSS / Hepsi)
 
 ### Groq Entegrasyonu
 
@@ -63,11 +63,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FETCH-02 | Phase 1 | Complete |
 | FETCH-03 | Phase 2 | Pending |
 | FETCH-04 | Phase 2 | Pending |
-| PANEL-01 | Phase 3 | Pending |
+| PANEL-01 | Phase 3 | Complete |
 | PANEL-02 | Phase 3 | Pending |
-| PANEL-03 | Phase 3 | Pending |
-| PANEL-04 | Phase 3 | Pending |
-| PANEL-05 | Phase 3 | Pending |
+| PANEL-03 | Phase 3 | Complete |
+| PANEL-04 | Phase 3 | Complete |
+| PANEL-05 | Phase 3 | Complete |
 | GROQ-01 | Phase 4 | Pending |
 | GROQ-02 | Phase 4 | Pending |
 

@@ -85,5 +85,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Reddit Veri Çekme | 0/1 | Not started | - |
 | 2. RSS ve Google News Veri Çekme | 0/1 | Not started | - |
-| 3. Canlı İstihbarat Paneli | 0/2 | Not started | - |
+| 3. Canlı İstihbarat Paneli | 1/2 | In Progress|  |
 | 4. Groq Entegrasyonu | 0/1 | Not started | - |
