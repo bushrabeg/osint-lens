@@ -772,7 +772,7 @@ function startSearch() {
   let step=0;
   const interval = setInterval(()=>{
     if(step<LOADING_STEPS.length) document.getElementById('loadingText').textContent=LOADING_STEPS[step++];
-    else { clearInterval(interval); const filtered=filterTools(q,activeTag); createTab(q,{filtered,tag:activeTag,detected}); showResults(q); }
+    else { clearInterval(interval); const filtered=filterTools(q,activeTag); createTab(q,{filtered,tag:activeTag,detected}); showResults(q); window.liveIntelData.lastTarget = q; fetchRedditTarget(q).then(() => console.log('[OSINT Lens] Reddit hedef:', window.liveIntelData.redditTarget)); fetchRedditSubreddits().then(() => console.log('[OSINT Lens] Subredditler:', window.liveIntelData.redditSubreddits)); }
   },350);
 }
 
