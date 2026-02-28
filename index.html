@@ -525,6 +525,21 @@
       <span class="results-count" id="toolCount"></span>
     </div>
     <div class="tools-grid" id="toolsGrid"></div>
+    <!-- CANLI İSTİHBARAT PANELİ -->
+    <div id="live-intel">
+      <div class="live-intel-header">
+        <span class="live-intel-title">// CANLİ İSTİHBARAT</span>
+        <button class="live-intel-refresh-btn" id="liveIntelRefreshBtn" onclick="refreshLiveIntel()">&#8635; YENİLE</button>
+      </div>
+      <div class="live-intel-filters">
+        <button class="live-intel-filter-btn active" onclick="setLiveIntelFilter(this,'all')">HEPSİ</button>
+        <button class="live-intel-filter-btn" onclick="setLiveIntelFilter(this,'reddit')">REDDIT</button>
+        <button class="live-intel-filter-btn" onclick="setLiveIntelFilter(this,'rss')">RSS / HABER</button>
+      </div>
+      <div class="live-intel-sources" id="liveIntelSources">
+        <!-- renderLiveIntel() tarafindan doldurulacak -->
+      </div>
+    </div>
   </div>
 
   <footer>OSINT LENS v2.0 — SADECE KAMUYA AÇIK BİLGİLER — ETİK KULLANIM ZORUNLUDUR</footer>
@@ -798,7 +813,7 @@ function startSearch() {
   let step=0;
   const interval = setInterval(()=>{
     if(step<LOADING_STEPS.length) document.getElementById('loadingText').textContent=LOADING_STEPS[step++];
-    else { clearInterval(interval); const filtered=filterTools(q,activeTag); createTab(q,{filtered,tag:activeTag,detected}); showResults(q); window.liveIntelData.lastTarget = q; fetchRedditTarget(q).then(() => console.log('[OSINT Lens] Reddit hedef:', window.liveIntelData.redditTarget)); fetchRedditSubreddits().then(() => console.log('[OSINT Lens] Subredditler:', window.liveIntelData.redditSubreddits)); }
+    else { clearInterval(interval); const filtered=filterTools(q,activeTag); createTab(q,{filtered,tag:activeTag,detected}); showResults(q); showLiveIntelPanel(); window.liveIntelData.lastTarget = q; fetchRedditTarget(q).then(() => console.log('[OSINT Lens] Reddit hedef:', window.liveIntelData.redditTarget)); fetchRedditSubreddits().then(() => console.log('[OSINT Lens] Subredditler:', window.liveIntelData.redditSubreddits)); }
   },350);
 }
 
@@ -967,6 +982,12 @@ async function sendChatMessage() {
   }
   document.getElementById('chatSendBtn').disabled = false;
   input.focus();
+}
+
+// ===================== CANLI İSTİHBARAT — PANEL =====================
+
+function showLiveIntelPanel() {
+  document.getElementById('live-intel').style.display = 'block';
 }
 
 // ===================== CANLI İSTİHBARAT — VERİ ÇEKME =====================
