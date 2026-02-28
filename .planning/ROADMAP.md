@@ -42,10 +42,10 @@ Plans:
   2. Google News RSS, hedef terimi URL-encode edilerek sorgulanır ve ilgili haberler döner
   3. Çekilen her haber için başlık, kaynak adı, yayın tarihi ve link mevcut yapıda tutulur
   4. Proxy hatası veya boş yanıt durumunda hata sessizce ele alınır, diğer kaynaklar etkilenmez
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 02-01: fetchRSSFeeds() ve fetchGoogleNews() fonksiyonlarını yaz, window.liveIntelData'ya ekle
+- [ ] 02-01-PLAN.md — fetchRSSFeeds() ve fetchGoogleNews() fonksiyonlarını yaz, window.liveIntelData'ya ekle
 
 ### Phase 3: Canlı İstihbarat Paneli
 **Goal**: Kullanıcı araç sonuçlarının altında Canlı İstihbarat panelini görebilir, içerikleri listeleyebilir, yükleme durumunu izleyebilir ve kaynak filtresi uygulayabilir
