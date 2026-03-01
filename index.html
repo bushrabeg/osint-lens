@@ -1057,6 +1057,39 @@ async function fetchRedditSubreddits() {
   }
 }
 
+// ===================== GROQ — CANLI VERİ PROMPT BUILDER =====================
+function buildLiveIntelPromptSection() {
+  const d = window.liveIntelData;
+  if (!d) return '';
+
+  function formatItems(items, keyFn) {
+    if (!items || items.length === 0) return null;
+    return items.slice(0, 5).map(item => {
+      const key = keyFn(item);
+      const date = item.date || '';
+      return '- ' + item.title + ' | ' + key + ' | ' + date;
+    }).join('\n');
+  }
+
+  const sections = [];
+
+  const rt = formatItems(d.redditTarget, item => 'r/' + item.subreddit);
+  if (rt) sections.push('[Reddit — Hedef Araması]\n' + rt);
+
+  const rs = formatItems(d.redditSubreddits, item => 'r/' + item.subreddit);
+  if (rs) sections.push('[Reddit — OSINT Subredditler]\n' + rs);
+
+  const rss = formatItems(d.rssFeeds, item => item.source || 'RSS');
+  if (rss) sections.push('[RSS — Reuters / BBC / Al Jazeera]\n' + rss);
+
+  const gn = formatItems(d.googleNews, item => item.source || 'Google News');
+  if (gn) sections.push('[Google News]\n' + gn);
+
+  if (sections.length === 0) return '';
+
+  return '\n\n== CANLI VERİ ==\nAnalizi yaparken aşağıdaki güncel canlı verileri de göz önünde bulundur:\n\n' + sections.join('\n\n');
+}
+
 // ===================== GROQ ANALİZİ =====================
 async function runGroqAnalysis() {
   if (!currentTarget) return;
@@ -1068,11 +1101,13 @@ async function runGroqAnalysis() {
   const textEl=document.getElementById('groqText');
   btn.disabled=true; output.style.display='block'; loading.style.display='block'; textEl.innerHTML='';
   const prompt='Sen çok deneyimli bir istihbarat analistisin. Hem tümevarımsal hem de tümdengelimsel analiz yaparsın.\n\nHedef: "'+currentTarget+'"\n\nAşağıdaki yapıya göre kapsamlı bir OSINT istihbarat raporu yaz:\n\n## BLUF (Bottom Line Up Front)\nEn kritik bulguyu tek paragrafta özetle.\n\n## Hedef Profili\nHedef tipi, genel tanım ve dijital kimlik.\n\n## Tümevarımsal Analiz\nHam veriden (IP, domain, sosyal medya, leak) örüntü ve anomali tespiti. Her bulgu için [GÜVEN: YÜKSEK/ORTA/DÜŞÜK] etiketi ekle.\n\n## Tümdengelimsel Analiz\nBilinen profil üzerinden hipotez kur, destekleyen ve çürüten kanıtları listele.\n\n## ACH (Rekabet Eden Hipotezler)\nEn az 2 olası senaryo karşılaştır, en güvenilirini seç ve gerekçe göster.\n\n## Risk Değerlendirmesi\nTehditler ve riskler. [YÜKSEK/ORTA/DÜŞÜK] etiketi ile.\n\n## Önerilen OSINT Araçları\nHedef tipine göre en etkili araçlar.\n\n## İstihbarat Özeti\nAksiyon önerileri ve sonraki adımlar.\n\nMarkdown formatlı, profesyonel, Türkçe yaz.'
+  const liveSection = buildLiveIntelPromptSection();
+  const finalPrompt = liveSection ? prompt + liveSection : prompt;
   try {
     const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],temperature:0.7,max_tokens:2000})
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:finalPrompt}],temperature:0.7,max_tokens:2000})
     });
     const data=await res.json();
     loading.style.display='none';
