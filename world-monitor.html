@@ -1202,29 +1202,20 @@ function setTimeRange(range, btn) {
 // ────────────────────────────────────────────────
 async function loadNaturalEvents() {
   try {
-    const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?eventtypes=EQ,TC,FL,VO,WF,DR&pagesize=50&sortby=datemodified');
-    const res = await fetch(proxy);
+    const res = await fetch('/api/gdacs');
     const data = await res.json();
-    const json = JSON.parse(data.contents);
-    const events = json.features || [];
+    const events = data.items || [];
 
     layerGroups.natural.clearLayers();
-    layerGroups.hotspots.clearLayers();
 
     let naturalCount = 0;
-    let hotspotCount = 0;
     const recentEvents = [];
 
     events.forEach(e => {
-      const props = e.properties;
-      const coords = e.geometry?.coordinates;
-      if (!coords) return;
-
-      const [lon, lat] = Array.isArray(coords[0]) ? coords[0] : coords;
-      const type = props.eventtype || 'UNKNOWN';
-      const name = props.name || props.eventname || 'Bilinmeyen Olay';
-      const alert = (props.alertlevel || '').toUpperCase();
-      const date = props.fromdate ? new Date(props.fromdate).toLocaleDateString('tr-TR') : '—';
+      const { lat, lon, title, eventtype, alertlevel, country, pubDate } = e;
+      const type = (eventtype || 'UNKNOWN').toUpperCase();
+      const alert = (alertlevel || 'GREEN').toUpperCase();
+      const date = pubDate ? new Date(pubDate).toLocaleDateString('tr-TR') : '—';
 
       const alertColor = alert === 'RED' ? '#ff4c6a' : alert === 'ORANGE' ? '#ff8c42' : '#f0c040';
       const emojiMap = { EQ:'🌍', TC:'🌀', FL:'🌊', VO:'🌋', WF:'🔥', DR:'🏜️' };
@@ -1233,27 +1224,20 @@ async function loadNaturalEvents() {
 
       const icon = makeIcon(alertColor, emoji);
       const popup = makePopup(
-        typeLabel, name,
-        `<span style="color:${alertColor}">● ${alert || 'GREEN'}</span> · ${date}<br>Kaynak: <span style="color:#21ce70">GDACS</span>`,
+        typeLabel, title,
+        `<span style="color:${alertColor}">● ${alert}</span> · ${country} · ${date}<br>Kaynak: <span style="color:#21ce70">GDACS</span>`,
         alertColor
       );
 
-      if (['EQ','TC','VO'].includes(type)) {
-        addMarker('natural', lat, lon, icon, popup);
-        naturalCount++;
-      } else {
-        addMarker('hotspots', lat, lon, icon, popup);
-        hotspotCount++;
-      }
-
-      recentEvents.push({ type: typeLabel, name, date, color: alertColor, lat, lon });
+      addMarker('natural', lat, lon, icon, popup);
+      naturalCount++;
+      recentEvents.push({ type: typeLabel, name: title, date, color: alertColor, lat, lon });
     });
 
     setCount('natural', naturalCount);
-    setCount('hotspots', hotspotCount);
-    renderRecentEvents(recentEvents.slice(0, 12));
+    if (recentEvents.length > 0) renderRecentEvents(recentEvents.slice(0, 12));
     document.getElementById('mapSubtitle').textContent =
-      `SON GÜNCELLEME: ${new Date().toLocaleTimeString('tr-TR')} · GDACS`;
+      `SON GÜNCELLEME: ${new Date().toLocaleTimeString('tr-TR')} · GDACS RSS`;
 
   } catch (err) {
     console.warn('GDACS yüklenemedi:', err);
@@ -1290,21 +1274,20 @@ async function loadEarthquakes() {
                       currentTimeRange === '24h' ? 'day' :
                       currentTimeRange === '7d' ? 'week' : 'month';
 
+    // USGS CORS'u destekliyor — direkt fetch
     const url = `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_${timeParam}.geojson`;
-    const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
-    const res = await fetch(proxy);
-    const data = await res.json();
-    const json = JSON.parse(data.contents);
+    const res = await fetch(url);
+    const json = await res.json();
     const quakes = json.features || [];
 
-    quakes.slice(0, 20).forEach(q => {
-      const [lon, lat] = q.geometry.coordinates;
+    quakes.slice(0, 30).forEach(q => {
+      const [lon, lat, depth] = q.geometry.coordinates;
       const mag = q.properties.mag?.toFixed(1);
       const place = q.properties.place || 'Bilinmeyen';
-      const color = mag >= 6 ? '#ff4c6a' : mag >= 5 ? '#ff8c42' : '#f0c040';
+      const color = mag >= 7 ? '#ff4c6a' : mag >= 6 ? '#ff8c42' : '#f0c040';
       addMarker('natural', lat, lon, makeIcon(color, '🌍', 22),
         makePopup('DEPREM', `M${mag} — ${place}`,
-          `Derinlik: <span>${q.geometry.coordinates[2]} km</span><br>Zaman: <span>${new Date(q.properties.time).toLocaleString('tr-TR')}</span><br>Kaynak: <span>USGS</span>`, color));
+          `Derinlik: <span>${depth?.toFixed(0)} km</span><br>Zaman: <span>${new Date(q.properties.time).toLocaleString('tr-TR')}</span><br>Kaynak: <span>USGS</span>`, color));
     });
     setCount('natural', (eventCounts.natural || 0) + quakes.length);
   } catch(e) {
@@ -1313,35 +1296,159 @@ async function loadEarthquakes() {
 }
 
 // ────────────────────────────────────────────────
-// DATA: Conflicts
+// DATA: Serper Katmanları — ortak motor
 // ────────────────────────────────────────────────
-function loadConflicts() {
-  const conflicts = [
-    { lat: 48.5, lon: 37.5, name: 'Ukrayna-Rusya Cephesi', desc: 'Aktif çatışma bölgesi', severity: 'high' },
-    { lat: 31.5, lon: 34.8, name: 'Gazze', desc: 'Aktif çatışma', severity: 'high' },
-    { lat: 33.5, lon: 36.3, name: 'Suriye', desc: 'Devam eden çatışma', severity: 'med' },
-    { lat: 15.5, lon: 32.5, name: 'Sudan', desc: 'İç savaş', severity: 'high' },
-    { lat: 9.0, lon: 7.5, name: 'Nijerya (Boko Haram)', desc: 'Silahlı grup aktivitesi', severity: 'med' },
-    { lat: 6.0, lon: 37.0, name: 'Etiyopya (Tigray)', desc: 'Dönemsel çatışma', severity: 'med' },
-    { lat: 23.5, lon: 67.5, name: 'Pakistan-Afganistan Sınırı', desc: 'Sınır gerginliği', severity: 'low' },
-    { lat: 16.5, lon: -14.0, name: 'Mali (Sahel)', desc: 'İsyancı faaliyeti', severity: 'med' },
-    { lat: 12.0, lon: 15.0, name: 'Çad Havzası', desc: 'İnsancıl kriz', severity: 'med' },
-    { lat: 14.5, lon: 43.5, name: 'Yemen', desc: 'Çatışma / insani kriz', severity: 'high' },
-    { lat: 35.0, lon: 44.5, name: 'Irak (Kuzey)', desc: 'Dönemsel saldırı', severity: 'low' },
-    { lat: 34.5, lon: 69.0, name: 'Afganistan', desc: 'Taliban kontrolü / gerilim', severity: 'med' },
-    { lat: 4.5, lon: 31.5, name: 'Güney Sudan', desc: 'Etnik çatışma', severity: 'med' },
-    { lat: 25.5, lon: 84.5, name: 'Myanmar', desc: 'Cunta karşıtı çatışma', severity: 'high' },
-    { lat: 7.5, lon: -11.5, name: 'Sierra Leone', desc: 'Siyasi gerilim', severity: 'low' },
-  ];
+// Ülke / bölge adı → koordinat lookup (haber metninde aranır)
+const CONFLICT_COORDS = {
+  // Avrupa / eski Sovyet
+  ukraine: [48.5, 31.5], kyiv: [50.4, 30.5], kharkiv: [49.9, 36.2],
+  kherson: [46.6, 32.6], zaporizhzhia: [47.8, 35.2], donbas: [48.0, 38.0],
+  russia: [55.7, 37.6], moscow: [55.7, 37.6], belgorod: [50.6, 36.6],
+  crimea: [45.0, 34.0], moldova: [47.0, 28.9], belarus: [53.9, 27.5],
+  georgia: [42.3, 43.4], armenia: [40.2, 44.5], yerevan: [40.2, 44.5],
+  azerbaijan: [40.4, 47.9], baku: [40.4, 49.9], nagorno: [39.8, 46.7],
+  kosovo: [42.6, 20.9], serbia: [44.0, 21.0], balkans: [43.5, 21.0],
+  // Ortadoğu
+  gaza: [31.4, 34.4], rafah: [31.3, 34.2], 'khan yunis': [31.3, 34.3],
+  israel: [31.7, 35.2], 'tel aviv': [32.1, 34.8], jerusalem: [31.8, 35.2],
+  'west bank': [31.9, 35.2], ramallah: [31.9, 35.2],
+  lebanon: [33.9, 35.9], beirut: [33.9, 35.5], hezbollah: [33.5, 35.5],
+  syria: [34.8, 38.9], damascus: [33.5, 36.3], aleppo: [36.2, 37.2], idlib: [35.9, 36.6],
+  iraq: [33.3, 44.3], baghdad: [33.3, 44.4], mosul: [36.3, 43.1],
+  iran: [32.4, 53.7], tehran: [35.7, 51.4], isfahan: [32.7, 51.7],
+  jordan: [31.0, 36.1], turkey: [39.0, 35.0], ankara: [39.9, 32.9],
+  'red sea': [20.0, 38.0], 'bab el-mandeb': [12.6, 43.4],
+  yemen: [15.5, 48.5], sanaa: [15.4, 44.2], houthi: [15.5, 44.0], aden: [12.8, 45.0],
+  'saudi arabia': [24.7, 46.7], riyadh: [24.7, 46.7],
+  // Güney / Orta Asya
+  afghanistan: [33.9, 67.7], kabul: [34.5, 69.2], kandahar: [31.6, 65.7],
+  pakistan: [30.4, 69.3], karachi: [24.9, 67.0], islamabad: [33.7, 73.1],
+  kashmir: [34.0, 76.0], india: [20.6, 79.0], 'new delhi': [28.6, 77.2],
+  china: [35.9, 104.2], beijing: [39.9, 116.4], taiwan: [23.7, 120.9],
+  'south china sea': [12.0, 113.0], 'east china sea': [29.0, 126.0],
+  myanmar: [17.1, 96.1], burma: [17.1, 96.1], yangon: [16.9, 96.2],
+  'north korea': [40.0, 127.5], pyongyang: [39.0, 125.7],
+  // Afrika
+  sudan: [15.5, 32.5], khartoum: [15.6, 32.5], darfur: [13.5, 25.0],
+  ethiopia: [9.1, 40.5], 'addis ababa': [9.0, 38.7], tigray: [14.0, 38.5], amhara: [11.0, 38.0],
+  somalia: [5.2, 46.2], mogadishu: [2.0, 45.3], 'al-shabaab': [5.2, 46.2],
+  'south sudan': [6.9, 31.3], juba: [4.9, 31.6],
+  drc: [-4.0, 21.8], congo: [-4.0, 21.8], kinshasa: [-4.3, 15.3],
+  chad: [15.4, 18.7], ndjamena: [12.1, 15.1],
+  mali: [17.6, -2.0], bamako: [12.7, -8.0],
+  'burkina faso': [12.4, -1.6], ouagadougou: [12.4, -1.5],
+  niger: [17.6, 8.1], niamey: [13.5, 2.1],
+  nigeria: [9.1, 8.7], abuja: [9.1, 7.5], kano: [12.0, 8.5],
+  libya: [26.3, 17.2], tripoli: [32.9, 13.2], benghazi: [32.1, 20.1],
+  eritrea: [15.2, 39.8], kenya: [-1.3, 36.8], mozambique: [-18.7, 35.5],
+  // Avrupa / Atlantik
+  sahel: [15.0, 0.0], 'west africa': [8.0, -2.0], 'central africa': [5.0, 20.0],
+  // Latin Amerika
+  haiti: [18.9, -72.3], 'port-au-prince': [18.5, -72.3],
+  colombia: [4.6, -74.1], bogota: [4.7, -74.1],
+  venezuela: [8.0, -66.0], caracas: [10.5, -66.9],
+  mexico: [23.6, -102.6], ecuador: [-1.8, -78.2],
+};
 
-  layerGroups.conflicts.clearLayers();
-  conflicts.forEach(c => {
-    const color = c.severity === 'high' ? '#ff4c6a' : c.severity === 'med' ? '#ff8c42' : '#f0c040';
-    addMarker('conflicts', c.lat, c.lon, makeIcon(color, '⚔️', 22),
-      makePopup('ÇATIŞMA', c.name,
-        `${c.desc}<br>Seviye: <span style="color:${color}">${c.severity.toUpperCase()}</span><br>Kaynak: <span style="color:#21ce70">ACLED/OSM</span>`, color));
-  });
-  setCount('conflicts', conflicts.length);
+// Metinden koordinat çıkar — ilk eşleşeni döner
+function geoFromText(text) {
+  const lower = text.toLowerCase();
+  for (const [key, coords] of Object.entries(CONFLICT_COORDS)) {
+    if (lower.includes(key)) return [...coords];
+  }
+  return null;
+}
+
+// Aynı noktaya gelen pinleri hafifçe kaydır
+function jitter(c, r = 0.5) {
+  return [c[0] + (Math.random() - 0.5) * r, c[1] + (Math.random() - 0.5) * r];
+}
+
+// Haber başlığı + kaynak + tarih + özet içeren detaylı popup
+function makeSerperPopup(article, typeLabel, color) {
+  const title = (article.title || '').replace(/</g, '&lt;');
+  const snippet = article.snippet
+    ? `<div style="font-size:9px;color:#8b949e;line-height:1.5;margin-top:5px;
+        border-top:1px solid #21ce7022;padding-top:5px">${article.snippet.slice(0, 180)}…</div>`
+    : '';
+  const link = article.link
+    ? `<div style="margin-top:5px">
+        <a href="${article.link}" target="_blank"
+           style="font-size:9px;color:#4cc9ff;letter-spacing:1px">→ HABERE GİT</a>
+       </div>`
+    : '';
+  return `
+    <div style="font-size:9px;letter-spacing:2px;color:${color};margin-bottom:4px">${typeLabel}</div>
+    <div style="font-size:11px;color:#c9d1d9;margin-bottom:5px;
+                font-family:'Rajdhani',sans-serif;font-weight:600;line-height:1.4">${title}</div>
+    <div style="font-size:9px;color:#21ce70;letter-spacing:1px">
+      ${article.source || ''}  ·  ${article.date || ''}
+    </div>
+    ${snippet}${link}
+  `;
+}
+
+// Serper → layer'a pin at (tüm Serper katmanları bunu kullanır)
+async function fetchSerperLayer(layerName, query, emoji, color, typeLabel) {
+  layerGroups[layerName].clearLayers();
+
+  try {
+    // ADIM 2: İstek
+    console.log(`[${layerName}] POST /api/serper →`, query);
+    const res = await fetch('/api/serper', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ q: query, gl: 'us', hl: 'en', num: 20 })
+    });
+    const data = await res.json();
+
+    // ADIM 3: Yanıt
+    console.log(`[${layerName}] HTTP ${res.status} — yanıt:`, data);
+    const articles = data.news || [];
+    console.log(`[${layerName}] ${articles.length} haber döndü`);
+
+    // ADIM 4: Geo eşleşme
+    const placed = [];
+    articles.forEach(article => {
+      const text = (article.title || '') + ' ' + (article.snippet || '');
+      let coords = geoFromText(text);
+      console.log(`[${layerName}] "${article.title?.slice(0,60)}" → coords:`, coords);
+      if (!coords) return;
+
+      const near = placed.filter(p => Math.abs(p[0] - coords[0]) < 0.9 && Math.abs(p[1] - coords[1]) < 0.9);
+      if (near.length > 0) coords = jitter(coords, 0.9);
+      placed.push(coords);
+
+      const popup = `<div style="font-family:'Share Tech Mono',monospace;min-width:240px;max-width:320px">
+        ${makeSerperPopup(article, typeLabel, color)}
+      </div>`;
+      L.marker(coords, { icon: makeIcon(color, emoji, 22) })
+        .bindPopup(popup, { maxWidth: 340 })
+        .addTo(layerGroups[layerName]);
+    });
+
+    setCount(layerName, placed.length);
+    console.log(`[${layerName}] ✅ ${placed.length} pin yerleştirildi`);
+  } catch (e) {
+    console.error(`[${layerName}] ❌ Hata:`, e);
+    setCount(layerName, 0);
+  }
+}
+
+async function loadConflicts() {
+  await fetchSerperLayer(
+    'conflicts',
+    'airstrike OR "military attack" OR bombing OR shelling 2026',
+    '⚔️', '#ff4c6a', 'ÇATIŞMA / SALDIRI'
+  );
+}
+
+async function loadHotspots() {
+  await fetchSerperLayer(
+    'hotspots',
+    'Iran Israel Gaza Ukraine war conflict 2026',
+    '🔥', '#ff8c42', 'SICAK NOKTA'
+  );
 }
 
 // ────────────────────────────────────────────────
@@ -1475,26 +1582,82 @@ function loadEconomic() {
 }
 
 // ────────────────────────────────────────────────
-// DATA: Military Movement
+// DATA: Military Movement — Serper API
 // ────────────────────────────────────────────────
-function loadMilitary() {
-  const military = [
-    { lat: 50.4, lon: 30.5, name: 'Ukrayna Cephesi Hareketi', detail: 'Aktif muharebe' },
-    { lat: 31.0, lon: 35.0, name: 'İsrail Kuzey Sınırı', detail: 'Gerilim' },
-    { lat: 39.9, lon: 116.4, name: 'Çin PLA Tatbikatı', detail: 'Güney Çin Denizi' },
-    { lat: 35.7, lon: 51.4, name: 'İran IRGC Hareketi', detail: 'İzleme altında' },
-    { lat: 37.5, lon: 127.0, name: 'Kore Yarımadası', detail: 'Ortak tatbikat' },
-    { lat: 34.5, lon: 69.0, name: 'Afganistan Hava Sahası', detail: 'İnsansız hava aracı' },
-    { lat: 43.0, lon: 41.7, name: 'Karadeniz NATO', detail: 'Deniz devriyesi' },
-    { lat: 14.5, lon: 43.5, name: 'Kızıldeniz Geçidi', detail: 'Husiler / Deniz gücü' },
-  ];
-  layerGroups.military.clearLayers();
-  military.forEach(m => {
-    addMarker('military', m.lat, m.lon, makeIcon('#4cc9ff', '🪖', 22),
-      makePopup('ASKERİ HAREKETLİLİK', m.name,
-        `Detay: <span>${m.detail}</span>`, '#4cc9ff'));
+async function loadMilitary() {
+  await fetchSerperLayer(
+    'military',
+    '"military movement" OR "troops deployment" OR "military drill" OR "naval exercise" 2026',
+    '🪖', '#4cc9ff', 'ASKERİ HAREKETLİLİK'
+  );
+}
+
+// ────────────────────────────────────────────────
+// DATA: Ships — AISHub (realtime AIS)
+// ────────────────────────────────────────────────
+function makeShipIcon(heading, isMilitary, category) {
+  const color = isMilitary ? '#ff4c6a'
+    : category === 'TANKER'  ? '#f0c040'
+    : category === 'YOLCU'   ? '#ff8c42'
+    : '#21ce70';
+  const glow = color + '55';
+  return L.divIcon({
+    className: '',
+    html: `<div style="
+      width:18px;height:18px;
+      transform:rotate(${heading}deg);
+      font-size:13px;line-height:18px;text-align:center;
+      color:${color};
+      filter:drop-shadow(0 0 3px ${glow});
+      pointer-events:none;
+    ">▲</div>`,
+    iconSize: [18, 18],
+    iconAnchor: [9, 9],
   });
-  setCount('military', military.length);
+}
+
+async function loadShips() {
+  layerGroups.ships.clearLayers();
+  try {
+    const res  = await fetch('/api/ships');
+    const data = await res.json();
+    const vessels = data.vessels || [];
+
+    vessels.forEach(v => {
+      if (v.lat == null || v.lon == null) return;
+      const spd = v.speed != null ? v.speed + ' kn' : '—';
+      const color = v.isMilitary ? '#ff4c6a'
+        : v.category === 'TANKER' ? '#f0c040'
+        : v.category === 'YOLCU'  ? '#ff8c42'
+        : '#21ce70';
+      const popup = `
+        <div style="font-family:'Share Tech Mono',monospace;min-width:200px">
+          <div style="font-size:9px;letter-spacing:2px;color:${color};margin-bottom:4px">
+            ${v.isMilitary ? '⚠ ASKERİ GEMİ' : v.category}
+          </div>
+          <div style="font-size:13px;color:#c9d1d9;font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:5px">
+            ${v.name}
+          </div>
+          <div style="font-size:10px;color:#8b949e;line-height:1.8">
+            MMSI: <span style="color:#21ce70">${v.mmsi}</span><br>
+            Bayrak: <span style="color:#21ce70">${v.flag}</span><br>
+            Hız: <span style="color:#21ce70">${spd}</span><br>
+            Heading: <span style="color:#21ce70">${v.heading}°</span><br>
+            Varış: <span style="color:#21ce70">${v.destination}</span>
+          </div>
+        </div>`;
+      L.marker([v.lat, v.lon], { icon: makeShipIcon(v.heading, v.isMilitary, v.category) })
+        .bindPopup(popup, { maxWidth: 260 })
+        .addTo(layerGroups.ships);
+    });
+
+    const milCount = vessels.filter(v => v.isMilitary).length;
+    setCount('ships', vessels.length);
+    console.log(`[WorldMonitor] ships: ${vessels.length} gemi (${milCount} askeri) / toplam: ${data.total}`);
+  } catch (e) {
+    console.warn('[WorldMonitor] AISHub hatası:', e);
+    setCount('ships', 0);
+  }
 }
 
 // ────────────────────────────────────────────────
@@ -1567,17 +1730,25 @@ function renderRecentEvents(events) {
 async function loadAllLayers() {
   document.getElementById('mapLoading').classList.remove('hidden');
   layerDefs.forEach(l => layerGroups[l].clearLayers());
+  Object.keys(eventCounts).forEach(k => { eventCounts[k] = 0; });
 
+  // GDACS → natural + hotspots, sonra USGS üstüne ekler
   await loadNaturalEvents();
-  loadConflicts();
+  await loadEarthquakes();
+
+  // Serper katmanları paralel (3 ayrı sorgu)
+  await Promise.all([
+    loadConflicts(),
+    loadHotspots(),
+    loadMilitary(),
+    loadWeather(),
+  ]);
+
   loadBases();
   loadNuclear();
   loadSanctions();
   loadOutages();
   loadEconomic();
-  loadMilitary();
-  await loadWeather();
-
   document.getElementById('mapLoading').classList.add('hidden');
   updateTotal();
 }

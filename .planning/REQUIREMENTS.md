@@ -24,8 +24,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Groq Entegrasyonu
 
-- [ ] **GROQ-01**: Kullanıcı "Groq İstihbarat Analizi" çalıştırdığında çekilen canlı veriler analize dahil edilir
-- [ ] **GROQ-02**: Analiz promptu, canlı verileri (başlık + kaynak + tarih) özet olarak içerir
+- [x] **GROQ-01**: Kullanıcı "Groq İstihbarat Analizi" çalıştırdığında çekilen canlı veriler analize dahil edilir
+- [x] **GROQ-02**: Analiz promptu, canlı verileri (başlık + kaynak + tarih) özet olarak içerir
 
 ## v2 Requirements
 
@@ -68,8 +68,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PANEL-03 | Phase 3 | Complete |
 | PANEL-04 | Phase 3 | Complete |
 | PANEL-05 | Phase 3 | Complete |
-| GROQ-01 | Phase 4 | Pending |
-| GROQ-02 | Phase 4 | Pending |
+| GROQ-01 | Phase 4 | Complete |
+| GROQ-02 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 11 total

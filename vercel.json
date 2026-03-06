@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "*.html", "use": "@vercel/static" },
+    { "src": "api/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/serper", "dest": "/api/serper.js" },
+    { "src": "/api/groq", "dest": "/api/groq.js" },
+    { "src": "/api/gdacs", "dest": "/api/gdacs.js" },
+    { "src": "/api/flights", "dest": "/api/flights.js" },
+    { "src": "/api/opensky", "dest": "/api/opensky.js" },
+    { "src": "/world-monitor.html", "dest": "/world-monitor.html" },
+    { "src": "/", "dest": "/index.html" }
+  ]
+}

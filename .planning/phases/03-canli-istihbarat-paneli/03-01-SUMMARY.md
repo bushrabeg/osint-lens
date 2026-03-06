@@ -149,6 +149,14 @@ None - no external service configuration required.
 - Filter button onclick handlers (`setLiveIntelFilter`) and refresh handler (`refreshLiveIntel`) defined in HTML, ready to be implemented in 03-02
 - No blockers
 
+## Self-Check: PASSED
+
+- FOUND: `.planning/phases/03-canli-istihbarat-paneli/03-01-SUMMARY.md`
+- FOUND: commit `29d7f15` (Task 1 - CSS)
+- FOUND: commit `680e940` (Task 2 - HTML + JS)
+- FOUND: 1x `id="live-intel"` in index.html
+- FOUND: 2x `showLiveIntelPanel` in index.html (definition + call)
+
 ---
 *Phase: 03-canli-istihbarat-paneli*
 *Completed: 2026-02-28*

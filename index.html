@@ -48,7 +48,7 @@
     .api-modal { display: none; position: fixed; inset: 0; background: rgba(8,12,16,0.92); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
     .api-modal.open { display: flex; }
     .api-modal-box { background: var(--surface); border: 1px solid var(--green-dim); padding: 32px; max-width: 480px; width: 100%; position: relative; }
-    .api-modal-box::before { content: 'GROQ API AYARI'; position: absolute; top: -10px; left: 20px; background: var(--surface); padding: 0 8px; font-size: 10px; letter-spacing: 3px; color: var(--green); }
+    .api-modal-box::before { content: 'OPENROUTER API AYARI'; position: absolute; top: -10px; left: 20px; background: var(--surface); padding: 0 8px; font-size: 10px; letter-spacing: 3px; color: var(--green); }
     .api-modal-box p { font-size: 12px; color: var(--text-dim); margin-bottom: 16px; line-height: 1.7; }
     .api-modal-box a { color: var(--green); }
     .api-input { width: 100%; background: var(--bg); border: 1px solid #21ce7044; color: var(--green); font-family: var(--mono); font-size: 13px; padding: 12px 14px; outline: none; margin-bottom: 12px; }
@@ -259,75 +259,77 @@
     .badge-green { border-color: var(--green); color: var(--green); }
     .badge-red { border-color: var(--red); color: var(--red); }
     .badge-yellow { border-color: var(--yellow); color: var(--yellow); }
-    /* GROQ PANEL */
-    .groq-btn { background: transparent; border: 1px solid var(--green); color: var(--green); font-family: var(--mono); font-size: 12px; letter-spacing: 2px; padding: 10px 20px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; margin-top: 16px; width: 100%; }
-    .groq-btn:hover { background: var(--green-glow); box-shadow: 0 0 20px var(--green-glow); }
-    .groq-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .groq-output { background: var(--surface); border: 1px solid var(--green-dim); padding: 28px; margin-bottom: 32px; position: relative; display: none; }
-    .groq-output::before { content: 'GROQ İSTİHBARAT ANALİZİ'; position: absolute; top: -10px; left: 20px; background: var(--surface); padding: 0 8px; font-size: 10px; letter-spacing: 3px; color: var(--green); }
     /* MARKDOWN STYLES */
-    .groq-text h1,.groq-text h2,.groq-text h3 { font-family: var(--sans); color: var(--green); margin: 16px 0 8px; letter-spacing: 1px; }
-    .groq-text h1 { font-size: 17px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
-    .groq-text h2 { font-size: 15px; }
-    .groq-text h3 { font-size: 13px; color: #fff; }
-    .groq-text p { font-size: 13px; color: var(--text); line-height: 1.9; margin-bottom: 10px; }
-    .groq-text ul,.groq-text ol { margin: 8px 0 12px 20px; }
-    .groq-text li { font-size: 13px; color: var(--text); line-height: 1.8; margin-bottom: 4px; }
-    .groq-text strong { color: #fff; }
-    .groq-text em { color: var(--yellow); font-style: normal; }
-    .groq-text hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
-    .groq-text code { background: var(--bg); color: var(--green); padding: 1px 6px; font-family: var(--mono); font-size: 12px; }
-    /* EXPORT BUTTON */
+    .md h1,.md h2,.md h3 { font-family: var(--sans); color: var(--green); margin: 16px 0 8px; letter-spacing: 1px; }
+    .md h1 { font-size: 17px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+    .md h2 { font-size: 15px; }
+    .md h3 { font-size: 13px; color: #fff; }
+    .md p { font-size: 13px; color: var(--text); line-height: 1.9; margin-bottom: 10px; }
+    .md ul,.md ol { margin: 8px 0 12px 20px; }
+    .md li { font-size: 13px; color: var(--text); line-height: 1.8; margin-bottom: 4px; }
+    .md strong { color: #fff; }
+    .md em { color: var(--yellow); font-style: normal; }
+    .md hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+    .md code { background: var(--bg); color: var(--green); padding: 1px 6px; font-family: var(--mono); font-size: 12px; }
+    /* EXPORT */
     .export-row { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
     .export-btn { background: transparent; border: 1px solid #21ce7033; color: var(--text-dim); font-family: var(--mono); font-size: 11px; letter-spacing: 1px; padding: 8px 16px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
     .export-btn:hover { border-color: var(--green-dim); color: var(--green); background: var(--green-glow); }
-    .groq-loading { display: none; text-align: center; padding: 20px; }
-    .groq-loading-text { font-size: 11px; letter-spacing: 3px; color: var(--green); animation: blink 1s step-end infinite; }
-    /* CHAT ARAYÜZÜ */
-    .chat-section { background: var(--surface); border: 1px solid var(--green-dim); margin-bottom: 32px; position: relative; display: none; }
-    .chat-section::before { content: 'GROQ İLE SOHBET'; position: absolute; top: -10px; left: 20px; background: var(--surface); padding: 0 8px; font-size: 10px; letter-spacing: 3px; color: var(--green); }
-    .chat-context-bar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 10px 20px; font-size: 10px; color: var(--text-dim); letter-spacing: 1px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-    .chat-context-bar span { color: var(--green); }
-    .chat-clear-btn { background: transparent; border: 1px solid #ff4c6a33; color: var(--red); font-family: var(--mono); font-size: 10px; padding: 3px 8px; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; }
-    .chat-clear-btn:hover { background: #ff4c6a11; }
-    .chat-messages { padding: 20px; max-height: 480px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
-    .chat-messages::-webkit-scrollbar { width: 4px; }
-    .chat-messages::-webkit-scrollbar-track { background: var(--bg); }
-    .chat-messages::-webkit-scrollbar-thumb { background: var(--green-dim); }
-    .chat-msg { display: flex; flex-direction: column; gap: 6px; max-width: 88%; }
-    .chat-msg.user { align-self: flex-end; align-items: flex-end; }
-    .chat-msg.assistant { align-self: flex-start; align-items: flex-start; }
-    .chat-msg-label { font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; }
-    .chat-msg.user .chat-msg-label { color: var(--yellow); }
-    .chat-msg.assistant .chat-msg-label { color: var(--green); }
-    .chat-msg-bubble { padding: 12px 16px; font-size: 13px; line-height: 1.8; border: 1px solid; }
-    .chat-msg.user .chat-msg-bubble { background: var(--green-glow); border-color: var(--green-dim); color: var(--text); text-align: right; }
-    .chat-msg.assistant .chat-msg-bubble { background: var(--bg); border-color: var(--border); color: var(--text); }
-    .chat-msg.assistant .chat-msg-bubble h1,.chat-msg.assistant .chat-msg-bubble h2,.chat-msg.assistant .chat-msg-bubble h3 { font-family: var(--sans); color: var(--green); margin: 12px 0 6px; }
-    .chat-msg.assistant .chat-msg-bubble h2 { font-size: 14px; }
-    .chat-msg.assistant .chat-msg-bubble h3 { font-size: 13px; color: #fff; }
-    .chat-msg.assistant .chat-msg-bubble p { margin-bottom: 8px; }
-    .chat-msg.assistant .chat-msg-bubble ul { margin: 6px 0 10px 18px; }
-    .chat-msg.assistant .chat-msg-bubble li { margin-bottom: 3px; }
-    .chat-msg.assistant .chat-msg-bubble strong { color: #fff; }
-    .chat-msg.assistant .chat-msg-bubble code { background: var(--surface); color: var(--green); padding: 1px 5px; font-family: var(--mono); font-size: 11px; }
-    .chat-typing { display: none; align-self: flex-start; }
-    .chat-typing-dots { display: flex; gap: 5px; padding: 12px 16px; border: 1px solid var(--border); background: var(--bg); }
-    .chat-typing-dots span { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: typing-dot 1.2s ease-in-out infinite; }
-    .chat-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .chat-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes typing-dot { 0%,60%,100% { opacity: 0.2; transform: scale(0.8); } 30% { opacity: 1; transform: scale(1); } }
-    .chat-input-row { display: flex; gap: 0; border-top: 1px solid var(--border); }
-    .chat-input { flex: 1; background: var(--bg); border: none; border-right: 1px solid var(--border); color: var(--green); font-family: var(--mono); font-size: 13px; padding: 14px 18px; outline: none; resize: none; min-height: 50px; max-height: 120px; line-height: 1.5; }
-    .chat-input::placeholder { color: #21ce7033; }
-    .chat-input:focus { background: var(--surface); }
-    .chat-send-btn { background: var(--green); color: var(--bg); border: none; font-family: var(--sans); font-size: 13px; font-weight: 700; letter-spacing: 2px; padding: 14px 22px; cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; }
-    .chat-send-btn:hover { background: #fff; }
-    .chat-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .chat-suggestions { display: flex; gap: 6px; flex-wrap: wrap; padding: 12px 20px 0; border-top: 1px solid var(--border); background: var(--bg); }
-    .chat-suggestion { background: transparent; border: 1px solid #21ce7022; color: var(--text-dim); font-family: var(--mono); font-size: 10px; padding: 5px 10px; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; }
-    .chat-suggestion:hover { border-color: var(--green-dim); color: var(--green); background: var(--green-glow); }
-    @media (max-width: 640px) { .chat-msg { max-width: 95%; } .chat-send-btn { padding: 14px 14px; font-size: 12px; } .chat-suggestions { gap: 4px; } .chat-suggestion { font-size: 9px; } }
+    /* AGENT START BUTTON */
+    .agent-start-btn { background: transparent; border: 1px solid var(--green); color: var(--green); font-family: var(--mono); font-size: 12px; letter-spacing: 2px; padding: 12px 20px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; margin-top: 16px; width: 100%; display: block; }
+    .agent-start-btn:hover { background: var(--green-glow); box-shadow: 0 0 20px var(--green-glow); }
+    .agent-start-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    /* AGENT PANEL */
+    .agent-panel { background: var(--surface); border: 1px solid var(--green-dim); margin-bottom: 32px; position: relative; display: none; }
+    .agent-panel::before { content: 'DEEPSEEK-R1 — AGENTIC ANALİZ'; position: absolute; top: -10px; left: 20px; background: var(--surface); padding: 0 8px; font-size: 10px; letter-spacing: 3px; color: var(--green); }
+    .agent-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
+    .agent-title { font-family: var(--sans); font-size: 13px; letter-spacing: 3px; color: var(--green); }
+    .agent-status-bar { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-dim); letter-spacing: 1px; }
+    .agent-status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-dim); flex-shrink: 0; transition: background 0.3s; }
+    .agent-status-dot.thinking { background: var(--yellow); animation: blink 0.8s ease-in-out infinite; }
+    .agent-status-dot.running { background: var(--green); animation: blink 0.5s ease-in-out infinite; }
+    .agent-status-dot.done { background: var(--green); animation: none; }
+    .agent-status-dot.error { background: var(--red); animation: none; }
+    /* Plan Preview */
+    .agent-plan-preview { padding: 16px 24px; border-bottom: 1px solid var(--border); }
+    .agent-plan-title { font-size: 10px; letter-spacing: 3px; color: var(--text-dim); margin-bottom: 12px; }
+    .agent-plan-item { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .agent-plan-item:last-child { border-bottom: none; }
+    .agent-plan-num { color: var(--green); font-size: 10px; letter-spacing: 2px; min-width: 44px; flex-shrink: 0; padding-top: 2px; }
+    .agent-plan-info { flex: 1; min-width: 0; }
+    .agent-plan-name { font-family: var(--sans); font-size: 13px; font-weight: 600; color: #fff; }
+    .agent-plan-obj { font-size: 11px; color: var(--text-dim); line-height: 1.6; margin-top: 2px; }
+    .agent-plan-badge { font-size: 10px; letter-spacing: 1px; flex-shrink: 0; padding-top: 2px; }
+    .agent-plan-badge.pending { color: var(--text-dim); }
+    .agent-plan-badge.running { color: var(--yellow); }
+    .agent-plan-badge.done { color: var(--green); }
+    .agent-plan-badge.error { color: var(--red); }
+    /* Step Accordion */
+    .step-accordion { border-bottom: 1px solid var(--border); border-left: 3px solid transparent; transition: border-color 0.2s; }
+    .step-accordion:last-child { border-bottom: none; }
+    .step-accordion.step-running { border-left-color: var(--yellow); }
+    .step-accordion.step-done { border-left-color: var(--green); }
+    .step-accordion.step-error { border-left-color: var(--red); }
+    .step-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; cursor: pointer; transition: background 0.15s; gap: 12px; }
+    .step-header:hover { background: rgba(33,206,112,0.03); }
+    .step-header-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+    .step-icon { font-size: 16px; flex-shrink: 0; width: 20px; text-align: center; }
+    .step-meta { min-width: 0; }
+    .step-num-label { font-size: 9px; letter-spacing: 3px; color: var(--green); }
+    .step-name-label { font-family: var(--sans); font-size: 13px; font-weight: 600; color: #fff; }
+    .step-chevron { color: var(--text-dim); font-size: 11px; transition: transform 0.2s; flex-shrink: 0; }
+    .step-accordion.open > .step-header .step-chevron { transform: rotate(180deg); }
+    .step-body { display: none; padding: 4px 24px 20px; }
+    .step-accordion.open > .step-body { display: block; }
+    .step-thinking { margin-bottom: 14px; border: 1px solid var(--border); background: var(--bg); }
+    .step-thinking-header { display: flex; align-items: center; gap: 8px; padding: 7px 12px; cursor: pointer; font-size: 10px; letter-spacing: 2px; color: var(--text-dim); border-bottom: 1px solid var(--border); user-select: none; }
+    .step-thinking-header:hover { color: var(--text); }
+    .step-thinking-body { display: none; padding: 12px; max-height: 180px; overflow-y: auto; font-size: 11px; color: var(--text-dim); line-height: 1.7; font-style: italic; white-space: pre-wrap; word-break: break-word; }
+    .step-thinking-body.open { display: block; }
+    .step-content { font-size: 13px; color: var(--text); line-height: 1.8; }
+    /* Final Report */
+    .final-report { border-top: 2px solid var(--green); padding: 24px; }
+    .final-report-header { font-family: var(--sans); font-size: 15px; font-weight: 700; letter-spacing: 3px; color: var(--green); margin-bottom: 20px; }
     /* FOOTER */
     footer { border-top: 1px solid var(--border); padding: 20px 0; margin-top: 60px; text-align: center; font-size: 11px; color: var(--text-dim); letter-spacing: 2px; }
     .typewriter::after { content: '█'; animation: blink 1s step-end infinite; }
@@ -344,7 +346,7 @@
       .search-input { font-size: 16px; }
       .tags { gap: 6px; }
       .tag { padding: 8px 12px; font-size: 11px; }
-      .groq-btn { padding: 14px; font-size: 13px; }
+      .agent-start-btn { padding: 14px; font-size: 13px; }
       .export-row { flex-direction: column; }
       .export-btn { width: 100%; text-align: center; }
       .api-key-panel { font-size: 10px; padding: 8px 12px; }
@@ -360,14 +362,18 @@
 <div id="apiModal" class="api-modal">
   <div class="api-modal-box">
     <button class="api-close-btn" onclick="closeApiModal()">[ X ]</button>
-    <p>Groq API key'ini girerek yapay zeka analizini aktifleştir.<br>Ücretsiz key almak için: <a href="https://console.groq.com" target="_blank">console.groq.com</a></p>
-      <div class="api-modal-steps">
-        <span class="step-num">&#9312;</span> <a href="https://console.groq.com" target="_blank">console.groq.com</a>'a git &#8594; ücretsiz kayıt ol<br>
-        <span class="step-num">&#9313;</span> Sol menü &#8594; <strong>API Keys</strong> &#8594; <strong>Create API Key</strong><br>
-        <span class="step-num">&#9314;</span> Oluşan <code>gsk_...</code> kodunu kopyala &#8594; aşağıya yapıştır
-      </div>
-    <input type="text" class="api-input" id="apiKeyInput" placeholder="gsk_..." autocomplete="off" />
+    <p>OpenRouter API key'ini girerek DeepSeek-R1 agentic analizini aktifleştir.<br>Ücretsiz key almak için: <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a></p>
+    <div class="api-modal-steps">
+      <span class="step-num">&#9312;</span> <a href="https://openrouter.ai" target="_blank">openrouter.ai</a>'ya git &#8594; ücretsiz kayıt ol<br>
+      <span class="step-num">&#9313;</span> <strong>Keys</strong> &#8594; <strong>Create Key</strong> butonuna bas<br>
+      <span class="step-num">&#9314;</span> Oluşan <code>sk-or-v1-...</code> kodunu kopyala &#8594; aşağıya yapıştır
+    </div>
+    <input type="text" class="api-input" id="apiKeyInput" placeholder="sk-or-v1-..." autocomplete="off" />
     <button class="api-save-btn" onclick="saveApiKey()">&#9654; KAYDET VE AKTİFLEŞTİR</button>
+    <hr style="border-color:#21ce7022;margin:20px 0">
+    <p style="font-size:11px;letter-spacing:1px;color:#8b949e">Serper.dev API key — haber araması için (isteğe bağlı)<br>Ücretsiz key: <a href="https://serper.dev" target="_blank">serper.dev</a> → Sign Up → API Key</p>
+    <input type="text" class="api-input" id="serperKeyInput" placeholder="serper key..." autocomplete="off" />
+    <button class="api-save-btn" onclick="saveSerperKey()">&#9654; SERPER KAYDET</button>
   </div>
 </div>
 
@@ -412,7 +418,7 @@
       <div class="howto-step"><div class="howto-num">01</div><div class="howto-title">HEDEF GİR</div><div class="howto-desc">Kişi, şirket, domain, IP veya e-posta gir. Sistem otomatik algılar.</div></div>
       <div class="howto-step"><div class="howto-num">02</div><div class="howto-title">KATEGORİ SEÇ</div><div class="howto-desc">Otomatik algı çalışır veya ŞİRKET, KİŞİ, DOMAIN kategorisi seç.</div></div>
       <div class="howto-step"><div class="howto-num">03</div><div class="howto-title">TARA</div><div class="howto-desc">TARA butonuna bas. Sistem 35+ OSINT aracını filtreler.</div></div>
-      <div class="howto-step"><div class="howto-num">04</div><div class="howto-title">ANALİZ ET</div><div class="howto-desc">Groq AI ile derin istihbarat raporu al, PDF/TXT olarak indir.</div></div>
+      <div class="howto-step"><div class="howto-num">04</div><div class="howto-title">ANALİZ ET</div><div class="howto-desc">DeepSeek-R1 çok adımlı plan kurar, her adımı çalıştırır, final rapor üretir.</div></div>
     </div>
   </div>
 
@@ -421,21 +427,21 @@
       <div class="howto-step">
         <div class="howto-num">01</div>
         <div class="howto-title">HESAP OLUŞTUR</div>
-        <div class="howto-desc"><a href="https://console.groq.com" target="_blank" rel="noopener noreferrer">console.groq.com</a> adresine git. Google veya GitHub hesabınla <strong>ücretsiz</strong> kayıt ol. <span class="time-hint">(30 saniye)</span></div>
+        <div class="howto-desc"><a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer">openrouter.ai</a> adresine git. Google veya GitHub hesabınla <strong>ücretsiz</strong> kayıt ol. <span class="time-hint">(30 saniye)</span></div>
       </div>
       <div class="howto-step">
         <div class="howto-num">02</div>
         <div class="howto-title">KEY OLUŞTUR</div>
-        <div class="howto-desc">Sol menüden <strong>API Keys</strong> bölümüne tıkla. <strong>Create API Key</strong> butonuna bas. Key'ine bir isim ver ve oluştur.</div>
+        <div class="howto-desc"><strong>Keys</strong> menüsüne tıkla. <strong>Create Key</strong> butonuna bas. Ücretsiz kredi ile hemen kullanmaya başla.</div>
       </div>
       <div class="howto-step">
         <div class="howto-num">03</div>
         <div class="howto-title">BURAYA YAPIŞTIR</div>
-        <div class="howto-desc">Oluşan <code>gsk_...</code> kodunu kopyala. Sağ üstteki <strong>API</strong> butonuna tıkla, yapıştır ve kaydet.</div>
+        <div class="howto-desc">Oluşan <code>sk-or-v1-...</code> kodunu kopyala. Sağ üstteki <strong>API</strong> butonuna tıkla, yapıştır ve kaydet.</div>
       </div>
     </div>
     <div class="apikey-guide-note">
-      <span style="color:var(--green);">[ &#8505; ]</span> Groq API tamamen <strong>ücretsizdir.</strong> API ile verileriniz güvende kalır. Key'iniz sadece tarayıcınızda saklanır, hiçbir sunucuya gönderilmez.
+      <span style="color:var(--green);">[ &#8505; ]</span> OpenRouter ücretsiz kredi verir. Key'iniz sadece tarayıcınızda saklanır, hiçbir sunucuya gönderilmez.
     </div>
   </div>
 
@@ -484,39 +490,29 @@
       <div class="analysis-line"><span class="analysis-key">[ DURUM ]</span><span class="analysis-val"><span class="badge badge-green">HAZIR</span></span></div>
     </div>
 
-    <button class="groq-btn" id="groqBtn" onclick="runGroqAnalysis()">&#9670; GROQ İLE İSTİHBARAT ANALİZİ YAP</button>
+    <button class="agent-start-btn" id="agentStartBtn" onclick="runAgenticAnalysis()">&#9670; DEEPSEEK-R1 AGENTIC ANALİZ BAŞLAT</button>
 
-    <div class="groq-output" id="groqOutput">
-      <div class="groq-loading" id="groqLoading"><div class="groq-loading-text">ANALİZ YAPILIYOR...</div></div>
-      <div class="groq-text" id="groqText"></div>
-      <div class="export-row" id="exportRow" style="display:none">
-        <button class="export-btn" onclick="exportTXT()">&#8659; TXT OLARAK İNDİR</button>
-        <button class="export-btn" onclick="exportPDF()">&#8659; PDF OLARAK İNDİR</button>
-        <button class="export-btn" onclick="copyReport()">&#9632; KOPYALA</button>
-      </div>
-    </div>
-
-    <!-- CHAT BÖLÜMÜ -->
-    <div class="chat-section" id="chatSection">
-      <div class="chat-context-bar">
-        <div>HEDEF: <span id="chatTarget">—</span> &nbsp;|&nbsp; MESAJ: <span id="chatMsgCount">0</span></div>
-        <button class="chat-clear-btn" onclick="clearChat()">[ SOHBETI TEMİZLE ]</button>
-      </div>
-      <div class="chat-messages" id="chatMessages">
-        <div class="chat-typing" id="chatTyping">
-          <div class="chat-typing-dots"><span></span><span></span><span></span></div>
+    <div class="agent-panel" id="agentPanel">
+      <div class="agent-header">
+        <span class="agent-title">// AGENTIC OSINT ANALİZİ</span>
+        <div class="agent-status-bar">
+          <div class="agent-status-dot" id="agentDot"></div>
+          <span id="agentStatusText">Hazır</span>
         </div>
       </div>
-      <div class="chat-suggestions" id="chatSuggestions">
-        <button class="chat-suggestion" onclick="useSuggestion(this)">Bu konuyu daha detaylı anlat</button>
-        <button class="chat-suggestion" onclick="useSuggestion(this)">Hangi araçları önerirsin?</button>
-        <button class="chat-suggestion" onclick="useSuggestion(this)">Risk analizi yap</button>
-        <button class="chat-suggestion" onclick="useSuggestion(this)">Sosyal medya varlığını araştır</button>
-        <button class="chat-suggestion" onclick="useSuggestion(this)">Özet rapor oluştur</button>
+      <div class="agent-plan-preview" id="agentPlanPreview" style="display:none">
+        <div class="agent-plan-title">ARAŞTIRMA PLANI</div>
+        <div id="agentPlanList"></div>
       </div>
-      <div class="chat-input-row">
-        <textarea class="chat-input" id="chatInput" placeholder="OSINT uzmanına sor: 'Bu domainin alt domainlerini araştır', 'Risk skoru nedir?'..." rows="1"></textarea>
-        <button class="chat-send-btn" id="chatSendBtn" onclick="sendChatMessage()">&#9654; GÖNDER</button>
+      <div id="stepsContainer"></div>
+      <div class="final-report" id="finalReport" style="display:none">
+        <div class="final-report-header">&#128202; FİNAL İSTİHBARAT RAPORU</div>
+        <div class="step-content md" id="finalReportText"></div>
+        <div class="export-row" id="exportRow" style="display:none">
+          <button class="export-btn" onclick="exportTXT()">&#8659; TXT OLARAK İNDİR</button>
+          <button class="export-btn" onclick="exportPDF()">&#8659; PDF OLARAK İNDİR</button>
+          <button class="export-btn" onclick="copyReport()">&#9632; KOPYALA</button>
+        </div>
       </div>
     </div>
 
@@ -533,8 +529,7 @@
       </div>
       <div class="live-intel-filters">
         <button class="live-intel-filter-btn active" onclick="setLiveIntelFilter(this,'all')">HEPSİ</button>
-        <button class="live-intel-filter-btn" onclick="setLiveIntelFilter(this,'reddit')">REDDIT</button>
-        <button class="live-intel-filter-btn" onclick="setLiveIntelFilter(this,'rss')">RSS / HABER</button>
+        <button class="live-intel-filter-btn" onclick="setLiveIntelFilter(this,'hn')">HACKER NEWS</button>
       </div>
       <div class="live-intel-sources" id="liveIntelSources">
         <!-- renderLiveIntel() tarafindan doldurulacak -->
@@ -547,15 +542,24 @@
 <script>
 // ===================== API KEY YÖNETİMİ =====================
 function getApiKey() {
-  return localStorage.getItem('groq_api_key') || '';
+  return localStorage.getItem('openrouter_api_key') || '';
+}
+function getSerperKey() {
+  return localStorage.getItem('serper_api_key') || '';
+}
+function saveSerperKey() {
+  const val = document.getElementById('serperKeyInput').value.trim();
+  if (!val) return;
+  localStorage.setItem('serper_api_key', val);
+  closeApiModal();
 }
 function saveApiKey() {
   const val = document.getElementById('apiKeyInput').value.trim();
-  if (!val.startsWith('gsk_')) {
+  if (val.length < 10) {
     document.getElementById('apiKeyInput').style.borderColor = '#ff4c6a';
     return;
   }
-  localStorage.setItem('groq_api_key', val);
+  localStorage.setItem('openrouter_api_key', val);
   updateApiStatus();
   closeApiModal();
 }
@@ -813,7 +817,7 @@ function startSearch() {
   let step=0;
   const interval = setInterval(()=>{
     if(step<LOADING_STEPS.length) document.getElementById('loadingText').textContent=LOADING_STEPS[step++];
-    else { clearInterval(interval); const filtered=filterTools(q,activeTag); createTab(q,{filtered,tag:activeTag,detected}); showResults(q); showLiveIntelPanel(); window.liveIntelData.lastTarget = q; fetchRedditTarget(q).then(() => console.log('[OSINT Lens] Reddit hedef:', window.liveIntelData.redditTarget)); fetchRedditSubreddits().then(() => console.log('[OSINT Lens] Subredditler:', window.liveIntelData.redditSubreddits)); }
+    else { clearInterval(interval); const filtered=filterTools(q,activeTag); createTab(q,{filtered,tag:activeTag,detected}); showResults(q); showLiveIntelPanel(); window.liveIntelData.lastTarget = q; renderLiveIntel(); fetchHackerNews(q).then(() => { console.log('[OSINT Lens] HackerNews:', window.liveIntelData.hackerNews); renderLiveIntel(); }); fetchSerperNews(q).then(() => renderLiveIntel()); }
   },350);
 }
 
@@ -831,8 +835,8 @@ function showResults(q) {
 function renderResults(q, data, scroll) {
   currentTarget = q;
   document.getElementById('results').style.display='block';
-  document.getElementById('groqOutput').style.display='none';
-  document.getElementById('groqText').innerHTML='';
+  document.getElementById('agentPanel').style.display='none';
+  document.getElementById('finalReportText').innerHTML='';
   document.getElementById('exportRow').style.display='none';
   currentRawText='';
   document.getElementById('loading').style.display='none';
@@ -896,92 +900,250 @@ function renderResults(q, data, scroll) {
   if(scroll) document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-// ===================== CHAT =====================
-let chatHistory = [];
-let chatSystemPrompt = '';
-
-function initChat(target) {
-  chatHistory = [];
-  chatSystemPrompt = 'Sen çok deneyimli bir istihbarat analistisin. Hem tümevarımsal (veriden örüntüe) hem de tümdengelimsel (hipotezden doğrulamaya) analiz yaparsın. Hedef: "' + target + '"\n\nMetodolojin:\n1) Tümevarım: Ham OSINT verisinden (IP, domain, sosyal medya, leak verileri) örüntü ve anomali tespiti yap.\n2) Tümdengelim: Bilinen profil ve tehdit modelinden hareketle eksik varlıkları doğrula.\n3) ACH (Analysis of Competing Hypotheses): Olası senaryoları karşılaştır, en güvenilirini seç.\n4) BLUF formatında (özet en başta) yaz.\n5) Her bulgu için güven seviyesi belirt: [GÜVEN: YÜKSEK/ORTA/DÜŞÜK].\n6) Kaynak güvenilirliğini değerlendir (birincil/ikincil/üçüncül).\n\nKısa, net, aksiyon odaklı yanıtlar ver. Markdown kullan. Türkçe yaz.'
-  document.getElementById('chatTarget').textContent = target.toUpperCase();
-  document.getElementById('chatMsgCount').textContent = '0';
-  document.getElementById('chatMessages').innerHTML = '<div class="chat-typing" id="chatTyping"><div class="chat-typing-dots"><span></span><span></span><span></span></div></div>';
-  document.getElementById('chatSection').style.display = 'block';
-  // İlk karşılama mesajı
-  appendChatMsg('assistant', '**Hedef:** ' + target + '\n\nHazırım. Hedef hakkında ne öğrenmek istiyorsun? Yukarıdaki raporu referans alarak detaylı sorular sorabilirsin.');
-  document.getElementById('chatSection').scrollIntoView({behavior:'smooth', block:'start'});
+// ===================== DEEPSEEK-R1 — OpenRouter Streaming =====================
+async function callDeepSeek(messages, onChunk) {
+  const key = getApiKey();
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + key,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': window.location.origin,
+      'X-Title': 'OSINT Lens'
+    },
+    body: JSON.stringify({
+      model: 'deepseek/deepseek-r1',
+      messages: messages,
+      stream: true,
+      temperature: 0.7,
+      max_tokens: 4000
+    })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error?.message || 'OpenRouter HTTP ' + res.status);
+  }
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '', fullContent = '', fullReasoning = '';
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop();
+    for (const line of lines) {
+      if (!line.startsWith('data: ')) continue;
+      const raw = line.slice(6).trim();
+      if (raw === '[DONE]') break;
+      try {
+        const j = JSON.parse(raw);
+        const delta = j.choices?.[0]?.delta;
+        if (delta?.reasoning) { fullReasoning += delta.reasoning; onChunk?.({ type: 'reasoning', text: delta.reasoning }); }
+        if (delta?.content)   { fullContent   += delta.content;   onChunk?.({ type: 'content',   text: delta.content });   }
+      } catch {}
+    }
+  }
+  return { content: fullContent, reasoning: fullReasoning };
 }
 
-function appendChatMsg(role, md) {
-  const messages = document.getElementById('chatMessages');
-  const typing = document.getElementById('chatTyping');
+// ===================== AGENT UI helpers =====================
+function setAgentStatus(text, state) {
+  document.getElementById('agentStatusText').textContent = text;
+  const dot = document.getElementById('agentDot');
+  dot.className = 'agent-status-dot' + (state ? ' ' + state : '');
+}
+
+function renderPlanPreview(plan) {
+  const preview = document.getElementById('agentPlanPreview');
+  const list    = document.getElementById('agentPlanList');
+  list.innerHTML = plan.map(s =>
+    '<div class="agent-plan-item" id="plan-item-' + s.step + '">' +
+      '<div class="agent-plan-num">ADIM ' + s.step + '</div>' +
+      '<div class="agent-plan-info"><div class="agent-plan-name">' + s.name + '</div>' +
+      '<div class="agent-plan-obj">' + s.objective + '</div></div>' +
+      '<div class="agent-plan-badge pending" id="plan-badge-' + s.step + '">BEKLIYOR</div>' +
+    '</div>'
+  ).join('');
+  preview.style.display = 'block';
+}
+
+function setPlanBadge(stepNum, state, label) {
+  const el = document.getElementById('plan-badge-' + stepNum);
+  if (el) { el.className = 'agent-plan-badge ' + state; el.textContent = label; }
+}
+
+function addStepAccordion(stepNum, total, name) {
+  const id = 'step-acc-' + stepNum;
+  const container = document.getElementById('stepsContainer');
   const div = document.createElement('div');
-  div.className = 'chat-msg ' + role;
-  const label = role === 'user' ? '[ SEN ]' : '[ GROQ OSINT ]';
-  div.innerHTML = '<div class="chat-msg-label">' + label + '</div><div class="chat-msg-bubble groq-text">' + renderMarkdown(md) + '</div>';
-  messages.insertBefore(div, typing);
-  messages.scrollTop = messages.scrollHeight;
-  // mesaj sayısını güncelle
-  const count = messages.querySelectorAll('.chat-msg').length;
-  document.getElementById('chatMsgCount').textContent = count;
+  div.className = 'step-accordion step-running open';
+  div.id = id;
+  div.innerHTML =
+    '<div class="step-header" onclick="toggleStepAcc(\'' + id + '\')">' +
+      '<div class="step-header-left">' +
+        '<div class="step-icon" id="' + id + '-icon">&#9203;</div>' +
+        '<div class="step-meta">' +
+          '<div class="step-num-label">ADIM ' + stepNum + ' / ' + total + '</div>' +
+          '<div class="step-name-label">' + name + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<span class="step-chevron">&#9660;</span>' +
+    '</div>' +
+    '<div class="step-body">' +
+      '<div class="step-thinking" id="' + id + '-thinking">' +
+        '<div class="step-thinking-header" onclick="toggleThinking(\'' + id + '-thinking\')">&#128161; DÜŞÜNCE SÜRECİ &nbsp;<span style="opacity:.5">(tıkla)</span></div>' +
+        '<div class="step-thinking-body" id="' + id + '-thinking-body"></div>' +
+      '</div>' +
+      '<div class="step-content md" id="' + id + '-content"></div>' +
+    '</div>';
+  container.appendChild(div);
+  div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  return id;
 }
 
-function useSuggestion(btn) {
-  document.getElementById('chatInput').value = btn.textContent;
-  document.getElementById('chatInput').focus();
+function updateStepLive(accId, reasoning, content) {
+  const rb = document.getElementById(accId + '-thinking-body');
+  const cb = document.getElementById(accId + '-content');
+  if (rb) rb.textContent = reasoning;
+  if (cb) cb.textContent = content;
 }
 
-function clearChat() {
-  chatHistory = [];
-  document.getElementById('chatMessages').innerHTML = '<div class="chat-typing" id="chatTyping"><div class="chat-typing-dots"><span></span><span></span><span></span></div></div>';
-  document.getElementById('chatMsgCount').textContent = '0';
-  appendChatMsg('assistant', 'Sohbet temizlendi. **' + currentTarget + '** hakkında yeni sorular sorabilirsin.');
+function finalizeStep(accId, success, reasoning, content) {
+  const acc = document.getElementById(accId);
+  if (acc) {
+    acc.classList.remove('step-running');
+    acc.classList.add(success ? 'step-done' : 'step-error');
+  }
+  const icon = document.getElementById(accId + '-icon');
+  if (icon) icon.textContent = success ? '✅' : '❌';
+  const rb = document.getElementById(accId + '-thinking-body');
+  const cb = document.getElementById(accId + '-content');
+  if (rb) rb.textContent = reasoning;
+  if (cb) cb.innerHTML = renderMarkdown(content);
 }
 
-async function sendChatMessage() {
-  const input = document.getElementById('chatInput');
-  const msg = input.value.trim();
-  if (!msg) return;
+function toggleStepAcc(id) {
+  document.getElementById(id)?.classList.toggle('open');
+}
+function toggleThinking(id) {
+  document.getElementById(id + '-body')?.classList.toggle('open');
+}
+
+// ===================== AGENTIC ANALİZ =====================
+let agentRunning = false;
+
+async function runAgenticAnalysis() {
+  if (!currentTarget) return;
   const key = getApiKey();
   if (!key) { openApiModal(); return; }
+  if (agentRunning) return;
+  agentRunning = true;
 
-  input.value = '';
-  input.style.height = 'auto';
-  document.getElementById('chatSendBtn').disabled = true;
+  const panel = document.getElementById('agentPanel');
+  panel.style.display = 'block';
+  document.getElementById('stepsContainer').innerHTML = '';
+  document.getElementById('agentPlanPreview').style.display = 'none';
+  document.getElementById('finalReport').style.display = 'none';
+  document.getElementById('exportRow').style.display = 'none';
+  document.getElementById('agentStartBtn').disabled = true;
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  appendChatMsg('user', msg);
-  chatHistory.push({ role: 'user', content: msg });
+  // ── PHASE 1: PLAN ──
+  setAgentStatus('🤔 Plan oluşturuluyor...', 'thinking');
+  const planPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '" (Tip: ' + (activeTag || 'belirsiz') + ')\n' +
+    'Bu hedef için 4-5 adımlı sistematik araştırma planı yap. Her adım farklı bir OSINT vektörünü kapsamalı.\n' +
+    'SADECE geçerli JSON döndür, başka açıklama ekleme:\n' +
+    '{"plan":[{"step":1,"name":"Kısa Başlık","objective":"Bu adımda ne araştırılacak"},{"step":2,...}]}';
 
-  // typing göster
-  const typing = document.getElementById('chatTyping');
-  typing.style.display = 'flex';
-  document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
-
+  let plan = [];
   try {
-    const messages = [
-      { role: 'system', content: chatSystemPrompt },
-      ...chatHistory.slice(-10) // son 10 mesajı gönder (token tasarrufu)
+    const { content } = await callDeepSeek([{ role: 'user', content: planPrompt }], null);
+    const m = content.match(/\{[\s\S]*\}/);
+    if (m) plan = JSON.parse(m[0]).plan || [];
+  } catch(e) { console.warn('[Agent] Plan parse hatası:', e.message); }
+
+  if (!plan.length) {
+    plan = [
+      { step:1, name:'Kimlik & Temel Bilgi',     objective:'Temel kimlik, kayıt verileri ve dijital varlık analizi' },
+      { step:2, name:'Teknik Altyapı Analizi',    objective:'Domain, IP, DNS, sunucu ve teknik altyapı' },
+      { step:3, name:'Sosyal Medya & Dijital İz', objective:'Sosyal medya varlığı, etkileşimler ve çevrimiçi footprint' },
+      { step:4, name:'Güvenlik & Risk Analizi',   objective:'Veri sızıntıları, güvenlik açıkları ve risk değerlendirmesi' },
     ];
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages, temperature: 0.7, max_tokens: 1200 })
-    });
-    const data = await res.json();
-    typing.style.display = 'none';
-    if (data.choices && data.choices[0] && data.choices[0].message) {
-      const reply = data.choices[0].message.content;
-      chatHistory.push({ role: 'assistant', content: reply });
-      appendChatMsg('assistant', reply);
-    } else if (data.error) {
-      appendChatMsg('assistant', '**Hata:** ' + data.error.message);
-    }
-  } catch(e) {
-    typing.style.display = 'none';
-    appendChatMsg('assistant', '**Bağlantı hatası:** ' + e.message);
   }
-  document.getElementById('chatSendBtn').disabled = false;
-  input.focus();
+
+  setAgentStatus('Plan hazır: ' + plan.length + ' adım', 'running');
+  renderPlanPreview(plan);
+
+  // ── PHASE 2: STEPS ──
+  const stepResults = [];
+  const relevantTools = filterTools(currentTarget, activeTag).slice(0, 12).map(t => t.name + ': ' + t.desc).join('\n');
+
+  for (let i = 0; i < plan.length; i++) {
+    const step = plan[i];
+    const n = i + 1;
+    setAgentStatus('🔍 Adım ' + n + '/' + plan.length + ': ' + step.name, 'running');
+    setPlanBadge(n, 'running', '▶ ÇALIŞIYOR');
+    const accId = addStepAccordion(n, plan.length, step.name);
+
+    const prevCtx = stepResults.map((r, idx) => 'Adım ' + (idx+1) + ' (' + plan[idx].name + '):\n' + r).join('\n\n---\n\n');
+    const stepPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"\n\n' +
+      (prevCtx ? 'Önceki bulgular:\n' + prevCtx + '\n\n---\n\n' : '') +
+      'MEVCUT ADIM ' + n + '/' + plan.length + ': ' + step.name + '\nAmaç: ' + step.objective + '\n\n' +
+      'İlgili OSINT araçları:\n' + relevantTools + '\n\n' +
+      'Bu adım için detaylı analiz yap. Hangi araçları nasıl kullanacağını, beklenen bulguları ve anlamlarını Türkçe Markdown ile raporla.';
+
+    let sContent = '', sReasoning = '';
+    try {
+      const { content, reasoning } = await callDeepSeek(
+        [{ role: 'user', content: stepPrompt }],
+        ({ type, text }) => {
+          if (type === 'reasoning') { sReasoning += text; updateStepLive(accId, sReasoning, sContent); }
+          else                      { sContent   += text; updateStepLive(accId, sReasoning, sContent); }
+        }
+      );
+      sContent = content; sReasoning = reasoning;
+      stepResults.push(sContent);
+      finalizeStep(accId, true, sReasoning, sContent);
+      setPlanBadge(n, 'done', '✓ TAMAM');
+    } catch(e) {
+      finalizeStep(accId, false, '', 'Hata: ' + e.message);
+      stepResults.push('[Adım ' + n + ' başarısız: ' + e.message + ']');
+      setPlanBadge(n, 'error', '✗ HATA');
+    }
+  }
+
+  // ── PHASE 3: FINAL REPORT ──
+  setAgentStatus('📊 Final rapor yazılıyor...', 'thinking');
+  const allResults = stepResults.map((r, i) => '## Adım ' + (i+1) + ': ' + plan[i].name + '\n' + r).join('\n\n---\n\n');
+  const finalPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"\n\n' +
+    'Tüm araştırma adımları tamamlandı:\n\n' + allResults + '\n\n---\n\n' +
+    'Tüm bulguları sentezleyerek Türkçe Markdown final raporu yaz:\n\n' +
+    '## OSINT İstihbarat Raporu: ' + currentTarget + '\n' +
+    '### Yönetici Özeti (BLUF)\n### Kritik Bulgular\n### Risk Değerlendirmesi [YÜKSEK/ORTA/DÜŞÜK]\n### Önerilen Aksiyon Adımları\n### İstihbarat Boşlukları';
+
+  const finalEl = document.getElementById('finalReportText');
+  document.getElementById('finalReport').style.display = 'block';
+  finalEl.textContent = 'Rapor yazılıyor...';
+
+  let finalContent = '';
+  try {
+    await callDeepSeek(
+      [{ role: 'user', content: finalPrompt }],
+      ({ type, text }) => { if (type === 'content') { finalContent += text; finalEl.textContent = finalContent; } }
+    );
+    finalEl.innerHTML = renderMarkdown(finalContent);
+    currentRawText = finalContent;
+    document.getElementById('exportRow').style.display = 'flex';
+    setAgentStatus('✅ Analiz tamamlandı', 'done');
+  } catch(e) {
+    finalEl.innerHTML = '<p style="color:var(--red)">Final rapor hatası: ' + e.message + '</p>';
+    setAgentStatus('⚠️ Kısmen tamamlandı', 'error');
+  }
+
+  document.getElementById('agentStartBtn').disabled = false;
+  agentRunning = false;
+  document.getElementById('finalReport').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // ===================== CANLI İSTİHBARAT — PANEL =====================
@@ -992,143 +1154,136 @@ function showLiveIntelPanel() {
 
 // ===================== CANLI İSTİHBARAT — VERİ ÇEKME =====================
 window.liveIntelData = {
-  redditTarget: [],      // fetchRedditTarget() sonuçları
-  redditSubreddits: [],  // fetchRedditSubreddits() sonuçları
-  rssFeeds: [],          // fetchRSSFeeds() sonuçları
-  googleNews: [],        // fetchGoogleNews() sonuçları
-  lastTarget: '',        // son aranan hedef
-  loading: {
-    redditTarget: false,
-    redditSubreddits: false,
-    rssFeeds: false,
-    googleNews: false
-  }
+  hackerNews: [],   // fetchHackerNews()
+  serperNews: [],   // fetchSerperNews()
+  lastTarget: '',
+  loading: { hackerNews: false, serperNews: false }
 };
 
-async function fetchRedditTarget(target) {
-  window.liveIntelData.loading.redditTarget = true;
-  window.liveIntelData.redditTarget = [];
+async function fetchHackerNews(target) {
+  window.liveIntelData.loading.hackerNews = true;
+  window.liveIntelData.hackerNews = [];
   try {
-    const url = 'https://www.reddit.com/search.json?q=' + encodeURIComponent(target) + '&sort=new&limit=10';
-    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    const url = 'https://hn.algolia.com/api/v1/search_by_date?query=' + encodeURIComponent(target) + '&tags=story&hitsPerPage=10';
+    console.log('[OSINT Lens] fetchHackerNews →', url);
+    const res = await fetch(url);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    const posts = (data.data && data.data.children) ? data.data.children : [];
-    window.liveIntelData.redditTarget = posts.map(p => ({
-      title: p.data.title,
-      subreddit: p.data.subreddit,
-      date: new Date(p.data.created_utc * 1000).toISOString().split('T')[0],
-      url: 'https://www.reddit.com' + p.data.permalink
+    window.liveIntelData.hackerNews = (data.hits || []).map(h => ({
+      title:  h.title || h.story_title || '(başlıksız)',
+      url:    h.url || ('https://news.ycombinator.com/item?id=' + h.objectID),
+      date:   h.created_at ? h.created_at.split('T')[0] : '',
+      source: 'HackerNews'
     }));
   } catch(e) {
-    console.warn('[OSINT Lens] Reddit hedef araması başarısız:', e.message);
-    window.liveIntelData.redditTarget = [];
+    console.warn('[OSINT Lens] HackerNews araması başarısız:', e.message);
+    window.liveIntelData.hackerNews = [];
   } finally {
-    window.liveIntelData.loading.redditTarget = false;
+    window.liveIntelData.loading.hackerNews = false;
   }
 }
 
-async function fetchRedditSubreddits() {
-  window.liveIntelData.loading.redditSubreddits = true;
-  window.liveIntelData.redditSubreddits = [];
-  const OSINT_SUBREDDITS = ['netsec', 'OSINT', 'cybersecurity'];
+async function fetchSerperNews(target) {
+  window.liveIntelData.loading.serperNews = true;
+  window.liveIntelData.serperNews = [];
   try {
-    const fetches = OSINT_SUBREDDITS.map(sub =>
-      fetch('https://www.reddit.com/r/' + sub + '/new.json?limit=10', { headers: { 'Accept': 'application/json' } })
-        .then(r => r.ok ? r.json() : Promise.reject('HTTP ' + r.status))
-        .then(data => {
-          const posts = (data.data && data.data.children) ? data.data.children : [];
-          return posts.map(p => ({
-            title: p.data.title,
-            subreddit: p.data.subreddit,
-            date: new Date(p.data.created_utc * 1000).toISOString().split('T')[0],
-            url: 'https://www.reddit.com' + p.data.permalink
-          }));
-        })
-        .catch(e => { console.warn('[OSINT Lens] r/' + sub + ' çekilemedi:', e); return []; })
-    );
-    const results = await Promise.all(fetches);
-    window.liveIntelData.redditSubreddits = results.flat();
-  } catch(e) {
-    console.warn('[OSINT Lens] Subreddit çekme başarısız:', e.message);
-    window.liveIntelData.redditSubreddits = [];
-  } finally {
-    window.liveIntelData.loading.redditSubreddits = false;
-  }
-}
-
-// ===================== GROQ — CANLI VERİ PROMPT BUILDER =====================
-function buildLiveIntelPromptSection() {
-  const d = window.liveIntelData;
-  if (!d) return '';
-
-  function formatItems(items, keyFn) {
-    if (!items || items.length === 0) return null;
-    return items.slice(0, 5).map(item => {
-      const key = keyFn(item);
-      const date = item.date || '';
-      return '- ' + item.title + ' | ' + key + ' | ' + date;
-    }).join('\n');
-  }
-
-  const sections = [];
-
-  const rt = formatItems(d.redditTarget, item => 'r/' + item.subreddit);
-  if (rt) sections.push('[Reddit — Hedef Araması]\n' + rt);
-
-  const rs = formatItems(d.redditSubreddits, item => 'r/' + item.subreddit);
-  if (rs) sections.push('[Reddit — OSINT Subredditler]\n' + rs);
-
-  const rss = formatItems(d.rssFeeds, item => item.source || 'RSS');
-  if (rss) sections.push('[RSS — Reuters / BBC / Al Jazeera]\n' + rss);
-
-  const gn = formatItems(d.googleNews, item => item.source || 'Google News');
-  if (gn) sections.push('[Google News]\n' + gn);
-
-  if (sections.length === 0) return '';
-
-  return '\n\n== CANLI VERİ ==\nAnalizi yaparken aşağıdaki güncel canlı verileri de göz önünde bulundur:\n\n' + sections.join('\n\n');
-}
-
-// ===================== GROQ ANALİZİ =====================
-async function runGroqAnalysis() {
-  if (!currentTarget) return;
-  const key = getApiKey();
-  if (!key) { openApiModal(); return; }
-  const btn=document.getElementById('groqBtn');
-  const output=document.getElementById('groqOutput');
-  const loading=document.getElementById('groqLoading');
-  const textEl=document.getElementById('groqText');
-  btn.disabled=true; output.style.display='block'; loading.style.display='block'; textEl.innerHTML='';
-  const prompt='Sen çok deneyimli bir istihbarat analistisin. Hem tümevarımsal hem de tümdengelimsel analiz yaparsın.\n\nHedef: "'+currentTarget+'"\n\nAşağıdaki yapıya göre kapsamlı bir OSINT istihbarat raporu yaz:\n\n## BLUF (Bottom Line Up Front)\nEn kritik bulguyu tek paragrafta özetle.\n\n## Hedef Profili\nHedef tipi, genel tanım ve dijital kimlik.\n\n## Tümevarımsal Analiz\nHam veriden (IP, domain, sosyal medya, leak) örüntü ve anomali tespiti. Her bulgu için [GÜVEN: YÜKSEK/ORTA/DÜŞÜK] etiketi ekle.\n\n## Tümdengelimsel Analiz\nBilinen profil üzerinden hipotez kur, destekleyen ve çürüten kanıtları listele.\n\n## ACH (Rekabet Eden Hipotezler)\nEn az 2 olası senaryo karşılaştır, en güvenilirini seç ve gerekçe göster.\n\n## Risk Değerlendirmesi\nTehditler ve riskler. [YÜKSEK/ORTA/DÜŞÜK] etiketi ile.\n\n## Önerilen OSINT Araçları\nHedef tipine göre en etkili araçlar.\n\n## İstihbarat Özeti\nAksiyon önerileri ve sonraki adımlar.\n\nMarkdown formatlı, profesyonel, Türkçe yaz.'
-  const liveSection = buildLiveIntelPromptSection();
-  const finalPrompt = liveSection ? prompt + liveSection : prompt;
-  try {
-    const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:finalPrompt}],temperature:0.7,max_tokens:2000})
+    console.log('[OSINT Lens] fetchSerperNews → query:', target);
+    const res = await fetch('/api/serper', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ q: target, gl: 'tr', hl: 'tr', num: 10, _apiKey: getSerperKey() })
     });
-    const data=await res.json();
-    loading.style.display='none';
-    if(data.choices&&data.choices[0]&&data.choices[0].message) {
-      const md=data.choices[0].message.content;
-      currentRawText=md;
-      textEl.innerHTML=renderMarkdown(md);
-      document.getElementById('exportRow').style.display='flex';
-    } else if(data.error) {
-      textEl.innerHTML='<p style="color:var(--red)">Hata: '+data.error.message+'</p>';
-    } else {
-      textEl.textContent='Analiz alınamadı.';
-    }
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    window.liveIntelData.serperNews = (data.news || []).map(n => ({
+      title: n.title, url: n.link, date: n.date || '', source: n.source || 'Serper'
+    }));
+    console.log('[OSINT Lens] Serper:', window.liveIntelData.serperNews);
   } catch(e) {
-    loading.style.display='none';
-    textEl.innerHTML='<p style="color:var(--red)">Bağlantı hatası: '+e.message+'</p>';
+    console.warn('[OSINT Lens] Serper başarısız:', e.message);
+    window.liveIntelData.serperNews = [];
+  } finally {
+    window.liveIntelData.loading.serperNews = false;
   }
-  btn.disabled=false;
-  // Analiz bitti, chat'i başlat
-  if(currentRawText) initChat(currentTarget);
 }
+
+// ===================== CANLI İSTİHBARAT — RENDER & KONTROL =====================
+let _liveIntelFilter = 'all';
+
+function renderLiveIntel() {
+  const container = document.getElementById('liveIntelSources');
+  if (!container) return;
+  const d = window.liveIntelData;
+  const f = _liveIntelFilter;
+
+  const sources = [
+    {
+      key: 'hackerNews',
+      type: 'hn',
+      label: 'Hacker News — Hedef Araması',
+      items: d.hackerNews,
+      metaFn: item => (item.source || 'HackerNews') + '  ·  ' + item.date
+    },
+    {
+      key: 'serperNews',
+      type: 'rss',
+      label: 'Google Haberler (Serper)',
+      items: d.serperNews,
+      metaFn: item => (item.source || 'Serper') + '  ·  ' + item.date
+    }
+  ];
+
+  const visible = sources.filter(s => f === 'all' || s.type === f);
+
+  container.innerHTML = visible.map(s => {
+    const isLoading = d.loading[s.key];
+    const badge = isLoading
+      ? '<span class="live-intel-source-badge loading">YÜKLENİYOR</span>'
+      : s.items.length > 0
+        ? '<span class="live-intel-source-badge ok">' + s.items.length + ' KAYIT</span>'
+        : '<span class="live-intel-source-badge error">VERİ YOK</span>';
+
+    const itemsHtml = s.items.length > 0
+      ? '<ul class="live-intel-items">' +
+          s.items.slice(0, 10).map(item =>
+            '<li class="live-intel-item">' +
+              '<a href="' + item.url + '" target="_blank" rel="noopener">' + item.title + '</a>' +
+              '<span class="live-intel-item-meta">' + s.metaFn(item) + '</span>' +
+            '</li>'
+          ).join('') +
+        '</ul>'
+      : '<div class="live-intel-empty">' + (isLoading ? 'Veriler çekiliyor...' : 'Sonuç bulunamadı.') + '</div>';
+
+    return '<div class="live-intel-source-block">' +
+      '<div class="live-intel-source-header">' +
+        '<span class="live-intel-source-name">' + s.label + '</span>' +
+        badge +
+      '</div>' +
+      itemsHtml +
+    '</div>';
+  }).join('');
+}
+
+async function refreshLiveIntel() {
+  const btn = document.getElementById('liveIntelRefreshBtn');
+  if (btn) btn.disabled = true;
+  const target = window.liveIntelData.lastTarget;
+  renderLiveIntel();
+  await Promise.all([
+    target ? fetchHackerNews(target) : Promise.resolve(),
+    target ? fetchSerperNews(target) : Promise.resolve()
+  ]);
+  renderLiveIntel();
+  if (btn) btn.disabled = false;
+}
+
+function setLiveIntelFilter(btn, filter) {
+  _liveIntelFilter = filter;
+  document.querySelectorAll('.live-intel-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLiveIntel();
+}
+
 
 // ===================== MARKDOWN RENDER =====================
 function renderMarkdown(md) {
@@ -1174,6 +1329,8 @@ function copyReport() {
 document.addEventListener('DOMContentLoaded',()=>{
   updateApiStatus();
   renderHistory();
+  // İlk açılışta key yoksa modal aç
+  if (!getApiKey()) openApiModal();
   const inp=document.getElementById('queryInput');
   inp.addEventListener('keydown',e=>{ if(e.key==='Enter') startSearch(); });
   inp.addEventListener('input',()=>{
@@ -1184,15 +1341,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     else badge.style.display='none';
   });
   document.getElementById('apiModal').addEventListener('click',e=>{ if(e.target===document.getElementById('apiModal')) closeApiModal(); });
-  // Chat input: Enter gönder, Shift+Enter yeni satır
-  const chatInp = document.getElementById('chatInput')
-  chatInp.addEventListener('keydown', e => {
-    if(e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
-  });
-  chatInp.addEventListener('input', () => {
-    chatInp.style.height = 'auto';
-    chatInp.style.height = Math.min(chatInp.scrollHeight, 120) + 'px';
-  });
 });
 </script>
 </body>
