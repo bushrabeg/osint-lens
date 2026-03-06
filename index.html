@@ -356,6 +356,33 @@
       .tabs-bar { gap: 3px; }
       .tab-btn { font-size: 10px; padding: 5px 10px; }
     }
+    /* FOLLOW-UP CHAT */
+    .followup-chat { border-top: 2px solid var(--border); padding: 24px; background: var(--bg); margin-top: 4px; }
+    .followup-chat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+    .followup-chat-title { font-family: var(--sans); font-size: 12px; letter-spacing: 3px; color: var(--green); text-transform: uppercase; }
+    .followup-chat-clear { background: transparent; border: 1px solid #ff4c6a33; color: var(--red); font-family: var(--mono); font-size: 10px; padding: 4px 10px; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; }
+    .followup-chat-clear:hover { background: #ff4c6a11; }
+    .chat-messages { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; max-height: 420px; overflow-y: auto; padding-right: 4px; }
+    .chat-messages::-webkit-scrollbar { width: 3px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--border); }
+    .chat-msg { padding: 10px 14px; font-size: 12px; line-height: 1.75; }
+    .chat-msg.user { background: rgba(33,206,112,0.05); border: 1px solid var(--green-dim); border-left: 3px solid var(--green); color: var(--green); }
+    .chat-msg.assistant { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid #444; color: var(--text); }
+    .chat-msg.assistant.streaming { border-left-color: var(--yellow); }
+    .chat-msg-label { font-size: 9px; letter-spacing: 3px; color: var(--text-dim); margin-bottom: 5px; text-transform: uppercase; }
+    .chat-msg.user .chat-msg-label { color: var(--green-dim); }
+    .chat-msg-body { }
+    .chat-msg-body.md h1,.chat-msg-body.md h2,.chat-msg-body.md h3 { font-family: var(--sans); color: var(--green); margin: 10px 0 6px; letter-spacing: 1px; }
+    .chat-msg-body.md p { font-size: 12px; line-height: 1.75; margin-bottom: 8px; }
+    .chat-msg-body.md li { font-size: 12px; }
+    .chat-input-row { display: flex; gap: 8px; }
+    .chat-input { flex: 1; background: var(--bg); border: 1px solid #21ce7044; color: var(--green); font-family: var(--mono); font-size: 12px; padding: 12px 14px; outline: none; transition: border-color 0.2s; min-width: 0; }
+    .chat-input::placeholder { color: #21ce7033; }
+    .chat-input:focus { border-color: var(--green); box-shadow: 0 0 12px var(--green-glow); }
+    .chat-send-btn { background: var(--green); color: var(--bg); border: none; font-family: var(--sans); font-size: 12px; font-weight: 700; letter-spacing: 2px; padding: 12px 20px; cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; text-transform: uppercase; }
+    .chat-send-btn:hover { background: #fff; }
+    .chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .chat-typing::after { content: '█'; animation: blink 0.8s step-end infinite; color: var(--green); }
     /* TOOL CALL LOG */
     .tool-log { padding: 12px 24px 16px; border-bottom: 1px solid var(--border); }
     .tool-log-title { font-size: 10px; letter-spacing: 3px; color: var(--text-dim); margin-bottom: 10px; }
@@ -531,6 +558,19 @@
           <button class="export-btn" onclick="exportTXT()">&#8659; TXT OLARAK İNDİR</button>
           <button class="export-btn" onclick="exportPDF()">&#8659; PDF OLARAK İNDİR</button>
           <button class="export-btn" onclick="copyReport()">&#9632; KOPYALA</button>
+        </div>
+        <div class="followup-chat" id="followupChat" style="display:none">
+          <div class="followup-chat-header">
+            <span class="followup-chat-title">// RAPOR HAKKINDA SORU SOR</span>
+            <button class="followup-chat-clear" onclick="clearChat()">[ GEÇMİŞİ TEMİZLE ]</button>
+          </div>
+          <div class="chat-messages" id="chatMessages"></div>
+          <div class="chat-input-row">
+            <input type="text" class="chat-input" id="chatInput"
+              placeholder="Soru sor... 'Bu IP'ye ait başka domainler var mı?'"
+              autocomplete="off" />
+            <button class="chat-send-btn" id="chatSendBtn" onclick="sendFollowupMessage()">&#9654; GÖNDER</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1310,6 +1350,8 @@ async function runAgenticAnalysis() {
   document.getElementById('toolCallsList').innerHTML = '';
   document.getElementById('finalReport').style.display = 'none';
   document.getElementById('exportRow').style.display = 'none';
+  document.getElementById('followupChat').style.display = 'none';
+  chatHistory = [];
   document.getElementById('agentStartBtn').disabled = true;
   panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
@@ -1412,6 +1454,7 @@ async function runAgenticAnalysis() {
     currentRawText = finalContent;
     document.getElementById('exportRow').style.display = 'flex';
     setAgentStatus('✅ Analiz tamamlandı', 'done');
+    initFollowupChat(currentTarget, toolData.dataSummary, allResults, finalContent);
   } catch(e) {
     finalEl.innerHTML = '<p style="color:var(--red)">Final rapor hatası: ' + e.message + '</p>';
     setAgentStatus('⚠️ Kısmen tamamlandı', 'error');
@@ -1560,6 +1603,114 @@ function setLiveIntelFilter(btn, filter) {
   renderLiveIntel();
 }
 
+
+// ===================== FOLLOW-UP CHAT =====================
+let chatHistory = [];
+let chatRunning = false;
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function initFollowupChat(target, toolSummary, stepsText, finalReportText) {
+  const sysContent =
+    'Sen deneyimli bir OSINT analistisin. Kullanıcı "' + target + '" hedefi için kapsamlı bir analiz tamamladı.\n\n' +
+    (toolSummary ? '=== GERÇEK ARAÇ VERİLERİ (canlı API) ===\n' + toolSummary + '\n\n' : '') +
+    '=== ANALİZ ADIMLARI ===\n' + stepsText + '\n\n' +
+    '=== FİNAL RAPOR ===\n' + finalReportText + '\n\n' +
+    'Kullanıcının sorularını tüm bu bağlamı göz önünde bulundurarak yanıtla. ' +
+    'Somut ve kısa yanıtlar ver. Türkçe konuş.';
+
+  chatHistory = [{ role: 'system', content: sysContent }];
+
+  const chatEl = document.getElementById('followupChat');
+  document.getElementById('chatMessages').innerHTML = '';
+  chatEl.style.display = 'block';
+
+  addChatBubble('assistant',
+    '**Analiz tamamlandı.** Rapor hakkında soru sorabilirsiniz.\n\n' +
+    'Örnek sorular:\n' +
+    '- "Bu IP\'ye ait başka domainler var mı?"\n' +
+    '- "En kritik güvenlik riski nedir?"\n' +
+    '- "Subdomain listesini özetle"\n' +
+    '- "Risk seviyesi neden yüksek?"'
+  );
+
+  chatEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  const inp = document.getElementById('chatInput');
+  if (inp) {
+    inp.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendFollowupMessage(); } };
+    setTimeout(() => inp.focus(), 400);
+  }
+}
+
+function addChatBubble(role, text, streaming) {
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + role + (streaming ? ' streaming' : '');
+  if (streaming) div.id = 'chat-stream-bubble';
+
+  const label = role === 'user' ? '&gt; KULLANICI' : 'DEEPSEEK-R1';
+  const bodyId = streaming ? ' id="chat-stream-body"' : '';
+  const bodyClass = 'chat-msg-body' + (role === 'assistant' ? ' md' : '');
+  const bodyHtml = streaming
+    ? '<span class="chat-typing"></span>'
+    : (role === 'assistant' ? renderMarkdown(text) : escapeHtml(text));
+
+  div.innerHTML =
+    '<div class="chat-msg-label">' + label + '</div>' +
+    '<div class="' + bodyClass + '"' + bodyId + '>' + bodyHtml + '</div>';
+
+  container.appendChild(div);
+  div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  return div;
+}
+
+function clearChat() {
+  chatHistory = chatHistory.slice(0, 1); // system mesajını koru
+  document.getElementById('chatMessages').innerHTML = '';
+  addChatBubble('assistant', 'Sohbet geçmişi temizlendi. Yeni soru sorabilirsiniz.');
+}
+
+async function sendFollowupMessage() {
+  if (chatRunning) return;
+  const input   = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('chatSendBtn');
+  const msg = input.value.trim();
+  if (!msg) { input.focus(); return; }
+
+  input.value = '';
+  chatRunning = true;
+  sendBtn.disabled = true;
+
+  addChatBubble('user', msg);
+  chatHistory.push({ role: 'user', content: msg });
+
+  addChatBubble('assistant', '', true);
+  const bodyEl   = document.getElementById('chat-stream-body');
+  const bubbleEl = document.getElementById('chat-stream-bubble');
+
+  let fullContent = '';
+  try {
+    await callDeepSeek(chatHistory, ({ type, text }) => {
+      if (type === 'content') {
+        fullContent += text;
+        if (bodyEl) bodyEl.innerHTML = renderMarkdown(fullContent) + '<span class="chat-typing"></span>';
+      }
+    });
+    if (bodyEl)   bodyEl.innerHTML = renderMarkdown(fullContent);
+    if (bubbleEl) { bubbleEl.classList.remove('streaming'); bubbleEl.id = ''; }
+    chatHistory.push({ role: 'assistant', content: fullContent });
+  } catch(e) {
+    if (bodyEl)   bodyEl.innerHTML = '<span style="color:var(--red)">Hata: ' + escapeHtml(e.message) + '</span>';
+    if (bubbleEl) { bubbleEl.classList.remove('streaming'); bubbleEl.id = ''; }
+  }
+
+  chatRunning = false;
+  sendBtn.disabled = false;
+  input.focus();
+}
 
 // ===================== MARKDOWN RENDER =====================
 function renderMarkdown(md) {
