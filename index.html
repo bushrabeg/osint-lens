@@ -39,24 +39,6 @@
     .status-bar { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-dim); }
     .dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: blink 1.5s ease-in-out infinite; flex-shrink: 0; }
     @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
-    /* API KEY PANEL */
-    .api-key-panel { background: var(--surface); border: 1px solid #21ce7033; padding: 10px 16px; display: flex; align-items: center; gap: 10px; font-size: 11px; cursor: pointer; transition: border-color 0.2s; }
-    .api-key-panel:hover { border-color: var(--green-dim); }
-    .api-key-panel span { color: var(--text-dim); letter-spacing: 1px; }
-    .api-key-panel .api-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
-    .api-key-panel .api-dot.active { background: var(--green); }
-    .api-modal { display: none; position: fixed; inset: 0; background: rgba(8,12,16,0.92); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-    .api-modal.open { display: flex; }
-    .api-modal-box { background: var(--surface); border: 1px solid var(--green-dim); padding: 32px; max-width: 480px; width: 100%; position: relative; }
-    .api-modal-box::before { content: 'OPENROUTER API AYARI'; position: absolute; top: -10px; left: 20px; background: var(--surface); padding: 0 8px; font-size: 10px; letter-spacing: 3px; color: var(--green); }
-    .api-modal-box p { font-size: 12px; color: var(--text-dim); margin-bottom: 16px; line-height: 1.7; }
-    .api-modal-box a { color: var(--green); }
-    .api-input { width: 100%; background: var(--bg); border: 1px solid #21ce7044; color: var(--green); font-family: var(--mono); font-size: 13px; padding: 12px 14px; outline: none; margin-bottom: 12px; }
-    .api-input:focus { border-color: var(--green); }
-    .api-save-btn { background: var(--green); color: var(--bg); border: none; font-family: var(--sans); font-size: 13px; font-weight: 700; letter-spacing: 2px; padding: 10px 24px; cursor: pointer; width: 100%; text-transform: uppercase; }
-    .api-save-btn:hover { background: #fff; }
-    .api-close-btn { position: absolute; top: 12px; right: 12px; background: transparent; border: 1px solid #21ce7033; color: var(--text-dim); font-family: var(--mono); font-size: 11px; padding: 4px 8px; cursor: pointer; }
-    .api-close-btn:hover { border-color: var(--red); color: var(--red); }
     /* HERO */
     .hero { text-align: center; margin-bottom: 40px; }
     .hero-label { font-size: 11px; letter-spacing: 4px; color: var(--green); margin-bottom: 16px; display: block; }
@@ -73,83 +55,6 @@
     .howto-desc { font-size: 11px; color: var(--text-dim); line-height: 1.7; }
 
 
-    /* API KEY REHBER BÖLÜMÜ */
-    .apikey-guide-section {
-      background: var(--surface);
-      border: 1px solid var(--green-dim);
-      padding: 24px 28px;
-      margin-bottom: 40px;
-      position: relative;
-    }
-    .apikey-guide-section::before {
-      content: '\1F511  API KEY NASIL ALINIR?';
-      position: absolute;
-      top: -10px;
-      left: 20px;
-      background: var(--surface);
-      padding: 0 8px;
-      font-size: 10px;
-      letter-spacing: 3px;
-      color: var(--green);
-    }
-    .apikey-guide-note {
-      margin-top: 18px;
-      padding: 10px 14px;
-      background: rgba(33,206,112,0.05);
-      border: 1px solid rgba(33,206,112,0.15);
-      font-size: 11px;
-      color: var(--text-dim);
-      line-height: 1.7;
-      letter-spacing: 0.3px;
-    }
-    .apikey-guide-note strong {
-      color: #fff;
-    }
-    .apikey-guide-section .howto-desc a {
-      color: var(--green);
-      text-decoration: underline;
-    }
-    .apikey-guide-section .howto-desc strong {
-      color: #fff;
-    }
-    .apikey-guide-section .howto-desc code {
-      color: var(--green);
-      background: rgba(33,206,112,0.1);
-      padding: 1px 5px;
-      border-radius: 3px;
-      font-size: 10px;
-    }
-    .apikey-guide-section .howto-desc .time-hint {
-      color: var(--text-dim);
-      font-style: italic;
-    }
-    .api-modal-steps {
-      margin-top: 14px;
-      padding: 10px 12px;
-      background: rgba(33,206,112,0.05);
-      border: 1px solid rgba(33,206,112,0.15);
-      font-size: 11px;
-      color: var(--text-dim);
-      line-height: 1.9;
-      letter-spacing: 0.3px;
-    }
-    .api-modal-steps .step-num {
-      color: var(--green);
-      font-weight: 600;
-    }
-    .api-modal-steps a {
-      color: var(--green);
-    }
-    .api-modal-steps strong {
-      color: #fff;
-    }
-    .api-modal-steps code {
-      color: var(--green);
-      background: rgba(33,206,112,0.1);
-      padding: 1px 4px;
-      border-radius: 3px;
-      font-size: 10px;
-    }
 
     /* SEARCH */
     .search-section { margin-bottom: 32px; }
@@ -349,7 +254,7 @@
       .agent-start-btn { padding: 14px; font-size: 13px; }
       .export-row { flex-direction: column; }
       .export-btn { width: 100%; text-align: center; }
-      .api-key-panel { font-size: 10px; padding: 8px 12px; }
+
     }
     @media (max-width: 400px) {
       .howto-grid { grid-template-columns: 1fr; }
@@ -401,23 +306,6 @@
   </style>
 </head>
 <body>
-<div id="apiModal" class="api-modal">
-  <div class="api-modal-box">
-    <button class="api-close-btn" onclick="closeApiModal()">[ X ]</button>
-    <p>OpenRouter API key'ini girerek DeepSeek-R1 agentic analizini aktifleştir.<br>Ücretsiz key almak için: <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a></p>
-    <div class="api-modal-steps">
-      <span class="step-num">&#9312;</span> <a href="https://openrouter.ai" target="_blank">openrouter.ai</a>'ya git &#8594; ücretsiz kayıt ol<br>
-      <span class="step-num">&#9313;</span> <strong>Keys</strong> &#8594; <strong>Create Key</strong> butonuna bas<br>
-      <span class="step-num">&#9314;</span> Oluşan <code>sk-or-v1-...</code> kodunu kopyala &#8594; aşağıya yapıştır
-    </div>
-    <input type="text" class="api-input" id="apiKeyInput" placeholder="sk-or-v1-..." autocomplete="off" />
-    <button class="api-save-btn" onclick="saveApiKey()">&#9654; KAYDET VE AKTİFLEŞTİR</button>
-    <hr style="border-color:#21ce7022;margin:20px 0">
-    <p style="font-size:11px;letter-spacing:1px;color:#8b949e">Serper.dev API key — haber araması için (isteğe bağlı)<br>Ücretsiz key: <a href="https://serper.dev" target="_blank">serper.dev</a> → Sign Up → API Key</p>
-    <input type="text" class="api-input" id="serperKeyInput" placeholder="serper key..." autocomplete="off" />
-    <button class="api-save-btn" onclick="saveSerperKey()">&#9654; SERPER KAYDET</button>
-  </div>
-</div>
 
 <div class="container">
   <header>
@@ -437,10 +325,6 @@
         <a href="world-monitor.html" class="header-nav-link">◉ DÜNYA MONİTÖRÜ</a>
       </nav>
       <div class="header-right">
-        <div class="api-key-panel" onclick="openApiModal()" id="apiKeyPanel">
-          <div class="api-dot" id="apiDot"></div>
-          <span id="apiStatus">API KEY GİR</span>
-        </div>
         <div class="status-bar">
           <div class="dot"></div>
           <span>SİSTEM AKTİF</span>
@@ -464,28 +348,6 @@
     </div>
   </div>
 
-  <div class="apikey-guide-section">
-    <div class="howto-grid">
-      <div class="howto-step">
-        <div class="howto-num">01</div>
-        <div class="howto-title">HESAP OLUŞTUR</div>
-        <div class="howto-desc"><a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer">openrouter.ai</a> adresine git. Google veya GitHub hesabınla <strong>ücretsiz</strong> kayıt ol. <span class="time-hint">(30 saniye)</span></div>
-      </div>
-      <div class="howto-step">
-        <div class="howto-num">02</div>
-        <div class="howto-title">KEY OLUŞTUR</div>
-        <div class="howto-desc"><strong>Keys</strong> menüsüne tıkla. <strong>Create Key</strong> butonuna bas. Ücretsiz kredi ile hemen kullanmaya başla.</div>
-      </div>
-      <div class="howto-step">
-        <div class="howto-num">03</div>
-        <div class="howto-title">BURAYA YAPIŞTIR</div>
-        <div class="howto-desc">Oluşan <code>sk-or-v1-...</code> kodunu kopyala. Sağ üstteki <strong>API</strong> butonuna tıkla, yapıştır ve kaydet.</div>
-      </div>
-    </div>
-    <div class="apikey-guide-note">
-      <span style="color:var(--green);">[ &#8505; ]</span> OpenRouter ücretsiz kredi verir. Key'iniz sadece tarayıcınızda saklanır, hiçbir sunucuya gönderilmez.
-    </div>
-  </div>
 
   <div class="search-section">
     <div class="search-box">
@@ -600,46 +462,8 @@
 </div>
 <script>
 // ===================== API KEY YÖNETİMİ =====================
-function getApiKey() {
-  return localStorage.getItem('openrouter_api_key') || '';
-}
 function getSerperKey() {
   return localStorage.getItem('serper_api_key') || '';
-}
-function saveSerperKey() {
-  const val = document.getElementById('serperKeyInput').value.trim();
-  if (!val) return;
-  localStorage.setItem('serper_api_key', val);
-  closeApiModal();
-}
-function saveApiKey() {
-  const val = document.getElementById('apiKeyInput').value.trim();
-  if (val.length < 10) {
-    document.getElementById('apiKeyInput').style.borderColor = '#ff4c6a';
-    return;
-  }
-  localStorage.setItem('openrouter_api_key', val);
-  updateApiStatus();
-  closeApiModal();
-}
-function openApiModal() {
-  document.getElementById('apiKeyInput').value = getApiKey();
-  document.getElementById('apiModal').classList.add('open');
-}
-function closeApiModal() {
-  document.getElementById('apiModal').classList.remove('open');
-}
-function updateApiStatus() {
-  const key = getApiKey();
-  const dot = document.getElementById('apiDot');
-  const status = document.getElementById('apiStatus');
-  if (key) {
-    dot.classList.add('active');
-    status.textContent = 'API: ...'+key.slice(-6);
-  } else {
-    dot.classList.remove('active');
-    status.textContent = 'API KEY GİR';
-  }
 }
 
 // ===================== HEDEF ALGILAMA =====================
@@ -961,17 +785,10 @@ function renderResults(q, data, scroll) {
 
 // ===================== DEEPSEEK-R1 — OpenRouter Streaming =====================
 async function callDeepSeek(messages, onChunk) {
-  const key = getApiKey();
-  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  const res = await fetch('/api/analyze', {
     method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + key,
-      'Content-Type': 'application/json',
-      'HTTP-Referer': window.location.origin,
-      'X-Title': 'OSINT Lens'
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'deepseek/deepseek-r1',
       messages: messages,
       stream: true,
       temperature: 0.7,
@@ -1181,17 +998,10 @@ async function executeTool(name, args) {
 
 // ===================== NON-STREAMING DEEPSEEK (TOOL CALLING) =====================
 async function callDeepSeekTools(messages) {
-  const key = getApiKey();
-  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  const res = await fetch('/api/analyze', {
     method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + key,
-      'Content-Type': 'application/json',
-      'HTTP-Referer': window.location.origin,
-      'X-Title': 'OSINT Lens'
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'deepseek/deepseek-r1',
       messages: messages,
       tools: OSINT_TOOLS,
       tool_choice: 'auto',
@@ -1366,8 +1176,6 @@ let agentRunning = false;
 
 async function runAgenticAnalysis() {
   if (!currentTarget) return;
-  const key = getApiKey();
-  if (!key) { openApiModal(); return; }
   if (agentRunning) return;
   agentRunning = true;
 
@@ -1826,10 +1634,7 @@ function copyReport() {
 
 // ===================== INIT =====================
 document.addEventListener('DOMContentLoaded',()=>{
-  updateApiStatus();
   renderHistory();
-  // İlk açılışta key yoksa modal aç
-  if (!getApiKey()) openApiModal();
   const inp=document.getElementById('queryInput');
   inp.addEventListener('keydown',e=>{ if(e.key==='Enter') startSearch(); });
   inp.addEventListener('input',()=>{
@@ -1839,7 +1644,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(det&&DETECT_LABELS[det]&&q.length>3){ badge.textContent=DETECT_LABELS[det]; badge.style.display='block'; }
     else badge.style.display='none';
   });
-  document.getElementById('apiModal').addEventListener('click',e=>{ if(e.target===document.getElementById('apiModal')) closeApiModal(); });
 });
 </script>
 </body>

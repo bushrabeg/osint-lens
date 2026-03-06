@@ -5,6 +5,7 @@
     { "src": "api/*.js", "use": "@vercel/node" }
   ],
   "routes": [
+    { "src": "/api/analyze", "dest": "/api/analyze.js" },
     { "src": "/api/serper", "dest": "/api/serper.js" },
     { "src": "/api/groq", "dest": "/api/groq.js" },
     { "src": "/api/gdacs", "dest": "/api/gdacs.js" },
