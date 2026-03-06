@@ -1294,10 +1294,10 @@ async function runToolAgentLoop(target, targetType) {
   const messages = [
     {
       role: 'system',
-      content: 'Sen deneyimli bir OSINT analistisin. Hedef: "' + target + '" (Tip: ' + (targetType || 'belirsiz') + '). ' +
-        'Gerçek araçları kullanarak bu hedef hakkında somut veri topla. ' +
-        'Her araç sonucunu analiz et, sonra hangi aracı daha kullanacağına karar ver. ' +
-        'Yeterli veri toplandığında araç çağırma ve özet yaz.'
+      content: 'Sen üst düzey bir OSINT analistisin. Hedef: "' + target + '" (Tip: ' + (targetType || 'belirsiz') + '). ' +
+        'Mevcut araçları kullanarak bu hedef hakkında gerçek veri topla. ' +
+        'Her araç sonucunu istihbarat bilginle birleştirerek yorumla. ' +
+        'Yeterli veri toplandığında araç çağırmayı bırak ve özet yaz.'
     },
     {
       role: 'user',
@@ -1386,14 +1386,13 @@ async function runAgenticAnalysis() {
 
   // ── PHASE 1: PLAN ──
   setAgentStatus('🤔 Plan oluşturuluyor...', 'thinking');
-  const planPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '" (Tip: ' + (activeTag || 'belirsiz') + ')\n\n' +
-    'Kullanılabilecek ARAÇLAR (sadece bunlar):\n' +
+  const planPrompt = 'Sen üst düzey bir OSINT analistisin. Hedef: "' + currentTarget + '" (Tip: ' + (activeTag || 'belirsiz') + ')\n\n' +
+    'Kullanılabilecek gerçek API araçları:\n' +
     '- github_search: GitHub kullanıcı/organizasyon arama\n' +
     '- domain_ssl_check: SSL sertifika ve subdomain tespiti\n' +
     '- ip_lookup: IP konum ve ASN bilgisi\n' +
     '- dns_lookup: Domain DNS A kaydı\n\n' +
-    'Bu 4 araçla yapılabilecek analize uygun 3-4 adımlı araştırma planı yap. ' +
-    'Her adımı bu araçların kapsadığı konularla sınırla.\n' +
+    'Bu araçlarla toplanacak verileri temel alan, istihbarat analiziyle derinleştirilecek 3-4 adımlı araştırma planı yap.\n' +
     'SADECE geçerli JSON döndür, başka açıklama ekleme:\n' +
     '{"plan":[{"step":1,"name":"Kısa Başlık","objective":"Bu adımda ne araştırılacak"},{"step":2,...}]}';
 
@@ -1443,11 +1442,17 @@ async function runAgenticAnalysis() {
     const accId = addStepAccordion(n, plan.length, step.name);
 
     const prevCtx = stepResults.map((r, idx) => 'Adım ' + (idx+1) + ' (' + plan[idx].name + '):\n' + r).join('\n\n---\n\n');
-    const stepPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"' + toolContext + '\n\n' +
+    const stepPrompt = 'Sen üst düzey bir OSINT analistisin. Hedef: "' + currentTarget + '"' + toolContext + '\n\n' +
+      'ANALİZ YAKLAŞIMI:\n' +
+      '- Araçlardan gelen gerçek verileri TEMEL al\n' +
+      '- Kendi istihbarat bilginle zenginleştir ve derinleştir\n' +
+      '- Tarih, rakam, isim verirken "tahmini", "yaklaşık", "raporlara göre" ifadelerini kullan\n' +
+      '- Kesin tarih uydurmak yerine dönem belirt ("2024 sonu", "son 6 ay")\n' +
+      '- Sıradan kullanıcının gözden kaçıracağı bağlantıları ve örüntüleri ortaya çıkar\n\n' +
       (prevCtx ? 'Önceki bulgular:\n' + prevCtx + '\n\n---\n\n' : '') +
       'MEVCUT ADIM ' + n + '/' + plan.length + ': ' + step.name + '\nAmaç: ' + step.objective + '\n\n' +
-      'İlgili OSINT araçları:\n' + relevantTools + '\n\n' +
-      'Bu adım için detaylı analiz yap. Hangi araçları nasıl kullanacağını, beklenen bulguları ve anlamlarını Türkçe Markdown ile raporla.';
+      'Kullanılabilecek araçlar:\n' + relevantTools + '\n\n' +
+      'Bu adım için detaylı analiz yap. Araç bulgularını istihbarat yorumuyla birleştirerek Türkçe Markdown ile raporla.';
 
     let sContent = '', sReasoning = '';
     try {
@@ -1476,10 +1481,15 @@ async function runAgenticAnalysis() {
   // Araç verilerini temiz, kısa özet olarak hazırla (ham JSON değil)
   const toolBrief = buildToolBrief(toolData.collectedData);
 
-  const finalPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"\n\n' +
+  const finalPrompt = 'Sen üst düzey bir OSINT analistisin. Hedef: "' + currentTarget + '"\n\n' +
+    'ANALİZ İLKELERİ:\n' +
+    '- Araçlardan gelen gerçek verileri TEMEL al, istihbarat bilginle zenginleştir\n' +
+    '- Tarih, rakam, isim verirken "tahmini", "yaklaşık", "raporlara göre" ifadelerini kullan\n' +
+    '- Kesin tarih uydurmak yerine dönem belirt ("2024 sonu", "son 6 ay")\n' +
+    '- Gizli bağlantıları, örüntüleri ve sıradan kullanıcının gözden kaçıracağı detayları vurgula\n\n' +
     (toolBrief ? 'Canlı API\'lardan toplanan veriler:\n' + toolBrief + '\n\n' : '') +
     'Tüm araştırma adımları tamamlandı:\n\n' + allResults + '\n\n---\n\n' +
-    'Tüm bulguları sentezleyerek Türkçe Markdown final raporu yaz:\n\n' +
+    'Tüm bulguları sentezleyerek BLUF formatında Türkçe Markdown final raporu yaz:\n\n' +
     '## OSINT İstihbarat Raporu: ' + currentTarget + '\n' +
     '### Yönetici Özeti (BLUF)\n### Kritik Bulgular\n### Risk Değerlendirmesi [YÜKSEK/ORTA/DÜŞÜK]\n### Önerilen Aksiyon Adımları\n### İstihbarat Boşlukları';
 
@@ -1662,7 +1672,8 @@ function escapeHtml(s) {
 
 function initFollowupChat(target, toolSummary, stepsText, finalReportText) {
   const sysContent =
-    'Sen deneyimli bir OSINT analistisin. Kullanıcı "' + target + '" hedefi için kapsamlı bir analiz tamamladı.\n\n' +
+    'Sen üst düzey bir OSINT analistisin. Kullanıcı "' + target + '" hedefi için kapsamlı bir analiz tamamladı.\n' +
+    'Araç verilerini temel al, istihbarat bilginle zenginleştir. Tarih/rakam verirken "tahmini", "yaklaşık" ifadelerini kullan.\n\n' +
     (toolSummary ? '=== GERÇEK ARAÇ VERİLERİ (canlı API) ===\n' + toolSummary + '\n\n' : '') +
     '=== ANALİZ ADIMLARI ===\n' + stepsText + '\n\n' +
     '=== FİNAL RAPOR ===\n' + finalReportText + '\n\n' +
