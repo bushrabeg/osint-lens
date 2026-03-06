@@ -1294,12 +1294,10 @@ async function runToolAgentLoop(target, targetType) {
   const messages = [
     {
       role: 'system',
-      content: 'Sen bir OSINT veri toplama aracısın. Hedef: "' + target + '" (Tip: ' + (targetType || 'belirsiz') + ').\n' +
-        'KURAL: SADECE araç çağrılarından dönen gerçek verileri kullan. ' +
-        'Kendi eğitim verinden HİÇBİR bilgi ekleme. ' +
-        'Araç verisi yoksa o konu hakkında hiçbir şey yazma. ' +
-        'Her araç sonucunu aldıktan sonra başka hangi aracın kullanılacağına karar ver. ' +
-        'Yeterli veri toplandığında araç çağırma.'
+      content: 'Sen deneyimli bir OSINT analistisin. Hedef: "' + target + '" (Tip: ' + (targetType || 'belirsiz') + '). ' +
+        'Gerçek araçları kullanarak bu hedef hakkında somut veri topla. ' +
+        'Her araç sonucunu analiz et, sonra hangi aracı daha kullanacağına karar ver. ' +
+        'Yeterli veri toplandığında araç çağırma ve özet yaz.'
     },
     {
       role: 'user',
@@ -1426,14 +1424,16 @@ async function runAgenticAnalysis() {
   } catch(e) {
     console.warn('[Agent] Tool loop hatası:', e.message);
   }
-  // ── PHASE 3: STEPS — orijinal prompt kalitesi korunur ──
+  // ── PHASE 3: STEPS ──
   const stepResults = [];
-  // Sadece gerçek API çağrısı yapabilen 4 araç
   const relevantTools =
     'github_search(query) — GitHub kullanıcı/organizasyon arama (api.github.com)\n' +
     'domain_ssl_check(domain) — SSL sertifika geçmişi ve subdomain tespiti (crt.sh)\n' +
     'ip_lookup(ip) — IP adresi konum, ISP, ASN bilgisi (ipapi.co)\n' +
     'dns_lookup(domain) — Domain DNS A kaydı sorgusu (dns.google)';
+  const toolContext = toolData.dataSummary
+    ? '\n\nGERÇEK ARAÇ VERİLERİ:\n' + toolData.dataSummary
+    : '';
 
   for (let i = 0; i < plan.length; i++) {
     const step = plan[i];
@@ -1443,11 +1443,7 @@ async function runAgenticAnalysis() {
     const accId = addStepAccordion(n, plan.length, step.name);
 
     const prevCtx = stepResults.map((r, idx) => 'Adım ' + (idx+1) + ' (' + plan[idx].name + '):\n' + r).join('\n\n---\n\n');
-    const stepPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"\n\n' +
-      '⚠️ KRİTİK KURAL: SADECE araçlardan gelen gerçek verileri raporla. ' +
-      'Kendi eğitim verinden HİÇBİR isim, tarih, olay veya bilgi ekleme. ' +
-      'Bir araç çıktısında görmediğin hiçbir şeyi yazma. ' +
-      'Veri yoksa "Bu konuda API\'dan veri alınamadı" yaz.\n\n' +
+    const stepPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"' + toolContext + '\n\n' +
       (prevCtx ? 'Önceki bulgular:\n' + prevCtx + '\n\n---\n\n' : '') +
       'MEVCUT ADIM ' + n + '/' + plan.length + ': ' + step.name + '\nAmaç: ' + step.objective + '\n\n' +
       'İlgili OSINT araçları:\n' + relevantTools + '\n\n' +
@@ -1481,13 +1477,9 @@ async function runAgenticAnalysis() {
   const toolBrief = buildToolBrief(toolData.collectedData);
 
   const finalPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"\n\n' +
-    '⚠️ KRİTİK KURAL: SADECE aşağıdaki analiz adımlarında ve API verilerinde görünen bilgileri raporla. ' +
-    'Kendi eğitim verinden HİÇBİR tarih, isim, olay, teknik detay veya tahmin ekleme. ' +
-    'Tool çıktısında görmediğin hiçbir şeyi yazma. ' +
-    'Veri eksikse "Bu alanda yeterli API verisi toplanamadı" yaz.\n\n' +
     (toolBrief ? 'Canlı API\'lardan toplanan veriler:\n' + toolBrief + '\n\n' : '') +
     'Tüm araştırma adımları tamamlandı:\n\n' + allResults + '\n\n---\n\n' +
-    'Yukarıdaki gerçek verileri sentezleyerek Türkçe Markdown final raporu yaz:\n\n' +
+    'Tüm bulguları sentezleyerek Türkçe Markdown final raporu yaz:\n\n' +
     '## OSINT İstihbarat Raporu: ' + currentTarget + '\n' +
     '### Yönetici Özeti (BLUF)\n### Kritik Bulgular\n### Risk Değerlendirmesi [YÜKSEK/ORTA/DÜŞÜK]\n### Önerilen Aksiyon Adımları\n### İstihbarat Boşlukları';
 
