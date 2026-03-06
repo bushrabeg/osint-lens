@@ -1254,6 +1254,35 @@ function updateToolCallUI(id, status, resultData) {
   }
 }
 
+// Araç sonuçlarını kısa, okunabilir özete çevirir (ham JSON değil)
+function buildToolBrief(collectedData) {
+  if (!collectedData || !collectedData.length) return '';
+  return collectedData.map(d => {
+    const r = d.result || {};
+    const arg = Object.values(d.args || {}).join(', ');
+    switch (d.tool) {
+      case 'github_search':
+        return 'GitHub (' + arg + '): ' + (r.total || 0) + ' sonuç' +
+          (r.users && r.users.length ? ' — ' + r.users.map(u => u.login + ' [' + u.type + ']').join(', ') : '');
+      case 'dns_lookup':
+        return 'DNS (' + arg + '): ' + (r.answers && r.answers.length
+          ? r.answers.map(a => a.data).join(', ')
+          : 'kayıt bulunamadı');
+      case 'ip_lookup':
+        return 'IP (' + arg + '): ' +
+          [r.city, r.region, r.country].filter(Boolean).join(', ') +
+          (r.org ? ' — ' + r.org : '') +
+          (r.asn ? ' (' + r.asn + ')' : '');
+      case 'domain_ssl_check':
+        return 'SSL/Subdomain (' + arg + '): ' + (r.total_certs || 0) + ' sertifika, subdomainler: ' +
+          (r.subdomains && r.subdomains.length ? r.subdomains.slice(0, 8).join(', ') : 'yok') +
+          (r.issuers && r.issuers.length ? ' | CA: ' + r.issuers[0] : '');
+      default:
+        return d.tool + ' (' + arg + '): ' + JSON.stringify(r).slice(0, 120);
+    }
+  }).join('\n');
+}
+
 // ===================== TOOL-CALLING AGENT LOOP =====================
 async function runToolAgentLoop(target, targetType) {
   const toolLogSection = document.getElementById('toolLogContainer');
@@ -1389,11 +1418,7 @@ async function runAgenticAnalysis() {
   } catch(e) {
     console.warn('[Agent] Tool loop hatası:', e.message);
   }
-  const toolContext = toolData.dataSummary
-    ? '\n\nGERÇEK ARAÇ VERİLERİ (canlı API\'lardan çekildi):\n' + toolData.dataSummary
-    : '';
-
-  // ── PHASE 3: STEPS (real data enriched) ──
+  // ── PHASE 3: STEPS — orijinal prompt kalitesi korunur ──
   const stepResults = [];
   const relevantTools = filterTools(currentTarget, activeTag).slice(0, 12).map(t => t.name + ': ' + t.desc).join('\n');
 
@@ -1405,11 +1430,11 @@ async function runAgenticAnalysis() {
     const accId = addStepAccordion(n, plan.length, step.name);
 
     const prevCtx = stepResults.map((r, idx) => 'Adım ' + (idx+1) + ' (' + plan[idx].name + '):\n' + r).join('\n\n---\n\n');
-    const stepPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"' + toolContext + '\n\n' +
+    const stepPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"\n\n' +
       (prevCtx ? 'Önceki bulgular:\n' + prevCtx + '\n\n---\n\n' : '') +
       'MEVCUT ADIM ' + n + '/' + plan.length + ': ' + step.name + '\nAmaç: ' + step.objective + '\n\n' +
       'İlgili OSINT araçları:\n' + relevantTools + '\n\n' +
-      'Yukarıdaki gerçek araç verilerini kullanarak bu adım için detaylı analiz yap. Türkçe Markdown ile raporla.';
+      'Bu adım için detaylı analiz yap. Hangi araçları nasıl kullanacağını, beklenen bulguları ve anlamlarını Türkçe Markdown ile raporla.';
 
     let sContent = '', sReasoning = '';
     try {
@@ -1434,9 +1459,14 @@ async function runAgenticAnalysis() {
   // ── PHASE 4: FINAL REPORT ──
   setAgentStatus('📊 Final rapor yazılıyor...', 'thinking');
   const allResults = stepResults.map((r, i) => '## Adım ' + (i+1) + ': ' + plan[i].name + '\n' + r).join('\n\n---\n\n');
-  const finalPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"' + toolContext + '\n\n' +
+
+  // Araç verilerini temiz, kısa özet olarak hazırla (ham JSON değil)
+  const toolBrief = buildToolBrief(toolData.collectedData);
+
+  const finalPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"\n\n' +
+    (toolBrief ? 'Canlı API\'lardan toplanan veriler:\n' + toolBrief + '\n\n' : '') +
     'Tüm araştırma adımları tamamlandı:\n\n' + allResults + '\n\n---\n\n' +
-    'Gerçek araç verilerini ve analiz bulgularını sentezleyerek Türkçe Markdown final raporu yaz:\n\n' +
+    'Tüm bulguları sentezleyerek Türkçe Markdown final raporu yaz:\n\n' +
     '## OSINT İstihbarat Raporu: ' + currentTarget + '\n' +
     '### Yönetici Özeti (BLUF)\n### Kritik Bulgular\n### Risk Değerlendirmesi [YÜKSEK/ORTA/DÜŞÜK]\n### Önerilen Aksiyon Adımları\n### İstihbarat Boşlukları';
 
