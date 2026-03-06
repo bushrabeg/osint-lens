@@ -1388,9 +1388,14 @@ async function runAgenticAnalysis() {
 
   // ── PHASE 1: PLAN ──
   setAgentStatus('🤔 Plan oluşturuluyor...', 'thinking');
-  const planPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '" (Tip: ' + (activeTag || 'belirsiz') + ')\n' +
-    'Bu hedef için 4-5 adımlı sistematik araştırma planı yap. Her adım farklı bir OSINT vektörünü kapsamalı.\n' +
-    'NOT: Plan sadece hangi araçların kullanılacağını belirler. Gerçek analiz sadece araçlardan gelen verilerle yapılacak.\n' +
+  const planPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '" (Tip: ' + (activeTag || 'belirsiz') + ')\n\n' +
+    'Kullanılabilecek ARAÇLAR (sadece bunlar):\n' +
+    '- github_search: GitHub kullanıcı/organizasyon arama\n' +
+    '- domain_ssl_check: SSL sertifika ve subdomain tespiti\n' +
+    '- ip_lookup: IP konum ve ASN bilgisi\n' +
+    '- dns_lookup: Domain DNS A kaydı\n\n' +
+    'Bu 4 araçla yapılabilecek analize uygun 3-4 adımlı araştırma planı yap. ' +
+    'Her adımı bu araçların kapsadığı konularla sınırla.\n' +
     'SADECE geçerli JSON döndür, başka açıklama ekleme:\n' +
     '{"plan":[{"step":1,"name":"Kısa Başlık","objective":"Bu adımda ne araştırılacak"},{"step":2,...}]}';
 
@@ -1423,7 +1428,12 @@ async function runAgenticAnalysis() {
   }
   // ── PHASE 3: STEPS — orijinal prompt kalitesi korunur ──
   const stepResults = [];
-  const relevantTools = filterTools(currentTarget, activeTag).slice(0, 12).map(t => t.name + ': ' + t.desc).join('\n');
+  // Sadece gerçek API çağrısı yapabilen 4 araç
+  const relevantTools =
+    'github_search(query) — GitHub kullanıcı/organizasyon arama (api.github.com)\n' +
+    'domain_ssl_check(domain) — SSL sertifika geçmişi ve subdomain tespiti (crt.sh)\n' +
+    'ip_lookup(ip) — IP adresi konum, ISP, ASN bilgisi (ipapi.co)\n' +
+    'dns_lookup(domain) — Domain DNS A kaydı sorgusu (dns.google)';
 
   for (let i = 0; i < plan.length; i++) {
     const step = plan[i];
@@ -1489,7 +1499,12 @@ async function runAgenticAnalysis() {
   try {
     await callDeepSeek(
       [{ role: 'user', content: finalPrompt }],
-      ({ type, text }) => { if (type === 'content') { finalContent += text; finalEl.textContent = finalContent; } }
+      ({ type, text }) => {
+        if (type === 'content') {
+          finalContent += text;
+          finalEl.innerHTML = renderMarkdown(finalContent) + '<span class="chat-typing"></span>';
+        }
+      }
     );
     finalEl.innerHTML = renderMarkdown(finalContent);
     currentRawText = finalContent;
@@ -1756,6 +1771,10 @@ async function sendFollowupMessage() {
 // ===================== MARKDOWN RENDER =====================
 function renderMarkdown(md) {
   return md
+    // Fenced code blocks: ```markdown ... ``` veya ``` ... ``` → içeriği çıkar
+    .replace(/```(?:markdown|md|json|bash|text|)\n?([\s\S]*?)```/gm, (_, inner) =>
+      '<pre><code>' + inner.trim().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</code></pre>'
+    )
     .replace(/^### (.+)$/gm,'<h3>$1</h3>')
     .replace(/^## (.+)$/gm,'<h2>$1</h2>')
     .replace(/^# (.+)$/gm,'<h1>$1</h1>')
@@ -1767,7 +1786,7 @@ function renderMarkdown(md) {
     .replace(/^---$/gm,'<hr>')
     .replace(/`(.+?)`/g,'<code>$1</code>')
     .replace(/\n\n/g,'</p><p>')
-    .replace(/^(?!<[hul])(.+)$/gm,'<p>$1</p>')
+    .replace(/^(?!<[hupre])(.+)$/gm,'<p>$1</p>')
     .replace(/<p><\/p>/g,'');
 }
 
