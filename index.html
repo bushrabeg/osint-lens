@@ -356,6 +356,21 @@
       .tabs-bar { gap: 3px; }
       .tab-btn { font-size: 10px; padding: 5px 10px; }
     }
+    /* TOOL CALL LOG */
+    .tool-log { padding: 12px 24px 16px; border-bottom: 1px solid var(--border); }
+    .tool-log-title { font-size: 10px; letter-spacing: 3px; color: var(--text-dim); margin-bottom: 10px; }
+    .tool-call-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 12px; margin-bottom: 8px; background: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--text-dim); transition: border-color 0.2s; }
+    .tool-call-item.running { border-left-color: var(--yellow); }
+    .tool-call-item.done    { border-left-color: var(--green); }
+    .tool-call-item.error   { border-left-color: var(--red); }
+    .tool-call-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+    .tool-call-body { flex: 1; min-width: 0; }
+    .tool-call-name { font-family: var(--mono); font-size: 12px; color: var(--green); margin-bottom: 3px; word-break: break-all; }
+    .tool-call-status-text { font-size: 11px; color: var(--text-dim); letter-spacing: 0.5px; }
+    .tool-call-result { font-size: 10px; color: var(--text); margin-top: 6px; max-height: 90px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; background: rgba(33,206,112,0.03); padding: 6px 8px; border: 1px solid var(--border); display: none; }
+    .tool-call-item.done .tool-call-result,
+    .tool-call-item.error .tool-call-result { display: block; }
+    .tool-call-badge { font-size: 13px; flex-shrink: 0; padding-top: 1px; }
   </style>
 </head>
 <body>
@@ -503,6 +518,10 @@
       <div class="agent-plan-preview" id="agentPlanPreview" style="display:none">
         <div class="agent-plan-title">ARAŞTIRMA PLANI</div>
         <div id="agentPlanList"></div>
+      </div>
+      <div class="tool-log" id="toolLogContainer" style="display:none">
+        <div class="tool-log-title">// CANLI VERİ TOPLAMA — ARAÇ ÇAĞRILARI</div>
+        <div id="toolCallsList"></div>
       </div>
       <div id="stepsContainer"></div>
       <div class="final-report" id="finalReport" style="display:none">
@@ -1030,6 +1049,249 @@ function toggleThinking(id) {
   document.getElementById(id + '-body')?.classList.toggle('open');
 }
 
+// ===================== REAL OSINT TOOL DEFINITIONS =====================
+const OSINT_TOOLS = [
+  {
+    type: 'function',
+    function: {
+      name: 'github_search',
+      description: 'GitHub\'da kullanıcı veya organizasyon ara. Kişi veya şirket GitHub profili ve repo bilgisi toplar.',
+      parameters: {
+        type: 'object',
+        properties: { query: { type: 'string', description: 'Arama sorgusu (kullanıcı adı, şirket adı vb.)' } },
+        required: ['query']
+      }
+    }
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'domain_ssl_check',
+      description: 'Domain için SSL sertifika geçmişini ve subdomain listesini crt.sh üzerinden çeker.',
+      parameters: {
+        type: 'object',
+        properties: { domain: { type: 'string', description: 'Kontrol edilecek domain (örn: example.com)' } },
+        required: ['domain']
+      }
+    }
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'ip_lookup',
+      description: 'IP adresi için coğrafi konum, ISP, ASN ve organizasyon bilgisi çeker.',
+      parameters: {
+        type: 'object',
+        properties: { ip: { type: 'string', description: 'Sorgulanacak IP adresi (örn: 8.8.8.8)' } },
+        required: ['ip']
+      }
+    }
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'dns_lookup',
+      description: 'Domain DNS A kayıtlarını (IP adresleri) Google DNS üzerinden sorgular.',
+      parameters: {
+        type: 'object',
+        properties: { domain: { type: 'string', description: 'DNS sorgulanacak domain (örn: example.com)' } },
+        required: ['domain']
+      }
+    }
+  }
+];
+
+// ===================== REAL TOOL EXECUTION =====================
+async function executeTool(name, args) {
+  switch (name) {
+    case 'github_search': {
+      const r = await fetch('https://api.github.com/search/users?q=' + encodeURIComponent(args.query) + '&per_page=5');
+      if (!r.ok) throw new Error('GitHub API: HTTP ' + r.status);
+      const d = await r.json();
+      return {
+        total: d.total_count,
+        users: (d.items || []).slice(0, 5).map(u => ({ login: u.login, type: u.type, url: u.html_url, score: u.score }))
+      };
+    }
+    case 'domain_ssl_check': {
+      const r = await fetch('https://crt.sh/?q=' + encodeURIComponent(args.domain) + '&output=json');
+      if (!r.ok) throw new Error('crt.sh: HTTP ' + r.status);
+      const d = await r.json();
+      const allNames = (d || []).flatMap(c => (c.name_value || '').split('\n'));
+      const unique = [...new Set(allNames)].filter(Boolean).slice(0, 20);
+      const issuers = [...new Set((d || []).slice(0, 20).map(c => c.issuer_name).filter(Boolean))].slice(0, 5);
+      return { total_certs: (d || []).length, subdomains: unique, issuers };
+    }
+    case 'ip_lookup': {
+      const r = await fetch('https://ipapi.co/' + encodeURIComponent(args.ip) + '/json/');
+      if (!r.ok) throw new Error('ipapi.co: HTTP ' + r.status);
+      const d = await r.json();
+      return { ip: d.ip, city: d.city, region: d.region, country: d.country_name, org: d.org, asn: d.asn, timezone: d.timezone };
+    }
+    case 'dns_lookup': {
+      const r = await fetch('https://dns.google/resolve?name=' + encodeURIComponent(args.domain) + '&type=A');
+      if (!r.ok) throw new Error('DNS: HTTP ' + r.status);
+      const d = await r.json();
+      return { domain: args.domain, status: d.Status, answers: (d.Answer || []).map(a => ({ name: a.name, data: a.data, ttl: a.TTL })) };
+    }
+    default:
+      throw new Error('Bilinmeyen araç: ' + name);
+  }
+}
+
+// ===================== NON-STREAMING DEEPSEEK (TOOL CALLING) =====================
+async function callDeepSeekTools(messages) {
+  const key = getApiKey();
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + key,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': window.location.origin,
+      'X-Title': 'OSINT Lens'
+    },
+    body: JSON.stringify({
+      model: 'deepseek/deepseek-r1',
+      messages: messages,
+      tools: OSINT_TOOLS,
+      tool_choice: 'auto',
+      temperature: 0.6,
+      max_tokens: 2000
+    })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error?.message || 'OpenRouter HTTP ' + res.status);
+  }
+  const data = await res.json();
+  return data.choices[0].message;
+}
+
+// ===================== TOOL CALL UI HELPERS =====================
+let _toolCallCounter = 0;
+
+function addToolCallUI(name, args) {
+  const container = document.getElementById('toolCallsList');
+  if (!container) return null;
+  const id = 'tc-' + (++_toolCallCounter);
+  const argsDisplay = Object.entries(args).map(([k, v]) => "'" + v + "'").join(', ');
+  const div = document.createElement('div');
+  div.className = 'tool-call-item running';
+  div.id = id;
+  div.innerHTML =
+    '<div class="tool-call-icon">🔧</div>' +
+    '<div class="tool-call-body">' +
+      '<div class="tool-call-name">' + name + '(' + argsDisplay + ') çalışıyor...</div>' +
+      '<div class="tool-call-status-text" id="' + id + '-status">istek gönderildi</div>' +
+      '<pre class="tool-call-result" id="' + id + '-result"></pre>' +
+    '</div>' +
+    '<div class="tool-call-badge" id="' + id + '-badge">⏳</div>';
+  container.appendChild(div);
+  div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  return id;
+}
+
+function updateToolCallUI(id, status, resultData) {
+  const item   = document.getElementById(id);
+  const nameEl = item && item.querySelector('.tool-call-name');
+  const stEl   = document.getElementById(id + '-status');
+  const badge  = document.getElementById(id + '-badge');
+  const result = document.getElementById(id + '-result');
+  if (!item) return;
+  const rawName = nameEl ? nameEl.textContent.replace(' çalışıyor...', '') : '';
+  if (status === 'done') {
+    item.className = 'tool-call-item done';
+    if (nameEl) nameEl.textContent = rawName;
+    if (stEl)  stEl.textContent  = '✅ Sonuç bulundu';
+    if (badge) badge.textContent = '✓';
+    if (result) result.textContent = typeof resultData === 'string' ? resultData : JSON.stringify(resultData, null, 2);
+  } else {
+    item.className = 'tool-call-item error';
+    if (nameEl) nameEl.textContent = rawName;
+    if (stEl)  stEl.textContent  = '❌ Hata: ' + resultData;
+    if (badge) badge.textContent = '✗';
+    if (result) result.textContent = String(resultData);
+  }
+}
+
+// ===================== TOOL-CALLING AGENT LOOP =====================
+async function runToolAgentLoop(target, targetType) {
+  const toolLogSection = document.getElementById('toolLogContainer');
+  const toolCallsList  = document.getElementById('toolCallsList');
+  if (toolLogSection) toolLogSection.style.display = 'block';
+  if (toolCallsList)  toolCallsList.innerHTML = '';
+  _toolCallCounter = 0;
+
+  const messages = [
+    {
+      role: 'system',
+      content: 'Sen deneyimli bir OSINT analistisin. Hedef: "' + target + '" (Tip: ' + (targetType || 'belirsiz') + '). ' +
+        'Gerçek araçları kullanarak bu hedef hakkında somut veri topla. ' +
+        'Her araç sonucunu analiz et, sonra hangi aracı daha kullanacağına karar ver. ' +
+        'Yeterli veri toplandığında araç çağırma ve özet yaz.'
+    },
+    {
+      role: 'user',
+      content: 'Hedef "' + target + '" için OSINT araştırması başlat. Mevcut araçları kullanarak gerçek veri topla.'
+    }
+  ];
+
+  const collectedData = [];
+  let finalSummary = '';
+  const MAX_ITERS = 6;
+
+  for (let iter = 0; iter < MAX_ITERS; iter++) {
+    let response;
+    try {
+      response = await callDeepSeekTools(messages);
+    } catch(e) {
+      console.warn('[Tool Agent] API hatası:', e.message);
+      break;
+    }
+    messages.push(response);
+
+    // Araç çağrısı yoksa agent bitti
+    if (!response.tool_calls || response.tool_calls.length === 0) {
+      finalSummary = response.content || '';
+      break;
+    }
+
+    // Her araç çağrısını sırayla çalıştır
+    for (const toolCall of response.tool_calls) {
+      const fnName = toolCall.function.name;
+      let fnArgs;
+      try { fnArgs = JSON.parse(toolCall.function.arguments); } catch { fnArgs = {}; }
+
+      const uiId = addToolCallUI(fnName, fnArgs);
+      let toolResult;
+      try {
+        toolResult = await executeTool(fnName, fnArgs);
+        updateToolCallUI(uiId, 'done', toolResult);
+        collectedData.push({ tool: fnName, args: fnArgs, result: toolResult });
+      } catch(e) {
+        toolResult = { error: e.message };
+        updateToolCallUI(uiId, 'error', e.message);
+        collectedData.push({ tool: fnName, args: fnArgs, result: toolResult });
+      }
+
+      messages.push({
+        role: 'tool',
+        tool_call_id: toolCall.id,
+        content: JSON.stringify(toolResult)
+      });
+    }
+  }
+
+  const dataSummary = collectedData.length > 0
+    ? collectedData.map(d =>
+        '[ ' + d.tool.toUpperCase() + '(' + Object.values(d.args).join(', ') + ') ]\n' +
+        JSON.stringify(d.result, null, 2)
+      ).join('\n\n')
+    : '';
+
+  return { collectedData, dataSummary, agentSummary: finalSummary };
+}
+
 // ===================== AGENTIC ANALİZ =====================
 let agentRunning = false;
 
@@ -1044,6 +1306,8 @@ async function runAgenticAnalysis() {
   panel.style.display = 'block';
   document.getElementById('stepsContainer').innerHTML = '';
   document.getElementById('agentPlanPreview').style.display = 'none';
+  document.getElementById('toolLogContainer').style.display = 'none';
+  document.getElementById('toolCallsList').innerHTML = '';
   document.getElementById('finalReport').style.display = 'none';
   document.getElementById('exportRow').style.display = 'none';
   document.getElementById('agentStartBtn').disabled = true;
@@ -1075,7 +1339,19 @@ async function runAgenticAnalysis() {
   setAgentStatus('Plan hazır: ' + plan.length + ' adım', 'running');
   renderPlanPreview(plan);
 
-  // ── PHASE 2: STEPS ──
+  // ── PHASE 2: REAL TOOL CALLING ──
+  setAgentStatus('🔧 Gerçek veriler toplanıyor...', 'running');
+  let toolData = { collectedData: [], dataSummary: '', agentSummary: '' };
+  try {
+    toolData = await runToolAgentLoop(currentTarget, activeTag);
+  } catch(e) {
+    console.warn('[Agent] Tool loop hatası:', e.message);
+  }
+  const toolContext = toolData.dataSummary
+    ? '\n\nGERÇEK ARAÇ VERİLERİ (canlı API\'lardan çekildi):\n' + toolData.dataSummary
+    : '';
+
+  // ── PHASE 3: STEPS (real data enriched) ──
   const stepResults = [];
   const relevantTools = filterTools(currentTarget, activeTag).slice(0, 12).map(t => t.name + ': ' + t.desc).join('\n');
 
@@ -1087,11 +1363,11 @@ async function runAgenticAnalysis() {
     const accId = addStepAccordion(n, plan.length, step.name);
 
     const prevCtx = stepResults.map((r, idx) => 'Adım ' + (idx+1) + ' (' + plan[idx].name + '):\n' + r).join('\n\n---\n\n');
-    const stepPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"\n\n' +
+    const stepPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"' + toolContext + '\n\n' +
       (prevCtx ? 'Önceki bulgular:\n' + prevCtx + '\n\n---\n\n' : '') +
       'MEVCUT ADIM ' + n + '/' + plan.length + ': ' + step.name + '\nAmaç: ' + step.objective + '\n\n' +
       'İlgili OSINT araçları:\n' + relevantTools + '\n\n' +
-      'Bu adım için detaylı analiz yap. Hangi araçları nasıl kullanacağını, beklenen bulguları ve anlamlarını Türkçe Markdown ile raporla.';
+      'Yukarıdaki gerçek araç verilerini kullanarak bu adım için detaylı analiz yap. Türkçe Markdown ile raporla.';
 
     let sContent = '', sReasoning = '';
     try {
@@ -1113,12 +1389,12 @@ async function runAgenticAnalysis() {
     }
   }
 
-  // ── PHASE 3: FINAL REPORT ──
+  // ── PHASE 4: FINAL REPORT ──
   setAgentStatus('📊 Final rapor yazılıyor...', 'thinking');
   const allResults = stepResults.map((r, i) => '## Adım ' + (i+1) + ': ' + plan[i].name + '\n' + r).join('\n\n---\n\n');
-  const finalPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"\n\n' +
+  const finalPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"' + toolContext + '\n\n' +
     'Tüm araştırma adımları tamamlandı:\n\n' + allResults + '\n\n---\n\n' +
-    'Tüm bulguları sentezleyerek Türkçe Markdown final raporu yaz:\n\n' +
+    'Gerçek araç verilerini ve analiz bulgularını sentezleyerek Türkçe Markdown final raporu yaz:\n\n' +
     '## OSINT İstihbarat Raporu: ' + currentTarget + '\n' +
     '### Yönetici Özeti (BLUF)\n### Kritik Bulgular\n### Risk Değerlendirmesi [YÜKSEK/ORTA/DÜŞÜK]\n### Önerilen Aksiyon Adımları\n### İstihbarat Boşlukları';
 
