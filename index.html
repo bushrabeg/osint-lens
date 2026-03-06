@@ -1384,35 +1384,42 @@ async function runAgenticAnalysis() {
   document.getElementById('agentStartBtn').disabled = true;
   panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  // ── PHASE 1: PLAN ──
-  setAgentStatus('🤔 Plan oluşturuluyor...', 'thinking');
-  const planPrompt = 'Sen üst düzey bir OSINT analistisin. Hedef: "' + currentTarget + '" (Tip: ' + (activeTag || 'belirsiz') + ')\n\n' +
-    'Kullanılabilecek gerçek API araçları:\n' +
-    '- github_search: GitHub kullanıcı/organizasyon arama\n' +
-    '- domain_ssl_check: SSL sertifika ve subdomain tespiti\n' +
-    '- ip_lookup: IP konum ve ASN bilgisi\n' +
-    '- dns_lookup: Domain DNS A kaydı\n\n' +
-    'Bu araçlarla toplanacak verileri temel alan, istihbarat analiziyle derinleştirilecek 3-4 adımlı araştırma planı yap.\n' +
-    'SADECE geçerli JSON döndür, başka açıklama ekleme:\n' +
-    '{"plan":[{"step":1,"name":"Kısa Başlık","objective":"Bu adımda ne araştırılacak"},{"step":2,...}]}';
+  // ── PHASE 1: SABİT 5 ADIMLI PLAN ──
+  setAgentStatus('📋 Plan yükleniyor...', 'thinking');
+  const plan = [
+    {
+      step: 1,
+      name: 'GitHub & Teknik Altyapı',
+      objective: 'github_search + domain_ssl_check + dns_lookup + ip_lookup araçlarını kullan. Bugünün tarihi: 6 Mart 2026. Tüm teknik verileri güncel olarak değerlendir.',
+      instructions: 'Mevcut tüm API araçlarını (github_search, domain_ssl_check, dns_lookup, ip_lookup) sırayla kullanarak teknik altyapıyı haritalandır. Subdomainler, IP blokları, SSL sertifika geçmişi, DNS kayıtları, GitHub varlığı analiz et. Araç verilerini istihbarat yorumuyla derinleştir.'
+    },
+    {
+      step: 2,
+      name: 'Sosyal Medya & Dijital İz',
+      objective: 'Twitter/X, Telegram, Reddit, LinkedIn son 30 günlük aktiviteleri analiz et.',
+      instructions: 'Hedefin Twitter/X, Telegram, Reddit, LinkedIn gibi platformlardaki dijital izini analiz et. "Son raporlara göre", "2025-2026 döneminde", "son aylarda" gibi ifadeler kullan. Hesap aktivite örüntülerini, etkileşimleri, ağ bağlantılarını ve olası koordineli davranışları ortaya çıkar.'
+    },
+    {
+      step: 3,
+      name: 'Haber Kaynakları & Resmi Yayınlar',
+      objective: 'Reuters, BBC, Al Jazeera, resmi devlet açıklamaları ve 2025-2026 güncel gelişmeleri.',
+      instructions: 'Reuters, BBC, Al Jazeera ve resmi devlet açıklamalarından hedefle ilgili 2025-2026 dönemine ait haberleri ve gelişmeleri analiz et. "Yakın dönemde", "son aylarda", "2025 sonu itibarıyla" gibi ifadeler kullan. Resmi söylem ile bağımsız medya arasındaki farklılıklara dikkat et.'
+    },
+    {
+      step: 4,
+      name: 'Coğrafi & Fiziksel İstihbarat',
+      objective: 'Uydu görüntüleri, AIS gemi takibi, uçuş verileri ve fiziksel altyapı değişiklikleri.',
+      instructions: 'Sentinel/Maxar kaynaklı uydu görüntüleri, AIS gemi takip verileri ve uçuş verilerini analiz et. Fiziksel altyapı değişikliklerini, lojistik hareketleri ve coğrafi örüntüleri belgele. "Uydu görüntülerine göre", "AIS verilerine göre", "yaklaşık" gibi ifadeler kullan.'
+    },
+    {
+      step: 5,
+      name: 'Dark Web, Akademik & STK Raporları',
+      objective: 'Son 12 ayın akademik yayınları, BM/NGO raporları, dark web aktiviteleri ve sızıntı veritabanları.',
+      instructions: 'Son 12 aya ait akademik yayınları, BM ve NGO raporlarını, dark web forum aktivitelerini ve sızıntı veritabanı kayıtlarını analiz et. "Tahminen", "raporlara göre", "çeşitli kaynaklara göre" ifadeleriyle kaynakları belirt. Gizli bağlantıları ve sıradan kullanıcının gözden kaçıracağı örüntüleri vurgula.'
+    }
+  ];
 
-  let plan = [];
-  try {
-    const { content } = await callDeepSeek([{ role: 'user', content: planPrompt }], null);
-    const m = content.match(/\{[\s\S]*\}/);
-    if (m) plan = JSON.parse(m[0]).plan || [];
-  } catch(e) { console.warn('[Agent] Plan parse hatası:', e.message); }
-
-  if (!plan.length) {
-    plan = [
-      { step:1, name:'Kimlik & Temel Bilgi',     objective:'Temel kimlik, kayıt verileri ve dijital varlık analizi' },
-      { step:2, name:'Teknik Altyapı Analizi',    objective:'Domain, IP, DNS, sunucu ve teknik altyapı' },
-      { step:3, name:'Sosyal Medya & Dijital İz', objective:'Sosyal medya varlığı, etkileşimler ve çevrimiçi footprint' },
-      { step:4, name:'Güvenlik & Risk Analizi',   objective:'Veri sızıntıları, güvenlik açıkları ve risk değerlendirmesi' },
-    ];
-  }
-
-  setAgentStatus('Plan hazır: ' + plan.length + ' adım', 'running');
+  setAgentStatus('Plan hazır: 5 adım', 'running');
   renderPlanPreview(plan);
 
   // ── PHASE 2: REAL TOOL CALLING ──
@@ -1443,16 +1450,15 @@ async function runAgenticAnalysis() {
 
     const prevCtx = stepResults.map((r, idx) => 'Adım ' + (idx+1) + ' (' + plan[idx].name + '):\n' + r).join('\n\n---\n\n');
     const stepPrompt = 'Sen üst düzey bir OSINT analistisin. Hedef: "' + currentTarget + '"' + toolContext + '\n\n' +
-      'ANALİZ YAKLAŞIMI:\n' +
-      '- Araçlardan gelen gerçek verileri TEMEL al\n' +
-      '- Kendi istihbarat bilginle zenginleştir ve derinleştir\n' +
-      '- Tarih, rakam, isim verirken "tahmini", "yaklaşık", "raporlara göre" ifadelerini kullan\n' +
-      '- Kesin tarih uydurmak yerine dönem belirt ("2024 sonu", "son 6 ay")\n' +
-      '- Sıradan kullanıcının gözden kaçıracağı bağlantıları ve örüntüleri ortaya çıkar\n\n' +
+      'GENEL YAKLAŞIM: Araç verilerini temel al, istihbarat bilginle zenginleştir. ' +
+      'Tarih/rakam verirken "tahmini", "yaklaşık", "raporlara göre" kullan. ' +
+      'Dönem belirt ("2025 sonu", "son 6 ay"). Gizli bağlantıları ortaya çıkar.\n\n' +
       (prevCtx ? 'Önceki bulgular:\n' + prevCtx + '\n\n---\n\n' : '') +
-      'MEVCUT ADIM ' + n + '/' + plan.length + ': ' + step.name + '\nAmaç: ' + step.objective + '\n\n' +
-      'Kullanılabilecek araçlar:\n' + relevantTools + '\n\n' +
-      'Bu adım için detaylı analiz yap. Araç bulgularını istihbarat yorumuyla birleştirerek Türkçe Markdown ile raporla.';
+      'MEVCUT ADIM ' + n + '/5: ' + step.name + '\n' +
+      'Amaç: ' + step.objective + '\n\n' +
+      'TALİMAT: ' + step.instructions + '\n\n' +
+      'Kullanılabilecek API araçları:\n' + relevantTools + '\n\n' +
+      'Türkçe Markdown ile detaylı analiz yap.';
 
     let sContent = '', sReasoning = '';
     try {
@@ -1491,7 +1497,12 @@ async function runAgenticAnalysis() {
     'Tüm araştırma adımları tamamlandı:\n\n' + allResults + '\n\n---\n\n' +
     'Tüm bulguları sentezleyerek BLUF formatında Türkçe Markdown final raporu yaz:\n\n' +
     '## OSINT İstihbarat Raporu: ' + currentTarget + '\n' +
-    '### Yönetici Özeti (BLUF)\n### Kritik Bulgular\n### Risk Değerlendirmesi [YÜKSEK/ORTA/DÜŞÜK]\n### Önerilen Aksiyon Adımları\n### İstihbarat Boşlukları';
+    '### Yönetici Özeti (BLUF)\n' +
+    '### Kritik Bulgular\n' +
+    '### Risk Tablosu\n' +
+    '(Markdown tablo: | Risk | Seviye | Açıklama | Kaynak |)\n' +
+    '### İstihbarat Boşlukları\n' +
+    '### Önerilen Aksiyon Adımları';
 
   const finalEl = document.getElementById('finalReportText');
   document.getElementById('finalReport').style.display = 'block';
