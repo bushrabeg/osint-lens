@@ -1294,10 +1294,12 @@ async function runToolAgentLoop(target, targetType) {
   const messages = [
     {
       role: 'system',
-      content: 'Sen deneyimli bir OSINT analistisin. Hedef: "' + target + '" (Tip: ' + (targetType || 'belirsiz') + '). ' +
-        'Gerçek araçları kullanarak bu hedef hakkında somut veri topla. ' +
-        'Her araç sonucunu analiz et, sonra hangi aracı daha kullanacağına karar ver. ' +
-        'Yeterli veri toplandığında araç çağırma ve özet yaz.'
+      content: 'Sen bir OSINT veri toplama aracısın. Hedef: "' + target + '" (Tip: ' + (targetType || 'belirsiz') + ').\n' +
+        'KURAL: SADECE araç çağrılarından dönen gerçek verileri kullan. ' +
+        'Kendi eğitim verinden HİÇBİR bilgi ekleme. ' +
+        'Araç verisi yoksa o konu hakkında hiçbir şey yazma. ' +
+        'Her araç sonucunu aldıktan sonra başka hangi aracın kullanılacağına karar ver. ' +
+        'Yeterli veri toplandığında araç çağırma.'
     },
     {
       role: 'user',
@@ -1388,6 +1390,7 @@ async function runAgenticAnalysis() {
   setAgentStatus('🤔 Plan oluşturuluyor...', 'thinking');
   const planPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '" (Tip: ' + (activeTag || 'belirsiz') + ')\n' +
     'Bu hedef için 4-5 adımlı sistematik araştırma planı yap. Her adım farklı bir OSINT vektörünü kapsamalı.\n' +
+    'NOT: Plan sadece hangi araçların kullanılacağını belirler. Gerçek analiz sadece araçlardan gelen verilerle yapılacak.\n' +
     'SADECE geçerli JSON döndür, başka açıklama ekleme:\n' +
     '{"plan":[{"step":1,"name":"Kısa Başlık","objective":"Bu adımda ne araştırılacak"},{"step":2,...}]}';
 
@@ -1431,6 +1434,10 @@ async function runAgenticAnalysis() {
 
     const prevCtx = stepResults.map((r, idx) => 'Adım ' + (idx+1) + ' (' + plan[idx].name + '):\n' + r).join('\n\n---\n\n');
     const stepPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"\n\n' +
+      '⚠️ KRİTİK KURAL: SADECE araçlardan gelen gerçek verileri raporla. ' +
+      'Kendi eğitim verinden HİÇBİR isim, tarih, olay veya bilgi ekleme. ' +
+      'Bir araç çıktısında görmediğin hiçbir şeyi yazma. ' +
+      'Veri yoksa "Bu konuda API\'dan veri alınamadı" yaz.\n\n' +
       (prevCtx ? 'Önceki bulgular:\n' + prevCtx + '\n\n---\n\n' : '') +
       'MEVCUT ADIM ' + n + '/' + plan.length + ': ' + step.name + '\nAmaç: ' + step.objective + '\n\n' +
       'İlgili OSINT araçları:\n' + relevantTools + '\n\n' +
@@ -1464,9 +1471,13 @@ async function runAgenticAnalysis() {
   const toolBrief = buildToolBrief(toolData.collectedData);
 
   const finalPrompt = 'Sen deneyimli bir OSINT analistisin. Hedef: "' + currentTarget + '"\n\n' +
+    '⚠️ KRİTİK KURAL: SADECE aşağıdaki analiz adımlarında ve API verilerinde görünen bilgileri raporla. ' +
+    'Kendi eğitim verinden HİÇBİR tarih, isim, olay, teknik detay veya tahmin ekleme. ' +
+    'Tool çıktısında görmediğin hiçbir şeyi yazma. ' +
+    'Veri eksikse "Bu alanda yeterli API verisi toplanamadı" yaz.\n\n' +
     (toolBrief ? 'Canlı API\'lardan toplanan veriler:\n' + toolBrief + '\n\n' : '') +
     'Tüm araştırma adımları tamamlandı:\n\n' + allResults + '\n\n---\n\n' +
-    'Tüm bulguları sentezleyerek Türkçe Markdown final raporu yaz:\n\n' +
+    'Yukarıdaki gerçek verileri sentezleyerek Türkçe Markdown final raporu yaz:\n\n' +
     '## OSINT İstihbarat Raporu: ' + currentTarget + '\n' +
     '### Yönetici Özeti (BLUF)\n### Kritik Bulgular\n### Risk Değerlendirmesi [YÜKSEK/ORTA/DÜŞÜK]\n### Önerilen Aksiyon Adımları\n### İstihbarat Boşlukları';
 
