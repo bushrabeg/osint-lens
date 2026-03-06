@@ -1774,10 +1774,8 @@ async function sendFollowupMessage() {
 // ===================== MARKDOWN RENDER =====================
 function renderMarkdown(md) {
   return md
-    // Fenced code blocks: ```markdown ... ``` veya ``` ... ``` → içeriği çıkar
-    .replace(/```(?:markdown|md|json|bash|text|)\n?([\s\S]*?)```/gm, (_, inner) =>
-      '<pre><code>' + inner.trim().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</code></pre>'
-    )
+    // Tüm ``` açılış/kapanış satırlarını sil — içerik olduğu gibi kalır
+    .replace(/^```[^\n]*$/gm, '')
     .replace(/^### (.+)$/gm,'<h3>$1</h3>')
     .replace(/^## (.+)$/gm,'<h2>$1</h2>')
     .replace(/^# (.+)$/gm,'<h1>$1</h1>')
@@ -1789,7 +1787,7 @@ function renderMarkdown(md) {
     .replace(/^---$/gm,'<hr>')
     .replace(/`(.+?)`/g,'<code>$1</code>')
     .replace(/\n\n/g,'</p><p>')
-    .replace(/^(?!<[hupre])(.+)$/gm,'<p>$1</p>')
+    .replace(/^(?!<[hul])(.+)$/gm,'<p>$1</p>')
     .replace(/<p><\/p>/g,'');
 }
 
