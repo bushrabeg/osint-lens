@@ -1,55 +1,13 @@
-import { Redis } from '@upstash/redis';
-const redis = Redis.fromEnv();
-
-const DAILY_LIMIT = 3;
-
-// Returns remaining count after increment, or -1 if already over limit.
-async function incrementRateLimit(ip) {
-  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-  const key = `rl:${ip}:${today}`;
-  const count = await redis.incr(key);
-  if (count === 1) {
-    await redis.expire(key, 86400);
-  }
-  return count; // caller checks count > DAILY_LIMIT
-}
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { messages, stream, temperature, max_tokens, tools, tool_choice, userApiKey, step } = req.body;
+  const { messages, stream, temperature, max_tokens, tools, tool_choice, userApiKey } = req.body;
 
-  // If user supplies their own key, bypass rate limiting entirely.
-  const useUserKey = userApiKey && userApiKey.length > 10;
-  const openRouterKey = useUserKey ? userApiKey : process.env.OPENROUTER_API_KEY;
-
-  // Rate limit only on step 1 (the first call of a new analysis).
-  // Steps 2-5, tool loop calls, final report and chat calls pass through freely.
-  if (!useUserKey && step === 1) {
-    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim()
-      || req.socket?.remoteAddress
-      || 'unknown';
-
-    let count;
-    try {
-      count = await incrementRateLimit(ip);
-    } catch (e) {
-      // Redis unavailable — fail open to avoid blocking all users
-      console.error('Redis rate limit error:', e.message);
-      count = 0;
-    }
-
-    if (count > DAILY_LIMIT) {
-      return res.status(429).json({
-        error:
-          'Günlük 3 ücretsiz analizinizi kullandınız.\n' +
-          'Devam etmek için OpenRouter API key ekleyin.',
-        limitReached: true
-      });
-    }
-  }
+  const apiKey = (userApiKey && userApiKey.length > 10)
+    ? userApiKey
+    : process.env.OPENROUTER_API_KEY;
 
   const body = {
     model: 'deepseek/deepseek-r1',
@@ -68,7 +26,7 @@ export default async function handler(req, res) {
     apiRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': 'Bearer ' + openRouterKey,
+        'Authorization': 'Bearer ' + apiKey,
         'Content-Type': 'application/json',
         'HTTP-Referer': 'https://osint-lens.vercel.app',
         'X-Title': 'OSINT Lens'
