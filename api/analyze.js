@@ -19,13 +19,15 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { messages, stream, temperature, max_tokens, tools, tool_choice, userApiKey } = req.body;
+  const { messages, stream, temperature, max_tokens, tools, tool_choice, userApiKey, step } = req.body;
 
   // If user supplies their own key, bypass rate limiting entirely.
   const useUserKey = userApiKey && userApiKey.length > 10;
   const openRouterKey = useUserKey ? userApiKey : process.env.OPENROUTER_API_KEY;
 
-  if (!useUserKey) {
+  // Rate limit only on step 1 (the first call of a new analysis).
+  // Steps 2-5, tool loop calls, final report and chat calls pass through freely.
+  if (!useUserKey && step === 1) {
     const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim()
       || req.socket?.remoteAddress
       || 'unknown';
@@ -34,8 +36,8 @@ export default async function handler(req, res) {
     try {
       count = await incrementRateLimit(ip);
     } catch (e) {
-      // KV unavailable — fail open (allow request) to avoid blocking all users
-      console.error('KV rate limit error:', e.message);
+      // Redis unavailable — fail open to avoid blocking all users
+      console.error('Redis rate limit error:', e.message);
       count = 0;
     }
 
