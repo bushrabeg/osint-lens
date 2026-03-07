@@ -1,19 +1,17 @@
-// IP-based rate limiting (in-memory; resets on cold start)
-// For persistent limits across instances, use Vercel KV.
-const rateLimitMap = new Map();
+import { kv } from '@vercel/kv';
+
 const DAILY_LIMIT = 3;
 
-function checkRateLimit(ip) {
+// Returns remaining count after increment, or -1 if already over limit.
+async function incrementRateLimit(ip) {
   const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-  const key = ip + ':' + today;
-  const count = rateLimitMap.get(key) || 0;
-  if (count >= DAILY_LIMIT) return false;
-  // Prune stale keys from previous days
-  for (const [k] of rateLimitMap) {
-    if (!k.endsWith(':' + today)) rateLimitMap.delete(k);
+  const key = `rl:${ip}:${today}`;
+  const count = await kv.incr(key);   // atomic; creates key at 0 then increments
+  if (count === 1) {
+    // First request today — set TTL so it expires at ~midnight UTC
+    await kv.expire(key, 86400);
   }
-  rateLimitMap.set(key, count + 1);
-  return true;
+  return count; // caller checks count > DAILY_LIMIT
 }
 
 export default async function handler(req, res) {
@@ -21,17 +19,35 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim()
-    || req.socket?.remoteAddress
-    || 'unknown';
+  const { messages, stream, temperature, max_tokens, tools, tool_choice, userApiKey } = req.body;
 
-  if (!checkRateLimit(ip)) {
-    return res.status(429).json({
-      error: 'Günlük analiz limitinize (3) ulaştınız. Yarın tekrar deneyin.'
-    });
+  // If user supplies their own key, bypass rate limiting entirely.
+  const useUserKey = userApiKey && userApiKey.length > 10;
+  const openRouterKey = useUserKey ? userApiKey : process.env.OPENROUTER_API_KEY;
+
+  if (!useUserKey) {
+    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim()
+      || req.socket?.remoteAddress
+      || 'unknown';
+
+    let count;
+    try {
+      count = await incrementRateLimit(ip);
+    } catch (e) {
+      // KV unavailable — fail open (allow request) to avoid blocking all users
+      console.error('KV rate limit error:', e.message);
+      count = 0;
+    }
+
+    if (count > DAILY_LIMIT) {
+      return res.status(429).json({
+        error:
+          'Günlük 3 ücretsiz analizinizi kullandınız.\n' +
+          'Devam etmek için OpenRouter API key ekleyin.',
+        limitReached: true
+      });
+    }
   }
-
-  const { messages, stream, temperature, max_tokens, tools, tool_choice } = req.body;
 
   const body = {
     model: 'deepseek/deepseek-r1',
@@ -50,7 +66,7 @@ export default async function handler(req, res) {
     apiRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': 'Bearer ' + process.env.OPENROUTER_API_KEY,
+        'Authorization': 'Bearer ' + openRouterKey,
         'Content-Type': 'application/json',
         'HTTP-Referer': 'https://osint-lens.vercel.app',
         'X-Title': 'OSINT Lens'

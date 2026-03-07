@@ -462,6 +462,10 @@
 </div>
 <script>
 // ===================== API KEY YÖNETİMİ =====================
+// Kullanıcı eski oturumdan veya manuel olarak key kaydetmişse bypass devreye girer.
+function getApiKey() {
+  return localStorage.getItem('openrouter_api_key') || '';
+}
 function getSerperKey() {
   return localStorage.getItem('serper_api_key') || '';
 }
@@ -792,12 +796,13 @@ async function callDeepSeek(messages, onChunk) {
       messages: messages,
       stream: true,
       temperature: 0.7,
-      max_tokens: 4000
+      max_tokens: 4000,
+      userApiKey: getApiKey() || undefined
     })
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.error?.message || 'OpenRouter HTTP ' + res.status);
+    throw new Error(err.error || err.error?.message || 'OpenRouter HTTP ' + res.status);
   }
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
@@ -1006,12 +1011,13 @@ async function callDeepSeekTools(messages) {
       tools: OSINT_TOOLS,
       tool_choice: 'auto',
       temperature: 0.6,
-      max_tokens: 2000
+      max_tokens: 2000,
+      userApiKey: getApiKey() || undefined
     })
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.error?.message || 'OpenRouter HTTP ' + res.status);
+    throw new Error(err.error || err.error?.message || 'OpenRouter HTTP ' + res.status);
   }
   const data = await res.json();
   return data.choices[0].message;
