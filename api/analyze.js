@@ -1,4 +1,5 @@
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
+const redis = Redis.fromEnv();
 
 const DAILY_LIMIT = 3;
 
@@ -6,10 +7,9 @@ const DAILY_LIMIT = 3;
 async function incrementRateLimit(ip) {
   const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
   const key = `rl:${ip}:${today}`;
-  const count = await kv.incr(key);   // atomic; creates key at 0 then increments
+  const count = await redis.incr(key);
   if (count === 1) {
-    // First request today — set TTL so it expires at ~midnight UTC
-    await kv.expire(key, 86400);
+    await redis.expire(key, 86400);
   }
   return count; // caller checks count > DAILY_LIMIT
 }
